@@ -1,0 +1,418 @@
+:root {
+  --font-base: "Montserrat Alternates", sans-serif;
+  --color-white: #fff;
+  --color-accent: yellow;
+  --color-transparent: rgba(255, 255, 255, 0.1);
+  --overlay-bg: url("assets/overlay.png");
+  --border-radius: 25px;
+  --transition-speed: 0.3s;
+
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --text: #1f2937;
+  --text-light: #6b7280;
+  --background: #ffffff;
+  --border: #e5e7eb;
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  text-align: center;
+  font-family: var(--font-base);
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease-in-out;
+  z-index: -1;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-white);
+  transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: var(--color-accent);
+}
+
+.overlay {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  background: var(--overlay-bg) no-repeat center/cover;
+}
+
+.imageDetails {
+  color: var(--color-white);
+  font-weight: 500;
+  width: fit-content;
+  padding-right: 0.5rem;
+}
+
+.time {
+  color: var(--color-white);
+  font-weight: 500;
+  font-size: 8rem;
+}
+
+.downer-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.left-side {
+  display: flex;
+  flex-direction: row;
+  margin-left: 0.5rem;
+}
+
+.right-side {
+  margin-right: 0.5rem;
+}
+
+.icon {
+  width: 2rem;
+  height: 2rem;
+  margin: 0.5em;
+  transition: transform var(--transition-speed) ease-in-out;
+  opacity: 0.9;
+}
+
+.icon-changeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: transform var(--transition-speed) ease, opacity var(--transition-speed) ease;
+  border-radius: var(--border-radius);
+}
+
+.icon-changeButton:active {
+  transform: scale(0.9);
+  opacity: 0.7;
+}
+
+.icon-changeButton:hover {
+  /* transform: rotate(90deg); */
+  filter: brightness(1.2);
+  backdrop-filter: blur(10px);
+}
+
+.image-description {
+  display: flex;
+  align-items: center;
+  transition: backdrop-filter var(--transition-speed) ease;
+  border-radius: var(--border-radius);
+}
+
+.image-description:hover,
+.icon-changeButton:hover {
+  backdrop-filter: blur(10px) contrast(70%);
+}
+
+@keyframes spin-on-click {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.icon-changeButton.spin-animation .icon {
+  animation: spin-on-click 0.8s ease-in-out;
+}
+
+#initialLoader {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-bg);
+  color: var(--color-white);
+  font-size: 1.25rem;
+  z-index: 10000;
+}
+
+#initialLoader.hidden {
+  display: none;
+}
+
+.error-message {
+  color: rgb(255, 42, 42);
+  font-size: 1rem;
+}
+
+#toastContainer {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  z-index: 10001;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  max-width: 280px;
+  padding: 0.75rem 1rem;
+  background-color: rgba(50, 50, 50, 0.95);
+  color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-size: 0.9rem;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: auto;
+}
+
+.toast .toast-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+  fill: #ff6b6b;
+}
+
+@keyframes toast-show {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toast-hide {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+}
+
+.toast.show {
+  animation: toast-show 300ms ease-out forwards;
+}
+
+.toast.hide {
+  animation: toast-hide 300ms ease-in forwards;
+}
+
+.settings-btn {
+  color: white;
+  font-size: 1.25rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  z-index: 10010;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform var(--transition-speed) ease, opacity var(--transition-speed) ease, backdrop-filter var(--transition-speed) ease;
+}
+
+.settings-btn:hover {
+  backdrop-filter: blur(10px) contrast(70%);
+  transform: translateY(-2px);
+}
+
+.settings-btn:active {
+  transform: translateY(0);
+}
+
+/* Модальное окно */
+.settings-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10005;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.settings-modal.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Содержимое модального окна */
+.settings-content {
+  background: var(--background);
+  color: var(--text);
+  padding: 2rem;
+  border-radius: 1rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: var(--shadow);
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.hidden .settings-content {
+  transform: translateY(20px);
+}
+
+.settings-content h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+/* Стили для формы */
+.settings-content label {
+  display: block;
+  margin-bottom: 1.25rem;
+  font-weight: 500;
+  color: var(--text);
+  position: relative; /* Для позиционирования стрелки */
+}
+
+.settings-content select {
+  display: block;
+  width: 100%;
+  padding: 0.625rem;
+  margin-top: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--background);
+  color: var(--text);
+  font-size: 0.875rem;
+  transition: var(--transition);
+  appearance: none;
+  padding-right: 2rem; /* Место для стрелки */
+}
+
+.settings-content select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+/* Стили для чекбоксов */
+.settings-content input[type="checkbox"] {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  transition: var(--transition);
+}
+
+.settings-content input[type="checkbox"]:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.settings-content input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 0.4rem;
+  top: 0.2rem;
+  width: 0.3rem;
+  height: 0.6rem;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.settings-content input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+/* Кнопки действий */
+.settings-content button {
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+#saveSettings {
+  background-color: var(--primary);
+  color: white;
+  margin-right: 0.5rem;
+}
+
+#saveSettings:hover {
+  background-color: var(--primary-hover);
+}
+
+#closeSettings {
+  background-color: transparent;
+  color: var(--text-light);
+  border: 1px solid var(--border);
+}
+
+#closeSettings:hover {
+  background-color: var(--border);
+  color: var(--text);
+}
+
+/* Контейнер для кнопок */
+.settings-content .button-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+}

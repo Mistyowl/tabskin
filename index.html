@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="initialLoader">Loading…</div>
+  <div class="overlay">
+    <div class="upper-block"></div>
+    <div class="time" id="time"></div>
+    <div class="downer-block">
+      <div class="left-side">
+        <button class="icon-changeButton" id="changeButton" type="button">
+          <svg class="icon">
+            <use href="assets/sprite.svg#refresh_icon"></use>
+          </svg>
+        </button>
+        <div class="image-description">
+          <svg class="icon">
+            <use href="assets/sprite.svg#image_icon"></use>
+          </svg>
+          <p class="imageDetails">
+            <a id="imageLink" href="" target="_blank">Photo</a> by <a id="creator" href="" target="_blank">NAME</a> on <a
+              href="https://www.unsplash.com" target="_blank">Unsplash</a>!
+          </p>
+        </div>
+      </div>
+      <div class="right-side">
+        <button id="settingsToggle" class="settings-btn" title="Настройки">
+          <svg class="icon">
+            <use href="assets/sprite.svg#settings_icon"></use>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+  <!-- Настройки -->
+  <div id="settingsModal" class="settings-modal hidden">
+    <div class="settings-content">
+      <h2>Настройки</h2>
+      <label>
+        Тематика обоев:
+        <select id="themeSelect">
+          <option value="wallpapers">Обои</option>
+          <option value="nature">Природа</option>
+          <option value="render">3D Рендер</option>
+          <option value="textures">Текстура</option>
+          <option value="space">Космос</option>
+          <option value="travel">Путешествия</option>
+          <option value="film">Кинокартинка</option>
+          <option value="people">Люди</option>
+          <option value="architecture">Архитектура</option>
+          <option value="street">Уличные фотографии</option>
+        </select>
+      </label>
+      <label>
+        <input type="checkbox" id="autoSwitchToggle" />
+        Автоматическая смена фона
+      </label>
+      <label>
+        Частота смены:
+        <select id="autoSwitchInterval">
+          <option value="1">Каждую минуту</option>
+          <option value="15">Каждые 15 минут</option>
+          <option value="60">Каждый час</option>
+          <option value="360">Каждые 6 часов</option>
+        </select>
+      </label>
+      <label>
+        <input type="checkbox" id="transitionToggle" />
+        Плавная анимация перехода
+      </label>
+      <div class="button-group">
+        <button id="saveSettings">Сохранить</button>
+        <button id="closeSettings">Закрыть</button>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
