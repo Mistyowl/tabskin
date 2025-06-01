@@ -1,6 +1,6 @@
 {
   "extensionDescription": {
-    "message": "Replaces your new tab with a beautiful Unsplash image"
+    "message": "Tabskin replaces the standard tab with a minimalistic page with a changing background, current time and information about the author of the image."
   },
   "tabTitle": {
     "message": "New tab"
