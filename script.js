@@ -315,3 +315,29 @@ function showToastError(messageText) {
 
   console.log("🚨 Toast error displayed:", messageText);
 }
+
+// Очистка кэша по кнопке
+async function clearCache() {
+  const cacheStorage = await caches.open(CACHE_NAME);
+  await cacheStorage.keys().then(keys => {
+    keys.forEach(request => cacheStorage.delete(request));
+  });
+  console.log("🗑 Cache cleared");
+}
+
+// Очистка локального хранилища по кнопке
+function clearLocalStorage() {
+  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}Url`);
+  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}Creator`);
+  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}PhotoLink`);
+  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}CreatorLink`);
+  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}LoadTime`);
+  console.log("🗑 Local storage cleared");
+}
+
+// Очистка кэша и локального хранилища по кнопке
+function clearAllData() {
+  clearCache().catch(console.warn);
+  clearLocalStorage();
+  console.log("🗑 All data cleared");
+}

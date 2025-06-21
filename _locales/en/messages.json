@@ -1,8 +1,10 @@
 {
   "extensionDescription": {
-    "message": "Tabskin replaces the standard tab with a minimalistic page with a changing background, current time and information about the author of the image."
+    "message": "Tabskin replaces the standard tab with a minimalistic page with a changing background, current time and information about the author of the image.",
+    "description": "Description of the Tabskin extension"
   },
   "tabTitle": {
-    "message": "New tab"
+    "message": "New tab",
+    "description": "Title for the new tab page"
   }
 }

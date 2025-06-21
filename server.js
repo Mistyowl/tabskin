@@ -11,7 +11,7 @@ const app = express();
 
 // Получаем переменные из файла .env
 const UNSPLASH_KEY = process.env.UNSPLASH_KEY; // Ключ API Unsplash
-const PORT = parseInt(process.env.PORT, 10) || 3000; // Порт сервера (по умолчанию 3000)
+const PORT = parseInt(process.env.PORT, 10) || 8000; // Порт сервера (по умолчанию 8000)
 const CACHE_TTL = parseInt(process.env.CACHE_TTL, 10) || 43200000; // Время жизни кэша (по умолчанию 12 часов)
 
 // Проверяем наличие ключа API
@@ -28,7 +28,7 @@ app.use(express.json()); // Парсинг JSON в теле запросов
 
 // Логируем все входящие запросы
 app.use((request, response, next) => {
-  console.log(`[${new Date().toISOString()}] ${request.method} ${request.originalUrl}`);
+  logTime(`Запрос: ${request.method} ${request.originalUrl}`); // Логируем метод и URL запроса
   next(); // Передаём управление следующему обработчику
 });
 
@@ -51,6 +51,11 @@ async function fetchUnsplashImage(searchQuery) {
   return apiResponse.json(); // Возвращаем данные в формате JSON
 }
 
+async function logTime(logTime) {
+  const startCurrentTime = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  console.log(`${startCurrentTime} ${logTime}`); // Логируем время с заданным сообщением
+}
+
 // Маршрут для получения случайного изображения
 app.get('/photos', async (request, response) => {
   try {
@@ -63,13 +68,13 @@ app.get('/photos', async (request, response) => {
     if (!shouldRefresh && cache.has(cacheKey)) {
       const { imageData, cacheTimestamp } = cache.get(cacheKey);
       if (currentTime - cacheTimestamp < CACHE_TTL) {
-        console.log(`→ [CACHE HIT] "${searchQuery}"`); // Данные найдены в кэше
+        await logTime(`Кэш найден для "${searchQuery}"`); // Логируем время кэша
         return response.json(imageData);
       }
       cache.delete(cacheKey); // Удаляем устаревшие данные
-      console.log(`→ [CACHE EXPIRED] "${searchQuery}"`);
+      await logTime(`Кэш устарел для "${searchQuery}"`); // Логируем время устаревания кэша
     } else {
-      console.log(`→ [CACHE MISS] "${searchQuery}"`); // Данные отсутствуют в кэше
+      await logTime(`Кэш не найден для "${searchQuery}"`); // Логируем время отсутствия кэша
     }
 
     // Запрашиваем новые данные из Unsplash API
@@ -78,15 +83,15 @@ app.get('/photos', async (request, response) => {
     // Сохраняем данные в кэш, если не требуется принудительное обновление
     if (!shouldRefresh) {
       cache.set(cacheKey, { imageData, cacheTimestamp: currentTime });
-      console.log(`→ [CACHE SET] "${searchQuery}"`);
+      await logTime(`Кэш обновлён для "${searchQuery}"`);
     } else {
-      console.log(`→ [REFRESH] "${searchQuery}" (кэш не обновлён)`);
+      await logTime(`Кэш не обновлён для "${searchQuery}" (принудительное обновление)`);
     }
 
     return response.json(imageData); // Отправляем данные клиенту
   } catch (error) {
     console.error('Ошибка в маршруте /photos:', error);
-    return response.status(500).json({ error: 'Внутренняя ошибка сервера' });
+    return response.status(500).json({ error: + 'Внутренняя ошибка сервера' });
   }
 });
 
@@ -102,5 +107,5 @@ process.on('unhandledRejection', (reason) => {
 
 // Запускаем сервер
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Unsplash proxy запущен на http://0.0.0.0:${PORT}`);
+  logTime(`Сервер Tabskin запущен на http с портом ${PORT}`); // Логируем время запуска сервера
 });

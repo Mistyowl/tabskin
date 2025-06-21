@@ -6,9 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title></title>
   <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="initialLoader">Loading…</div>
@@ -17,7 +14,7 @@
     <div class="time" id="time"></div>
     <div class="downer-block">
       <div class="left-side">
-        <button class="icon-changeButton" id="changeButton" type="button">
+        <button class="icon-changeButton" id="changeButton" type="button" aria-label="Change Image Button">
           <svg class="icon">
             <use href="assets/sprite.svg#refresh_icon"></use>
           </svg>
@@ -33,7 +30,7 @@
         </div>
       </div>
       <div class="right-side">
-        <button id="settingsToggle" class="settings-btn" title="Настройки">
+        <button id="settingsToggle" class="settings-btn" title="Settings" aria-label="Open/close settings window">
           <svg class="icon">
             <use href="assets/sprite.svg#settings_icon"></use>
           </svg>
@@ -42,45 +39,45 @@
     </div>
   </div>
   <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
-  <!-- Настройки -->
+  <!-- Settings menu -->
   <div id="settingsModal" class="settings-modal hidden">
     <div class="settings-content">
-      <h2>Настройки</h2>
+      <h2>Settings</h2>
       <label>
-        Тематика обоев:
+        Wallpaper theme:
         <select id="themeSelect">
-          <option value="wallpapers">Обои</option>
-          <option value="nature">Природа</option>
-          <option value="render">3D Рендер</option>
-          <option value="textures">Текстура</option>
-          <option value="space">Космос</option>
-          <option value="travel">Путешествия</option>
-          <option value="film">Кинокартинка</option>
-          <option value="people">Люди</option>
-          <option value="architecture">Архитектура</option>
-          <option value="street">Уличные фотографии</option>
+          <option value="wallpapers">Wallpapers</option>
+          <option value="nature">Nature</option>
+          <option value="render">3D Render</option>
+          <option value="textures">Texture</option>
+          <option value="space">Space</option>
+          <option value="travel">Travel</option>
+          <option value="film">Film</option>
+          <option value="people">People</option>
+          <option value="architecture">Architecture</option>
+          <option value="street">Street Photography</option>
         </select>
       </label>
       <label>
         <input type="checkbox" id="autoSwitchToggle" />
-        Автоматическая смена фона
+        <span>Automatic background change</span>
       </label>
       <label>
-        Частота смены:
+        Change frequency:
         <select id="autoSwitchInterval">
-          <option value="1">Каждую минуту</option>
-          <option value="15">Каждые 15 минут</option>
-          <option value="60">Каждый час</option>
-          <option value="360">Каждые 6 часов</option>
+          <option value="1">Every minute</option>
+          <option value="15">Every 15 minutes</option>
+          <option value="60">Every hour</option>
+          <option value="360">Every 6 hours</option>
         </select>
       </label>
       <label>
         <input type="checkbox" id="transitionToggle" />
-        Плавная анимация перехода
+        <span>Smooth transition animation</span>
       </label>
       <div class="button-group">
-        <button id="saveSettings">Сохранить</button>
-        <button id="closeSettings">Закрыть</button>
+        <button id="saveSettings">Save</button>
+        <button id="closeSettings">Close</button>
       </div>
     </div>
   </div>
