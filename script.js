@@ -91,7 +91,7 @@ const TRANSLATIONS = {
     everyHour: "Every hour",
     every6Hours: "Every 6 hours",
     smoothTransition: "Smooth transition animation",
-    clearCacheNow: "Clear cache now",
+    clearCacheNow: "Clear cache",
     cacheCleared: "Cache cleared successfully",
     cacheSize: "Cache size:",
     save: "Save",
@@ -102,7 +102,7 @@ const TRANSLATIONS = {
     on: "on",
     settings: "Settings",
     settingsSaved: "Settings saved successfully",
-    // Сообщения об ошибках
+    // Error
     errorFailedToLoadImage: "Failed to load new image",
     errorNetworkError: "Network error: Unable to connect to image server",
     errorServerError: "Server error: Image service temporarily unavailable",
@@ -138,7 +138,7 @@ const TRANSLATIONS = {
     everyHour: "Каждый час",
     every6Hours: "Каждые 6 часов",
     smoothTransition: "Плавная анимация перехода",
-    clearCacheNow: "Очистить кэш сейчас",
+    clearCacheNow: "Очистить кэш",
     cacheCleared: "Кэш успешно очищен",
     cacheSize: "Размер кэша:",
     save: "Сохранить",
@@ -149,7 +149,7 @@ const TRANSLATIONS = {
     on: "на",
     settings: "Настройки",
     settingsSaved: "Настройки успешно сохранены",
-    // Сообщения об ошибках
+    // Ошибки
     errorFailedToLoadImage: "Не удалось загрузить новое изображение",
     errorNetworkError: "Ошибка сети: Не удается подключиться к серверу изображений",
     errorServerError: "Ошибка сервера: Служба изображений временно недоступна",

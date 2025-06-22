@@ -80,7 +80,6 @@ a:hover {
   color: var(--color-white);
   font-weight: 500;
   width: fit-content;
-  padding-right: 0.5rem;
 }
 
 .time {
@@ -216,7 +215,6 @@ a:hover {
 .image-description .imageDetails {
   margin: 0;
   font-size: 0.875rem;
-  line-height: 1.4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -637,13 +635,16 @@ a:hover {
   margin: 0.75rem 0;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  gap: 1rem;
 }
 
 .cache-info .cache-details {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 3rem;
+}
+
+.cache-details {
+  width: 50%;
 }
 
 .cache-info .cache-label {
