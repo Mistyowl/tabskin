@@ -1,13 +1,52 @@
-// Пользовательские настройки
+// Константы настроек (должны быть объявлены первыми)
 const SETTINGS_STORAGE_KEY = "userSettings";
 const DEFAULT_SETTINGS = {
+  language: "en", // По умолчанию английский
+  timeFormat: "24", // По умолчанию 24-часовой формат
   theme: "wallpapers",
   autoSwitchEnabled: false,
   autoSwitchIntervalMinutes: 60,
   transitionEnabled: true
 };
-let autoSwitchTimerId = null;
 
+// DOM-элементы
+const backgroundAuthorLink   = document.querySelector("#creator");
+const backgroundImageLink    = document.querySelector("#imageLink");
+const refreshButtonElement   = document.querySelector("#changeButton");
+const timeDisplayElement     = document.querySelector("#time");
+const initialLoaderElement   = document.querySelector("#initialLoader");
+
+// Глобальная переменная для менеджера настроек
+let settingsManager = null;
+
+// Константы приложения
+// const IMAGE_API_ENDPOINT   = "http://192.168.0.106:3000/photos";
+const IMAGE_API_ENDPOINT   = "http://it-cube32.ru:8000/photos";
+
+let currentImageQuery      = loadUserSettings().theme;
+const CACHE_NAME           = "background-image-cache";
+const LOCAL_STORAGE_PREFIX = "lastImage";
+const CACHE_TTL_MS         = 12 * 60 * 60 * 1000; // 12 часов
+const FADE_DURATION_MS     = 800;
+const BASE_STYLE_ID        = "base-fade-style";
+const DYNAMIC_STYLE_ID     = "dynamic-fade-style";
+
+// Константы для очистки кэша
+const CACHE_SIZE_LIMIT_MB = 50; // Лимит размера кэша в МБ
+
+// Константы для обработки ошибок
+const REQUEST_TIMEOUT_MS = 10000; // 10 секунд
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 1000; // 1 секунда
+
+let autoSwitchTimerId = null;
+let isServerAvailable = true; // Флаг доступности сервера
+
+// Кэш для настроек и языка (для избежания повторных вызовов)
+let cachedSettings = null;
+let cachedLanguage = null;
+
+// Функции для работы с настройками (должны быть объявлены перед использованием)
 function loadUserSettings() {
   const savedSettingsJson = localStorage.getItem(SETTINGS_STORAGE_KEY);
   return savedSettingsJson
@@ -17,90 +56,200 @@ function loadUserSettings() {
 
 function saveUserSettings(settingsObject) {
   localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settingsObject));
-  console.log("💾 Settings saved:", settingsObject);
+  // Сбрасываем кэш локализации при изменении настроек
+  resetLocalizationCache();
+  console.log("💾 Settings saved");
+}
+
+// Собственные переводы для динамической смены языка
+const TRANSLATIONS = {
+  en: {
+    extensionDescription: "Tabskin replaces the standard tab with a minimalistic page with a changing background, current time and information about the author of the image.",
+    tabTitle: "New tab",
+    settingsTitle: "Settings",
+    language: "Language:",
+    english: "English",
+    russian: "Русский",
+    timeFormat: "Time format:",
+    time24Hour: "24-hour format",
+    time12Hour: "12-hour format (AM/PM)",
+    wallpaperTheme: "Wallpaper theme:",
+    wallpapers: "Wallpapers",
+    nature: "Nature",
+    render3d: "3D Render",
+    textures: "Texture",
+    space: "Space",
+    travel: "Travel",
+    film: "Film",
+    people: "People",
+    architecture: "Architecture",
+    streetPhotography: "Street Photography",
+    autoSwitch: "Automatic background change",
+    changeFrequency: "Change frequency:",
+    everyMinute: "Every minute",
+    every15Minutes: "Every 15 minutes",
+    everyHour: "Every hour",
+    every6Hours: "Every 6 hours",
+    smoothTransition: "Smooth transition animation",
+    clearCacheNow: "Clear cache now",
+    cacheCleared: "Cache cleared successfully",
+    cacheSize: "Cache size:",
+    save: "Save",
+    close: "Close",
+    loading: "Loading…",
+    photo: "Photo",
+    by: "by",
+    on: "on",
+    settings: "Settings",
+    settingsSaved: "Settings saved successfully",
+    // Сообщения об ошибках
+    errorFailedToLoadImage: "Failed to load new image",
+    errorNetworkError: "Network error: Unable to connect to image server",
+    errorServerError: "Server error: Image service temporarily unavailable",
+    errorServiceError: "Service error: Invalid response from image server",
+    errorFailedToLoadInitialImage: "Failed to load initial image. Please try refreshing.",
+    errorFailedToClearCache: "Failed to clear cache"
+  },
+  ru: {
+    extensionDescription: "Tabskin заменяет стандартную вкладку на минималистичную страницу с меняющимся фоном, текущим временем и информацией об авторе изображения.",
+    tabTitle: "Новая вкладка",
+    settingsTitle: "Настройки",
+    language: "Язык:",
+    english: "English",
+    russian: "Русский",
+    timeFormat: "Формат времени:",
+    time24Hour: "24-часовой формат",
+    time12Hour: "12-часовой формат (AM/PM)",
+    wallpaperTheme: "Тема обоев:",
+    wallpapers: "Обои",
+    nature: "Природа",
+    render3d: "3D Рендер",
+    textures: "Текстуры",
+    space: "Космос",
+    travel: "Путешествия",
+    film: "Фильм",
+    people: "Люди",
+    architecture: "Архитектура",
+    streetPhotography: "Уличная фотография",
+    autoSwitch: "Автоматическая смена фона",
+    changeFrequency: "Частота смены:",
+    everyMinute: "Каждую минуту",
+    every15Minutes: "Каждые 15 минут",
+    everyHour: "Каждый час",
+    every6Hours: "Каждые 6 часов",
+    smoothTransition: "Плавная анимация перехода",
+    clearCacheNow: "Очистить кэш сейчас",
+    cacheCleared: "Кэш успешно очищен",
+    cacheSize: "Размер кэша:",
+    save: "Сохранить",
+    close: "Закрыть",
+    loading: "Загрузка…",
+    photo: "Фото",
+    by: "от",
+    on: "на",
+    settings: "Настройки",
+    settingsSaved: "Настройки успешно сохранены",
+    // Сообщения об ошибках
+    errorFailedToLoadImage: "Не удалось загрузить новое изображение",
+    errorNetworkError: "Ошибка сети: Не удается подключиться к серверу изображений",
+    errorServerError: "Ошибка сервера: Служба изображений временно недоступна",
+    errorServiceError: "Ошибка службы: Некорректный ответ от сервера изображений",
+    errorFailedToLoadInitialImage: "Не удалось загрузить начальное изображение. Попробуйте обновить страницу.",
+    errorFailedToClearCache: "Не удалось очистить кэш"
+  }
+};
+
+// Делаем TRANSLATIONS доступным глобально для модуля настроек
+window.TRANSLATIONS = TRANSLATIONS;
+
+// Получение перевода с учетом выбранного языка
+function getMessage(key) {
+  const settings = loadUserSettings();
+  const currentLanguage = settings.language || "en";
+  const translations = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
+  return translations[key] || TRANSLATIONS.en[key] || `[Missing: ${key}]`;
 }
 
 // Локализация заголовка
 function applyLocalizedPageTitle() {
-  const localizedTitle = typeof chrome?.i18n?.getMessage === "function"
-    ? chrome.i18n.getMessage("tabTitle")
-    : null;
-  document.title = localizedTitle || "New Tab";
+  const localizedTitle = getMessage("tabTitle");
+  document.title = localizedTitle;
   console.log("🏷 Page title set to:", document.title);
 }
 
-// Константы приложения
-// const IMAGE_API_ENDPOINT   = "http://192.168.0.106:3000/photos";
-const IMAGE_API_ENDPOINT   = "http://it-cube32.ru:8000/photos";
-let currentImageQuery      = loadUserSettings().theme;
-const CACHE_NAME           = "background-image-cache";
-const LOCAL_STORAGE_PREFIX = "lastImage";
-const CACHE_TTL_MS         = 12 * 60 * 60 * 1000; // 12 часов
-const FADE_DURATION_MS     = 800;
-const BASE_STYLE_ID        = "base-fade-style";
-const DYNAMIC_STYLE_ID     = "dynamic-fade-style";
+// Применение локализации
+function applyLocalization() {
+  // Используем новую централизованную функцию
+  localizeContainer(document);
+  
+  // Локализация title атрибутов (оставляем как есть, так как это специфичная логика)
+  const currentLanguage = getCurrentLanguage();
+  document.querySelectorAll("[data-i18n-title]").forEach(element => {
+    const key = element.getAttribute("data-i18n-title");
+    const translation = TRANSLATIONS[currentLanguage]?.[key];
+    if (translation) {
+      element.title = translation;
+    }
+  });
 
-// DOM-элементы
-const backgroundAuthorLink   = document.querySelector("#creator");
-const backgroundImageLink    = document.querySelector("#imageLink");
-const refreshButtonElement   = document.querySelector("#changeButton");
-const timeDisplayElement     = document.querySelector("#time");
-const initialLoaderElement   = document.querySelector("#initialLoader");
-const settingsToggleButton   = document.querySelector("#settingsToggle");
-const settingsModalElement   = document.querySelector("#settingsModal");
-const settingsCloseButton    = document.querySelector("#closeSettings");
-const settingsSaveButton     = document.querySelector("#saveSettings");
-
-// Панель настроек: открытие / закрытие
-settingsToggleButton.addEventListener("click", () => {
-  const isModalOpen = !settingsModalElement.classList.contains("hidden");
-  if (isModalOpen) {
-    settingsModalElement.classList.add("hidden");
-    console.log("🔒 Settings modal closed");
-  } else {
-    const currentSettings = loadUserSettings();
-    document.querySelector("#themeSelect").value          = currentSettings.theme;
-    document.querySelector("#autoSwitchToggle").checked   = currentSettings.autoSwitchEnabled;
-    document.querySelector("#autoSwitchInterval").value   = currentSettings.autoSwitchIntervalMinutes;
-    document.querySelector("#transitionToggle").checked   = currentSettings.transitionEnabled;
-    settingsModalElement.classList.remove("hidden");
-    console.log("🔓 Settings modal opened");
-  }
-});
-
-settingsCloseButton.addEventListener("click", () => {
-  settingsModalElement.classList.add("hidden");
-  console.log("🔒 Settings modal closed");
-});
-
-settingsSaveButton.addEventListener("click", () => {
-  const newSettings = {
-    theme: document.querySelector("#themeSelect").value,
-    autoSwitchEnabled: document.querySelector("#autoSwitchToggle").checked,
-    autoSwitchIntervalMinutes: Number(document.querySelector("#autoSwitchInterval").value),
-    transitionEnabled: document.querySelector("#transitionToggle").checked
-  };
-  saveUserSettings(newSettings);
-  applyUserSettings();
-  settingsModalElement.classList.add("hidden");
-});
+  console.log("🌐 Interface localized");
+}
 
 // Применение пользовательских настроек
 function applyUserSettings() {
   const settings = loadUserSettings();
-  console.log("🛠 Applying user settings:", settings);
   currentImageQuery = settings.theme;
+  applyLocalizedPageTitle();
+  applyLocalization();
+  applyTimeFormat();
+  applyAutoSwitchSettings();
+  applyTransitionSettings();
+}
 
-  if (autoSwitchTimerId !== null) {
-    clearInterval(autoSwitchTimerId);
-    console.log("⏹ Cleared previous auto-switch timer");
+// Применение формата времени
+function applyTimeFormat() {
+  const settings = loadUserSettings();
+  const timeFormat = settings.timeFormat || "24";
+  
+  // Обновляем отображение времени
+  updateClockDisplay();
+  
+  // Обновляем интервал обновления времени
+  if (window.timeUpdateInterval) {
+    clearInterval(window.timeUpdateInterval);
   }
+  window.timeUpdateInterval = setInterval(updateClockDisplay, 1000);
+}
+
+// Применение настроек автопереключения
+function applyAutoSwitchSettings() {
+  const settings = loadUserSettings();
+  
+  if (window.autoSwitchInterval) {
+    clearInterval(window.autoSwitchInterval);
+  }
+  
   if (settings.autoSwitchEnabled) {
-    autoSwitchTimerId = setInterval(() => {
-      console.log("🔄 Auto-refresh triggered");
+    const intervalMs = (settings.autoSwitchIntervalMinutes || 60) * 60 * 1000;
+    window.autoSwitchInterval = setInterval(() => {
+      console.log("🔄 Auto-switching background image");
       fetchAndUpdateImage({ forceRefresh: true }).catch(console.warn);
-    }, settings.autoSwitchIntervalMinutes * 60 * 1000);
-    console.log(`⏱ Auto-switch interval set to ${settings.autoSwitchIntervalMinutes} minutes`);
+    }, intervalMs);
+    console.log("⏰ Auto-switch enabled with interval:", intervalMs / 1000 / 60, "minutes");
+  } else {
+    console.log("⏰ Auto-switch disabled");
+  }
+}
+
+// Применение настроек переходов
+function applyTransitionSettings() {
+  const settings = loadUserSettings();
+  const transitionEnabled = settings.transitionEnabled !== false; // По умолчанию включено
+  
+  if (transitionEnabled) {
+    document.body.classList.add("transition-enabled");
+  } else {
+    document.body.classList.remove("transition-enabled");
   }
 }
 
@@ -137,10 +286,22 @@ function startClock() {
 
 function updateClockDisplay() {
   const now = new Date();
-  timeDisplayElement.textContent = now.toLocaleTimeString(undefined, {
+  const settings = loadUserSettings();
+  const timeFormat = settings.timeFormat || "24";
+  
+  let timeOptions = {
     hour: "2-digit",
     minute: "2-digit"
-  });
+  };
+  
+  // Если выбран 12-часовой формат, добавляем hour12: true
+  if (timeFormat === "12") {
+    timeOptions.hour12 = true;
+  } else {
+    timeOptions.hour12 = false;
+  }
+  
+  timeDisplayElement.textContent = now.toLocaleTimeString(undefined, timeOptions);
 }
 
 // Восстановление последнего изображения из кэша
@@ -170,12 +331,23 @@ async function displayLastCachedImage() {
 }
 
 // Инициализация на старте
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
+  try {
+    // Минимальная инициализация для быстрого отображения
   injectFadeStyles();
-  applyLocalizedPageTitle();
   startClock();
 
-  (async () => {
+    // Инициализируем z-index toast-уведомлений
+    updateToastZIndex();
+
+    // Инициализация модуля настроек (неблокирующая)
+    initializeSettingsModule().catch(error => {
+      console.error("❌ Settings module initialization failed:", error);
+    });
+
+    // Загружаем изображение ПАРАЛЛЕЛЬНО с остальной инициализацией
+    const imageLoadPromise = (async () => {
+      try {
     const hadImage = await displayLastCachedImage();
     initialLoaderElement.classList.add("hidden");
     const lastLoadTime = Number(localStorage.getItem(`${LOCAL_STORAGE_PREFIX}LoadTime`)) || 0;
@@ -183,13 +355,34 @@ window.addEventListener("load", () => {
 
     if (!hadImage || isTtlExpired) {
       console.log(isTtlExpired ? "⌛ TTL expired" : "🔎 No cache on load", "- fetching new image");
-      fetchAndUpdateImage({ forceRefresh: false }).catch(console.warn);
+          await fetchAndUpdateImage({ forceRefresh: false });
     } else {
       console.log("✅ Cached image is fresh, no immediate fetch required");
+        }
+      } catch (error) {
+        console.error("❌ Initial image loading failed:", error);
+        initialLoaderElement.classList.add("hidden");
+        // Показываем ошибку пользователю только если нет кэшированного изображения
+        if (!localStorage.getItem(`${LOCAL_STORAGE_PREFIX}Url`)) {
+          showToastError(getMessage("errorFailedToLoadInitialImage"), 'error');
+        }
     }
   })();
 
+    // Применяем настройки ПОСЛЕ загрузки изображения
+    imageLoadPromise.then(() => {
+      applyLocalizedPageTitle();
+      applyLocalization();
   applyUserSettings();
+    });
+
+  } catch (error) {
+    console.error("❌ Initialization failed:", error);
+    // Убираем loader в любом случае
+    if (initialLoaderElement) {
+      initialLoaderElement.classList.add("hidden");
+    }
+  }
 });
 
 // Обработчик кнопки обновления
@@ -210,15 +403,33 @@ refreshButtonElement.addEventListener("click", async () => {
 // Получение и отображение нового изображения
 async function fetchAndUpdateImage({ forceRefresh }) {
   console.log(`🌐 fetchAndUpdateImage(forceRefresh=${forceRefresh})`);
+  
+  // Если сервер недоступен и это не принудительное обновление, просто выходим
+  if (!isServerAvailable && !forceRefresh) {
+    console.log("🔄 Server unavailable, skipping image update");
+    return;
+  }
+  
+  try {
   const queryParameters = new URLSearchParams({ query: currentImageQuery });
   if (forceRefresh) queryParameters.set("refresh", Date.now().toString());
 
-  const response = await fetch(`${IMAGE_API_ENDPOINT}?${queryParameters}`);
-  if (!response.ok) throw new Error(`Server returned status ${response.status}`);
+    const response = await fetchWithRetry(`${IMAGE_API_ENDPOINT}?${queryParameters}`);
+    if (!response.ok) {
+      const errorMessage = `Server returned status ${response.status}`;
+      console.error("❌ API Error:", errorMessage);
+      showToastError(getMessage("errorFailedToLoadImage"), 'error');
+      throw new Error(errorMessage);
+    }
 
   const jsonData = await response.json();
   const imageUrl = jsonData.urls?.full;
-  if (!imageUrl) throw new Error("Invalid API response: missing image URL");
+    if (!imageUrl) {
+      const errorMessage = "Invalid API response: missing image URL";
+      console.error("❌ API Error:", errorMessage);
+      showToastError(getMessage("errorFailedToLoadImage"), 'error');
+      throw new Error(errorMessage);
+    }
 
   console.log("📥 Received new image URL:", imageUrl);
   await cacheImageUrl(imageUrl);
@@ -233,9 +444,67 @@ async function fetchAndUpdateImage({ forceRefresh }) {
 
   saveImageMetadata(metadata);
   triggerFadeTransition(imageUrl);
+    applyStoredImageMetadata();
+    console.log("🎨 New image applied with metadata");
+    
+    // Сервер доступен, сбрасываем флаг
+    isServerAvailable = true;
+    
+  } catch (error) {
+    console.error("❌ fetchAndUpdateImage failed:", error);
+    
+    // Помечаем сервер как недоступный
+    isServerAvailable = false;
+    
+    // Показываем пользователю понятное сообщение об ошибке
+    let userMessage = getMessage("errorFailedToLoadImage");
+    if (error.name === "TypeError" && error.message.includes("fetch")) {
+      userMessage = getMessage("errorNetworkError");
+    } else if (error.message.includes("status")) {
+      userMessage = getMessage("errorServerError");
+    } else if (error.message.includes("Invalid API response")) {
+      userMessage = getMessage("errorServiceError");
+    }
+    
+    showToastError(userMessage, 'error');
+  }
+}
 
-  applyStoredImageMetadata();
-  console.log("🎨 New image applied with metadata");
+// Улучшенная функция fetch с retry логикой и timeout
+async function fetchWithRetry(url, options = {}, retries = MAX_RETRIES) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+      
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (response.ok) {
+        return response;
+      }
+      
+      // Если это последняя попытка, возвращаем ответ
+      if (i === retries - 1) {
+        return response;
+      }
+      
+    } catch (error) {
+      console.warn(`⚠️ Fetch attempt ${i + 1} failed:`, error.message);
+      
+      // Если это последняя попытка, выбрасываем ошибку
+      if (i === retries - 1) {
+        throw error;
+      }
+      
+      // Ждем перед следующей попыткой
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS * (i + 1)));
+    }
+  }
 }
 
 // Кэширование изображения
@@ -245,6 +514,9 @@ async function cacheImageUrl(imageUrl) {
     try {
       await cacheStorage.add(imageUrl);
       console.log("🗄 Image added to cache:", imageUrl);
+      
+      // Проверяем размер кэша после добавления нового изображения
+      await cleanupCacheBySize();
     } catch (error) {
       console.warn("⚠️ Failed to cache image:", error);
     }
@@ -296,13 +568,13 @@ function triggerFadeTransition(newImageUrl) {
   }, FADE_DURATION_MS);
 }
 
-// Показ toast-ошибки
-function showToastError(messageText) {
+// Показ toast-сообщений
+function showToastError(messageText, type = 'error') {
   const toastContainer = document.getElementById("toastContainer");
   if (!toastContainer) return;
 
   const toastElement = document.createElement("div");
-  toastElement.className = "toast";
+  toastElement.className = `toast toast-${type}`;
   toastElement.textContent = messageText;
   toastContainer.append(toastElement);
 
@@ -313,7 +585,22 @@ function showToastError(messageText) {
     toastElement.addEventListener("animationend", () => toastElement.remove(), { once: true });
   }, 4000);
 
-  console.log("🚨 Toast error displayed:", messageText);
+  console.log(`🚨 Toast ${type} displayed:`, messageText);
+}
+
+// Управление z-index toast-уведомлений
+function updateToastZIndex() {
+  const toastContainer = document.getElementById("toastContainer");
+  const settingsModal = document.getElementById("settingsModal");
+  
+  if (toastContainer && settingsModal) {
+    const isModalOpen = !settingsModal.classList.contains("hidden");
+    if (isModalOpen) {
+      toastContainer.style.zIndex = "10020";
+    } else {
+      toastContainer.style.zIndex = "10001";
+    }
+  }
 }
 
 // Очистка кэша по кнопке
@@ -335,9 +622,163 @@ function clearLocalStorage() {
   console.log("🗑 Local storage cleared");
 }
 
-// Очистка кэша и локального хранилища по кнопке
-function clearAllData() {
-  clearCache().catch(console.warn);
-  clearLocalStorage();
-  console.log("🗑 All data cleared");
+// Получение размера кэша
+async function getCacheSize() {
+  try {
+    const cacheStorage = await caches.open(CACHE_NAME);
+    const keys = await cacheStorage.keys();
+    let totalSize = 0;
+    
+    for (const request of keys) {
+      try {
+        const response = await cacheStorage.match(request);
+        if (response) {
+          const blob = await response.blob();
+          totalSize += blob.size;
+        }
+      } catch (error) {
+        console.warn("⚠️ Error calculating size for cached item:", error);
+      }
+    }
+    
+    return totalSize;
+  } catch (error) {
+    console.error("❌ Error getting cache size:", error);
+    return 0;
+  }
 }
+
+// Форматирование размера кэша
+function formatCacheSize(bytes) {
+  if (bytes === 0) return "0 B";
+  
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Очистка кэша по размеру (упрощенная версия)
+async function cleanupCacheBySize() {
+  try {
+    const cacheStorage = await caches.open(CACHE_NAME);
+    const keys = await cacheStorage.keys();
+    const sizeLimit = CACHE_SIZE_LIMIT_MB * 1024 * 1024; // Конвертируем в байты
+    
+    let totalSize = 0;
+    const items = [];
+    
+    // Собираем информацию о всех кэшированных элементах
+    for (const request of keys) {
+      try {
+        const response = await cacheStorage.match(request);
+        if (response) {
+          const blob = await response.blob();
+          const size = blob.size;
+          totalSize += size;
+          
+          items.push({
+            request,
+            size,
+            date: new Date(response.headers.get('date') || Date.now()).getTime()
+          });
+        }
+      } catch (error) {
+        console.warn("⚠️ Error processing cached item:", error);
+      }
+    }
+    
+    // Если размер превышает лимит, удаляем старые элементы
+    if (totalSize > sizeLimit) {
+      // Сортируем по дате (старые сначала)
+      items.sort((a, b) => a.date - b.date);
+      
+      let removedSize = 0;
+      let removedCount = 0;
+      
+      for (const item of items) {
+        if (totalSize - removedSize <= sizeLimit) break;
+        
+        await cacheStorage.delete(item.request);
+        removedSize += item.size;
+        removedCount++;
+      }
+      
+      if (removedCount > 0) {
+        console.log(`🗑 Cache size limit exceeded, removed ${removedCount} items (${formatCacheSize(removedSize)})`);
+      }
+    }
+    
+  } catch (error) {
+    console.error("❌ Error during cache size cleanup:", error);
+  }
+}
+
+// Инициализация модуля настроек (неблокирующая)
+async function initializeSettingsModule() {
+  try {
+    settingsManager = new SettingsManager();
+    console.log("⚙️ Settings manager created (lazy initialization)");
+  } catch (error) {
+    console.error("❌ Failed to create settings manager:", error);
+  }
+}
+
+// Экспорт функций для модуля настроек
+window.loadUserSettings = loadUserSettings;
+window.saveUserSettings = saveUserSettings;
+window.applyUserSettings = applyUserSettings;
+window.applyLocalizedPageTitle = applyLocalizedPageTitle;
+window.applyLocalization = applyLocalization;
+window.clearCache = clearCache;
+window.clearLocalStorage = clearLocalStorage;
+window.getCacheSize = getCacheSize;
+window.formatCacheSize = formatCacheSize;
+window.getMessage = getMessage;
+window.showToastError = showToastError;
+
+// Экспорт функций для использования в модуле настроек
+window.getCurrentLanguage = getCurrentLanguage;
+window.localizeElement = localizeElement;
+window.localizeContainer = localizeContainer;
+window.resetLocalizationCache = resetLocalizationCache;
+
+// Экспорт переменных для тестирования
+window.isServerAvailable = isServerAvailable;
+
+// Централизованная функция получения текущего языка (с кэшированием)
+function getCurrentLanguage() {
+  if (!cachedSettings) {
+    cachedSettings = loadUserSettings();
+    cachedLanguage = cachedSettings.language || "en";
+  }
+  return cachedLanguage;
+}
+
+// Централизованная функция локализации элемента (самая быстрая)
+function localizeElement(element, language = getCurrentLanguage()) {
+  const key = element.getAttribute("data-i18n");
+  const translation = TRANSLATIONS[language]?.[key];
+  if (translation) {
+    if (element.tagName === "INPUT" && element.type === "placeholder") {
+      element.placeholder = translation;
+    } else {
+      element.textContent = translation;
+    }
+  }
+}
+
+// Централизованная функция локализации контейнера
+function localizeContainer(container, language = getCurrentLanguage()) {
+  container.querySelectorAll("[data-i18n]").forEach(element => {
+    localizeElement(element, language);
+  });
+}
+
+// Функция сброса кэша (вызывается при изменении настроек)
+function resetLocalizationCache() {
+  cachedSettings = null;
+  cachedLanguage = null;
+}
+

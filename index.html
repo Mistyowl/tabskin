@@ -8,30 +8,30 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="initialLoader">Loading…</div>
+  <div id="initialLoader" data-i18n="loading">Loading…</div>
   <div class="overlay">
     <div class="upper-block"></div>
     <div class="time" id="time"></div>
     <div class="downer-block">
       <div class="left-side">
         <button class="icon-changeButton" id="changeButton" type="button" aria-label="Change Image Button">
-          <svg class="icon">
+          <svg class="icon" aria-label="Change Image Button">
             <use href="assets/sprite.svg#refresh_icon"></use>
           </svg>
         </button>
         <div class="image-description">
-          <svg class="icon">
+          <svg class="icon" aria-label="Image Icon">
             <use href="assets/sprite.svg#image_icon"></use>
           </svg>
           <p class="imageDetails">
-            <a id="imageLink" href="" target="_blank">Photo</a> by <a id="creator" href="" target="_blank">NAME</a> on <a
+            <a id="imageLink" href="" target="_blank" data-i18n="photo">Photo</a> <span data-i18n="by">by</span> <a id="creator" href="" target="_blank">NAME</a> <span data-i18n="on">on</span> <a
               href="https://www.unsplash.com" target="_blank">Unsplash</a>!
           </p>
         </div>
       </div>
       <div class="right-side">
-        <button id="settingsToggle" class="settings-btn" title="Settings" aria-label="Open/close settings window">
-          <svg class="icon">
+        <button id="settingsToggle" class="settings-btn" data-i18n-title="settings" aria-label="Open/close settings window">
+          <svg class="icon" aria-label="Settings Icon">
             <use href="assets/sprite.svg#settings_icon"></use>
           </svg>
         </button>
@@ -39,48 +39,7 @@
     </div>
   </div>
   <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
-  <!-- Settings menu -->
-  <div id="settingsModal" class="settings-modal hidden">
-    <div class="settings-content">
-      <h2>Settings</h2>
-      <label>
-        Wallpaper theme:
-        <select id="themeSelect">
-          <option value="wallpapers">Wallpapers</option>
-          <option value="nature">Nature</option>
-          <option value="render">3D Render</option>
-          <option value="textures">Texture</option>
-          <option value="space">Space</option>
-          <option value="travel">Travel</option>
-          <option value="film">Film</option>
-          <option value="people">People</option>
-          <option value="architecture">Architecture</option>
-          <option value="street">Street Photography</option>
-        </select>
-      </label>
-      <label>
-        <input type="checkbox" id="autoSwitchToggle" />
-        <span>Automatic background change</span>
-      </label>
-      <label>
-        Change frequency:
-        <select id="autoSwitchInterval">
-          <option value="1">Every minute</option>
-          <option value="15">Every 15 minutes</option>
-          <option value="60">Every hour</option>
-          <option value="360">Every 6 hours</option>
-        </select>
-      </label>
-      <label>
-        <input type="checkbox" id="transitionToggle" />
-        <span>Smooth transition animation</span>
-      </label>
-      <div class="button-group">
-        <button id="saveSettings">Save</button>
-        <button id="closeSettings">Close</button>
-      </div>
-    </div>
-  </div>
   <script src="script.js"></script>
+  <script src="assets/js/settings.js"></script>
 </body>
 </html>
