@@ -5,6 +5,7 @@ const cors = require('cors'); // Разрешает кросс-доменные 
 const helmet = require('helmet'); // Улучшает безопасность HTTP-заголовков
 const cookieParser = require('cookie-parser'); // Парсит cookies из запросов
 const fetch = require('node-fetch'); // Выполняет HTTP-запросы
+const rateLimit = require('express-rate-limit'); // Для ограничения частоты запросов
 
 // Создаём экземпляр приложения Express
 const app = express();
@@ -23,7 +24,23 @@ if (!UNSPLASH_KEY) {
 // Подключаем middleware (промежуточные обработчики)
 app.use(helmet()); // Защита HTTP-заголовков
 app.use(cookieParser()); // Парсинг cookies
-app.use(cors({ origin: '*', credentials: true })); // Разрешение CORS для всех источников
+
+// --- Rate Limiting ---
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 час
+  max: 20, // максимум 20 запросов с одного IP за 1 час
+  message: 'Слишком много запросов с этого IP, попробуйте позже.',
+  handler: (req, res, next) => {
+    logTime(`Rate limit exceeded for IP: ${req.ip}`);
+    res.status(429).send('Слишком много запросов с этого IP, попробуйте позже.');
+  }
+});
+
+// Применяем только к маршруту /photos
+app.use('/photos', limiter);
+
+app.use(cors({ origin: '*', credentials: true }));
+
 app.use(express.json()); // Парсинг JSON в теле запросов
 
 // Логируем все входящие запросы
