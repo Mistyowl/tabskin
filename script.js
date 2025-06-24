@@ -46,6 +46,9 @@ let isServerAvailable = true; // Флаг доступности сервера
 let cachedSettings = null;
 let cachedLanguage = null;
 
+// UTM параметры для Unsplash ссылок
+const UNSPLASH_UTM = '?utm_source=tabskin&utm_medium=referral';
+
 // Функции для работы с настройками (должны быть объявлены перед использованием)
 function loadUserSettings() {
   const savedSettingsJson = localStorage.getItem(SETTINGS_STORAGE_KEY);
@@ -525,10 +528,12 @@ async function cacheImageUrl(imageUrl) {
 
 // Сохранение метаданных изображения
 function saveImageMetadata({ url, authorName, photoPageLink, authorPortfolioLink, timestamp }) {
+  const photoLinkWithUtm = photoPageLink && photoPageLink !== '#' ? photoPageLink + UNSPLASH_UTM : photoPageLink;
+  const authorLinkWithUtm = authorPortfolioLink && authorPortfolioLink !== '#' ? authorPortfolioLink + UNSPLASH_UTM : authorPortfolioLink;
   localStorage.setItem(`${LOCAL_STORAGE_PREFIX}Url`, url);
   localStorage.setItem(`${LOCAL_STORAGE_PREFIX}Creator`, authorName);
-  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}PhotoLink`, photoPageLink);
-  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}CreatorLink`, authorPortfolioLink);
+  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}PhotoLink`, photoLinkWithUtm);
+  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}CreatorLink`, authorLinkWithUtm);
   localStorage.setItem(`${LOCAL_STORAGE_PREFIX}LoadTime`, timestamp.toString());
   console.log("💾 Image metadata saved");
 }
