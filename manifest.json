@@ -17,7 +17,8 @@
     "storage"
   ],
   "host_permissions": [
-    "http://it-cube32.ru:8000/photos"
+    "http://it-cube32.ru:8000/photos",
+    "http://it-cube32.ru:8000/download"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' blob: https://images.unsplash.com http://it-cube32.ru"

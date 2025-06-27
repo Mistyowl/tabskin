@@ -437,11 +437,29 @@ async function fetchAndUpdateImage({ forceRefresh }) {
   console.log("📥 Received new image URL:", imageUrl);
   await cacheImageUrl(imageUrl);
 
+  // Вызываем download endpoint для отслеживания "установки" изображения
+  if (jsonData.links?.download_location) {
+    try {
+      await fetch('http://it-cube32.ru:8000/download', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          downloadLocation: jsonData.links.download_location
+        })
+      });
+      console.log("📊 Download endpoint called for tracking");
+    } catch (error) {
+      console.warn("⚠️ Failed to call download endpoint:", error);
+    }
+  }
+
   const metadata = {
     url: imageUrl,
     authorName: jsonData.user?.name || "Unknown",
     photoPageLink: jsonData.links?.html || "#",
-    authorPortfolioLink: jsonData.user?.portfolio_url || "#",
+    authorProfileLink: jsonData.user?.links?.html || "#", // Используем Unsplash профиль вместо портфолио
     timestamp: Date.now()
   };
 
@@ -455,21 +473,8 @@ async function fetchAndUpdateImage({ forceRefresh }) {
     
   } catch (error) {
     console.error("❌ fetchAndUpdateImage failed:", error);
-    
-    // Помечаем сервер как недоступный
     isServerAvailable = false;
-    
-    // Показываем пользователю понятное сообщение об ошибке
-    let userMessage = getMessage("errorFailedToLoadImage");
-    if (error.name === "TypeError" && error.message.includes("fetch")) {
-      userMessage = getMessage("errorNetworkError");
-    } else if (error.message.includes("status")) {
-      userMessage = getMessage("errorServerError");
-    } else if (error.message.includes("Invalid API response")) {
-      userMessage = getMessage("errorServiceError");
-    }
-    
-    showToastError(userMessage, 'error');
+    showToastError(getMessage("errorFailedToLoadImage"), 'error');
   }
 }
 
@@ -527,9 +532,11 @@ async function cacheImageUrl(imageUrl) {
 }
 
 // Сохранение метаданных изображения
-function saveImageMetadata({ url, authorName, photoPageLink, authorPortfolioLink, timestamp }) {
+function saveImageMetadata({ url, authorName, photoPageLink, authorProfileLink, timestamp }) {
+  // Добавляем utm-метки к ссылкам на Unsplash
   const photoLinkWithUtm = photoPageLink && photoPageLink !== '#' ? photoPageLink + UNSPLASH_UTM : photoPageLink;
-  const authorLinkWithUtm = authorPortfolioLink && authorPortfolioLink !== '#' ? authorPortfolioLink + UNSPLASH_UTM : authorPortfolioLink;
+  const authorLinkWithUtm = authorProfileLink && authorProfileLink !== '#' ? authorProfileLink + UNSPLASH_UTM : authorProfileLink;
+
   localStorage.setItem(`${LOCAL_STORAGE_PREFIX}Url`, url);
   localStorage.setItem(`${LOCAL_STORAGE_PREFIX}Creator`, authorName);
   localStorage.setItem(`${LOCAL_STORAGE_PREFIX}PhotoLink`, photoLinkWithUtm);

@@ -112,6 +112,35 @@ app.get('/photos', async (request, response) => {
   }
 });
 
+// Маршрут для вызова download endpoint Unsplash API
+app.post('/download', async (request, response) => {
+  try {
+    const { downloadLocation } = request.body;
+    
+    if (!downloadLocation) {
+      return response.status(400).json({ error: 'downloadLocation is required' });
+    }
+
+    // Вызываем download endpoint Unsplash API
+    const downloadResponse = await fetch(downloadLocation, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Client-ID ${UNSPLASH_KEY}`
+      }
+    });
+
+    if (!downloadResponse.ok) {
+      throw new Error(`Download endpoint returned status ${downloadResponse.status}`);
+    }
+
+    await logTime(`Download endpoint called for: ${downloadLocation}`);
+    return response.json({ success: true });
+  } catch (error) {
+    console.error('Ошибка в маршруте /download:', error);
+    return response.status(500).json({ error: 'Failed to call download endpoint' });
+  }
+});
+
 // Обрабатываем необработанные исключения
 process.on('uncaughtException', (error) => {
   console.error('Необработанное исключение:', error);
