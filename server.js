@@ -6,6 +6,9 @@ const helmet = require('helmet'); // Улучшает безопасность H
 const cookieParser = require('cookie-parser'); // Парсит cookies из запросов
 const fetch = require('node-fetch'); // Выполняет HTTP-запросы
 const rateLimit = require('express-rate-limit'); // Для ограничения частоты запросов
+const https = require('https'); // Для HTTPS сервера
+const fs = require('fs'); // Для чтения сертификатов
+const http = require('http'); // Для HTTP редиректа
 
 // Создаём экземпляр приложения Express
 const app = express();
@@ -108,7 +111,7 @@ app.get('/photos', async (request, response) => {
     return response.json(imageData); // Отправляем данные клиенту
   } catch (error) {
     console.error('Ошибка в маршруте /photos:', error);
-    return response.status(500).json({ error: + 'Внутренняя ошибка сервера' });
+    return response.status(500).json({ error: 'Внутренняя ошибка сервера' });
   }
 });
 
@@ -141,6 +144,25 @@ app.post('/download', async (request, response) => {
   }
 });
 
+// --- SSL сертификаты ---
+const sslOptions = {
+  key: fs.readFileSync('/etc/letsencrypt/live/tabskin.ru/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/tabskin.ru/fullchain.pem')
+};
+
+// Запускаем HTTPS сервер
+https.createServer(sslOptions, app).listen(PORT, () => {
+  logTime(`Сервер Tabskin запущен на https с портом ${PORT}`);
+});
+
+// Запускаем HTTP сервер для редиректа на HTTPS
+http.createServer((req, res) => {
+  // Получаем хост и порт из заголовка
+  const host = req.headers['host'] ? req.headers['host'].replace(/:\d+$/, '') : 'tabskin.ru';
+  res.writeHead(301, { "Location": `https://${host}${req.url}` });
+  res.end();
+}).listen(80);
+
 // Обрабатываем необработанные исключения
 process.on('uncaughtException', (error) => {
   console.error('Необработанное исключение:', error);
@@ -149,9 +171,4 @@ process.on('uncaughtException', (error) => {
 // Обрабатываем необработанные отказы промисов
 process.on('unhandledRejection', (reason) => {
   console.error('Необработанный отказ промиса:', reason);
-});
-
-// Запускаем сервер
-app.listen(PORT, '0.0.0.0', () => {
-  logTime(`Сервер Tabskin запущен на http с портом ${PORT}`); // Логируем время запуска сервера
 });

@@ -20,8 +20,7 @@ const initialLoaderElement   = document.querySelector("#initialLoader");
 let settingsManager = null;
 
 // Константы приложения
-// const IMAGE_API_ENDPOINT   = "http://192.168.0.106:3000/photos";
-const IMAGE_API_ENDPOINT   = "http://it-cube32.ru:8000/photos";
+const IMAGE_API_ENDPOINT   = "https://tabskin.ru:8000/photos";
 
 let currentImageQuery      = loadUserSettings().theme;
 const CACHE_NAME           = "background-image-cache";
@@ -440,7 +439,7 @@ async function fetchAndUpdateImage({ forceRefresh }) {
   // Вызываем download endpoint для отслеживания "установки" изображения
   if (jsonData.links?.download_location) {
     try {
-      await fetch('http://it-cube32.ru:8000/download', {
+      await fetch('https://tabskin.ru:8000/download', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
