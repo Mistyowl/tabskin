@@ -1,0 +1,32 @@
+User-agent: *
+Allow: /
+
+# Разрешаем индексацию главной страницы и ресурсов
+Allow: /index.html
+Allow: /styles.css
+Allow: /script.js
+Allow: /assets/
+Allow: /privacy.html
+
+# Запрещаем индексацию API endpoints
+Disallow: /photos
+Disallow: /download
+
+# Специальные настройки для Яндекса
+User-agent: Yandex
+Allow: /privacy.html
+Allow: /
+Disallow: /photos
+Disallow: /download
+Crawl-delay: 1
+
+# Специальные настройки для Google
+User-agent: Googlebot
+Allow: /privacy.html
+Allow: /
+Disallow: /photos
+Disallow: /download
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://tabskin.ru/sitemap.xml 

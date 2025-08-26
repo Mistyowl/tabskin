@@ -20,7 +20,7 @@ const initialLoaderElement   = document.querySelector("#initialLoader");
 let settingsManager = null;
 
 // Константы приложения
-const IMAGE_API_ENDPOINT   = "https://tabskin.ru:8000/photos";
+const IMAGE_API_ENDPOINT   = "https://tabskin.ru/photos";
 
 let currentImageQuery      = loadUserSettings().theme;
 const CACHE_NAME           = "background-image-cache";
@@ -47,6 +47,56 @@ let cachedLanguage = null;
 
 // UTM параметры для Unsplash ссылок
 const UNSPLASH_UTM = '?utm_source=tabskin&utm_medium=referral';
+
+// Ключ для хранения согласия пользователя
+const USER_CONSENT_KEY = "userConsentDownloadLocation";
+
+// Тексты для модального окна согласия
+const CONSENT_TEXTS = {
+  en: {
+    title: "User Consent Required",
+    message: "To comply with Unsplash API requirements, Tabskin sends technical information about the installation of a background image (download location) to the server. This information does not contain personal data and is used only for statistics. By clicking 'Agree', you consent to this data being sent.",
+    agree: "Agree",
+    more: "Learn more in the privacy policy",
+    moreLink: "https://tabskin.ru/privacy.html"
+  },
+  ru: {
+    title: "Требуется согласие пользователя",
+    message: "Для корректной работы и соблюдения условий Unsplash API расширение Tabskin отправляет на сервер техническую информацию о факте установки фонового изображения (download location). Эта информация не содержит персональных данных и используется только для статистики. Нажимая 'Согласен', вы даёте согласие на отправку этих данных.",
+    agree: "Согласен",
+    more: "Подробнее в политике конфиденциальности",
+    moreLink: "https://tabskin.ru/privacy.html"
+  }
+};
+
+function getConsentTexts() {
+  const lang = getCurrentLanguage();
+  return CONSENT_TEXTS[lang] || CONSENT_TEXTS.en;
+}
+
+function showConsentModalIfNeeded() {
+  if (localStorage.getItem(USER_CONSENT_KEY) === "true") return;
+  const texts = getConsentTexts();
+  const modal = document.createElement("div");
+  modal.id = "consentModal";
+  modal.innerHTML = `
+    <div class="consent-modal-content">
+      <h2>${texts.title}</h2>
+      <p>${texts.message}</p>
+      <a href="${texts.moreLink}" target="_blank">${texts.more}</a>
+      <button id="consentAgreeBtn">${texts.agree}</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document.body.classList.add("modal-open");
+  document.getElementById("consentAgreeBtn").onclick = function() {
+    localStorage.setItem(USER_CONSENT_KEY, "true");
+    document.body.removeChild(modal);
+    document.body.classList.remove("modal-open");
+  };
+}
+
+document.addEventListener("DOMContentLoaded", showConsentModalIfNeeded);
 
 // Функции для работы с настройками (должны быть объявлены перед использованием)
 function loadUserSettings() {
@@ -438,8 +488,9 @@ async function fetchAndUpdateImage({ forceRefresh }) {
 
   // Вызываем download endpoint для отслеживания "установки" изображения
   if (jsonData.links?.download_location) {
-    try {
-      await fetch('https://tabskin.ru:8000/download', {
+    if (localStorage.getItem(USER_CONSENT_KEY) === "true") {
+      try {
+              await fetch('https://tabskin.ru/download', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -451,6 +502,9 @@ async function fetchAndUpdateImage({ forceRefresh }) {
       console.log("📊 Download endpoint called for tracking");
     } catch (error) {
       console.warn("⚠️ Failed to call download endpoint:", error);
+    }
+    } else {
+      console.warn("⚠️ User consent not granted for download location tracking.");
     }
   }
 

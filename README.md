@@ -40,7 +40,7 @@
 5. Create a `.env` file in the root directory with the following content:
    ```env
    UNSPLASH_KEY=your_unsplash_api_key
-   PORT=8000
+   PORT=443
    CACHE_TTL=43200000
    ```
    Replace `your_unsplash_api_key` with your actual Unsplash API key.

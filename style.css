@@ -855,3 +855,58 @@ a:hover {
     min-width: auto;
   }
 }
+
+/* Стили для модального окна согласия пользователя */
+#consentModal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.consent-modal-content {
+  background: rgba(255,255,255,0.97);
+  border-radius: 18px;
+  padding: 32px 28px;
+  max-width: 400px;
+  width: 90vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  text-align: center;
+  color: #222;
+  font-family: var(--font-base);
+}
+.consent-modal-content h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #4f46e5;
+}
+.consent-modal-content p {
+  font-size: 1rem;
+  margin-bottom: 1.2rem;
+}
+.consent-modal-content a {
+  color: #4f46e5;
+  text-decoration: underline;
+  font-size: 0.98rem;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+.consent-modal-content button {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7em 2em;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.consent-modal-content button:hover {
+  background: #4338ca;
+}
+body.modal-open {
+  overflow: hidden;
+}

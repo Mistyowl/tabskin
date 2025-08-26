@@ -36,7 +36,7 @@
 5. Создайте файл `.env` в корневой директории со следующим содержимым:
    ```env
    UNSPLASH_KEY=your_unsplash_api_key
-   PORT=8000
+   PORT=443
    CACHE_TTL=43200000
    ```
    Замените `your_unsplash_api_key` на ваш реальный ключ API Unsplash.

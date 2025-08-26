@@ -13,12 +13,9 @@
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
-  "permissions": [
-    "storage"
-  ],
   "host_permissions": [
-    "https://tabskin.ru:8000/photos",
-    "https://tabskin.ru:8000/download"
+    "https://tabskin.ru/photos",
+    "https://tabskin.ru/download"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' blob: https://images.unsplash.com https://tabskin.ru"
