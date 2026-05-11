@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabskin — Uninstall Feedback</title>
+  <meta name="description" content="Tell Tabskin why you uninstalled the extension. Your feedback helps improve the beautiful, minimalist new tab experience.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#181825">
+  <link rel="canonical" href="https://tabskin.ru/uninstall.html">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://docs.google.com">
+  <link rel="preload" as="image" href="assets/screenshot-main.webp" type="image/webp" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header uninstall-header">
+      <a class="logo" href="index.html" aria-label="Tabskin">
+        <img src="assets/logo.png" alt="" class="logo-icon" width="40" height="40" decoding="async">
+        <span class="logo-text">Tabskin</span>
+      </a>
+      <nav class="header-nav" aria-label="Helpful links">
+        <a href="index.html" id="homeLink">Home</a>
+        <a href="privacy.html" id="privacyLink">Privacy</a>
+      </nav>
+      <div class="language-switcher" role="group" aria-label="Language selector">
+        <a class="lang-btn" href="?lang=ru" hreflang="ru" id="ruLang" aria-label="Русский">RU</a>
+        <a class="lang-btn" href="?lang=en" hreflang="en" id="enLang" aria-label="English">EN</a>
+      </div>
+    </header>
+
+    <main class="main uninstall-main">
+      <section class="uninstall-hero" aria-labelledby="uninstallTitle">
+        <div class="uninstall-copy">
+          <p class="section-kicker" id="kicker">Feedback</p>
+          <h1 class="hero-title" id="uninstallTitle">We are sorry to see you go</h1>
+          <p class="hero-description" id="subtitle">
+            Please answer a short survey. It takes less than a minute and helps us make Tabskin calmer, faster, and more useful.
+          </p>
+          <div class="hero-actions">
+            <a href="https://chromewebstore.google.com/detail/phpikmllcahonchladgmhcphhhebncmp?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer" class="download-button chrome-btn" id="chromeLink">Install again for Chrome</a>
+            <a href="https://addons.mozilla.org/addon/tabskin" target="_blank" rel="noopener noreferrer" class="download-button firefox-btn" id="firefoxLink">Install again for Firefox</a>
+          </div>
+          <ul class="trust-list" aria-label="Tabskin promises" id="trustList">
+            <li id="trustPrivacy">No personal data is collected</li>
+            <li id="trustAds">No ads or noisy widgets</li>
+            <li id="trustLocal">Settings stay local in your browser</li>
+          </ul>
+        </div>
+
+        <figure class="hero-visual screenshot-frame uninstall-preview">
+          <img src="assets/screenshot-main.webp" alt="Tabskin new tab preview with wallpaper and clock" class="hero-screenshot" width="1024" height="576" fetchpriority="high" decoding="async" id="previewImage">
+          <figcaption id="previewCaption">Tabskin is built around a clean new tab with curated Unsplash wallpapers.</figcaption>
+        </figure>
+      </section>
+
+      <section class="uninstall-survey section-block" aria-labelledby="surveyTitle">
+        <div class="section-header">
+          <p class="section-kicker" id="surveyKicker">Quick survey</p>
+          <h2 id="surveyTitle">What should we improve?</h2>
+          <p id="surveyDescription">Your answer goes through Google Forms. Do not include passwords or sensitive personal information.</p>
+        </div>
+        <div class="iframe-box" id="formContainer">
+          <iframe id="surveyFrame" src="about:blank" loading="eager" title="Tabskin uninstall feedback form" allow="clipboard-write *"></iframe>
+        </div>
+        <p class="lang-note" id="langNote">Language is auto-selected. Add ?lang=ru or ?lang=en to switch.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="assets/logo.png" alt="" class="footer-logo-img" width="32" height="32" loading="lazy" decoding="async">
+          <span class="footer-logo-text">Tabskin</span>
+        </div>
+        <p class="footer-description" id="footerDescription">Turning every new tab into a calm visual start</p>
+        <div class="footer-contact">
+          <p class="contact-label" id="contactLabel">Contact us:</p>
+          <a href="mailto:tabskinapp@gmail.com" class="contact-email">tabskinapp@gmail.com</a>
+        </div>
+        <div class="footer-links">
+          <a href="privacy.html" class="footer-link" id="footerPrivacyLink">Privacy Policy</a>
+        </div>
+        <p class="footer-copyright" id="copyright">© 2026 Tabskin. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    ;(() => {
+      const forms = {
+        ru: "https://docs.google.com/forms/d/e/1FAIpQLScfveKtCuCh8bwzeubfhEyPd--4aQyDXEMvhu9txdaOMvNCPw/viewform?embedded=true",
+        en: "https://docs.google.com/forms/d/e/1FAIpQLSdow7PLcKQ9YPN0tCyljhiZkzjoZWfIq0ahMEji85d91FfeOw/viewform?embedded=true",
+      }
+
+      const texts = {
+        ru: {
+          title: "Жаль, что вы удаляете Tabskin",
+          pageTitle: "Tabskin — отзыв после удаления",
+          description:
+            "Расскажите Tabskin, почему вы удалили расширение. Ваш отзыв помогает улучшить красивую минималистичную новую вкладку.",
+          kicker: "Обратная связь",
+          subtitle:
+            "Ответьте, пожалуйста, на короткий опрос. Это займёт меньше минуты и поможет сделать Tabskin спокойнее, быстрее и полезнее.",
+          home: "Главная",
+          privacy: "Приватность",
+          chrome: "Установить снова для Chrome",
+          firefox: "Установить снова для Firefox",
+          trustLabel: "Обещания Tabskin",
+          trustPrivacy: "Персональные данные не собираются",
+          trustAds: "Без рекламы и шумных виджетов",
+          trustLocal: "Настройки остаются локально в браузере",
+          previewAlt: "Превью новой вкладки Tabskin с обоями и часами",
+          previewCaption: "Tabskin строится вокруг чистой новой вкладки с curated Unsplash-обоями.",
+          surveyKicker: "Короткий опрос",
+          surveyTitle: "Что нам стоит улучшить?",
+          surveyDescription:
+            "Ответ отправляется через Google Forms. Не указывайте пароли или чувствительную личную информацию.",
+          frameTitle: "Форма обратной связи Tabskin после удаления",
+          note: "Язык выбран автоматически. Добавьте ?lang=ru или ?lang=en для переключения.",
+          footerDescription: "Превращаем каждую новую вкладку в спокойный визуальный старт",
+          contact: "Связаться с нами:",
+          privacyPolicy: "Политика конфиденциальности",
+          copyright: "© 2026 Tabskin. Все права защищены.",
+          navLabel: "Полезные ссылки",
+          langLabel: "Выбор языка",
+        },
+        en: {
+          title: "We are sorry to see you go",
+          pageTitle: "Tabskin — Uninstall Feedback",
+          description:
+            "Tell Tabskin why you uninstalled the extension. Your feedback helps improve the beautiful, minimalist new tab experience.",
+          kicker: "Feedback",
+          subtitle:
+            "Please answer a short survey. It takes less than a minute and helps us make Tabskin calmer, faster, and more useful.",
+          home: "Home",
+          privacy: "Privacy",
+          chrome: "Install again for Chrome",
+          firefox: "Install again for Firefox",
+          trustLabel: "Tabskin promises",
+          trustPrivacy: "No personal data is collected",
+          trustAds: "No ads or noisy widgets",
+          trustLocal: "Settings stay local in your browser",
+          previewAlt: "Tabskin new tab preview with wallpaper and clock",
+          previewCaption: "Tabskin is built around a clean new tab with curated Unsplash wallpapers.",
+          surveyKicker: "Quick survey",
+          surveyTitle: "What should we improve?",
+          surveyDescription:
+            "Your answer goes through Google Forms. Do not include passwords or sensitive personal information.",
+          frameTitle: "Tabskin uninstall feedback form",
+          note: "Language is auto-selected. Add ?lang=ru or ?lang=en to switch.",
+          footerDescription: "Turning every new tab into a calm visual start",
+          contact: "Contact us:",
+          privacyPolicy: "Privacy Policy",
+          copyright: "© 2026 Tabskin. All rights reserved.",
+          navLabel: "Helpful links",
+          langLabel: "Language selector",
+        },
+      }
+
+      function getParam(name) {
+        return new URLSearchParams(window.location.search).get(name)
+      }
+
+      function setText(id, text) {
+        const element = document.getElementById(id)
+        if (element) element.textContent = text
+      }
+
+      const requestedLang = (getParam("lang") || navigator.language || "en").toLowerCase()
+      const lang = requestedLang.startsWith("ru") ? "ru" : "en"
+      const version = getParam("v") || ""
+      const uiLang = getParam("uilang") || lang
+      const t = texts[lang]
+
+      document.documentElement.lang = lang
+      document.title = t.pageTitle
+      document.querySelector('meta[name="description"]').setAttribute("content", t.description)
+      document.querySelector(".header-nav").setAttribute("aria-label", t.navLabel)
+      document.querySelector(".language-switcher").setAttribute("aria-label", t.langLabel)
+      document.getElementById("trustList").setAttribute("aria-label", t.trustLabel)
+      document.getElementById("surveyFrame").setAttribute("title", t.frameTitle)
+      document.getElementById("previewImage").setAttribute("alt", t.previewAlt)
+
+      setText("homeLink", t.home)
+      setText("privacyLink", t.privacy)
+      setText("kicker", t.kicker)
+      setText("uninstallTitle", t.title)
+      setText("subtitle", t.subtitle)
+      setText("chromeLink", t.chrome)
+      setText("firefoxLink", t.firefox)
+      setText("trustPrivacy", t.trustPrivacy)
+      setText("trustAds", t.trustAds)
+      setText("trustLocal", t.trustLocal)
+      setText("previewCaption", t.previewCaption)
+      setText("surveyKicker", t.surveyKicker)
+      setText("surveyTitle", t.surveyTitle)
+      setText("surveyDescription", t.surveyDescription)
+      setText("langNote", t.note)
+      setText("footerDescription", t.footerDescription)
+      setText("contactLabel", t.contact)
+      setText("footerPrivacyLink", t.privacyPolicy)
+      setText("copyright", t.copyright)
+
+      document.getElementById("ruLang").classList.toggle("active", lang === "ru")
+      document.getElementById("enLang").classList.toggle("active", lang === "en")
+      document.getElementById("ruLang").setAttribute("aria-current", lang === "ru" ? "true" : "false")
+      document.getElementById("enLang").setAttribute("aria-current", lang === "en" ? "true" : "false")
+
+      const params = new URLSearchParams({
+        utm_source: "extension",
+        utm_medium: "uninstall",
+        utm_campaign: "uninstall_survey",
+        v: version,
+        uilang: uiLang,
+      })
+      document.getElementById("surveyFrame").src = `${forms[lang]}#${params.toString()}`
+    })()
+  </script>
+</body>
+</html>

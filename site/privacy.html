@@ -28,8 +28,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate="privacy-page-title">Политика конфиденциальности - Tabskin</title>
-    <meta name="description" content="Политика конфиденциальности расширения Tabskin для браузера. Узнайте, как мы обрабатываем ваши данные." data-translate="privacy-page-description">
-    <meta name="keywords" content="политика конфиденциальности, tabskin, приватность, безопасность данных">
+    <meta name="description" content="Политика конфиденциальности расширения Tabskin для Chrome и Firefox. Узнайте, как Tabskin обрабатывает данные, настройки и Unsplash download location." data-translate="privacy-page-description">
+    <meta name="keywords" content="политика конфиденциальности, Tabskin, приватность, безопасность данных, Unsplash download location">
     <meta name="author" content="Tabskin Team">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://tabskin.ru/privacy.html">
@@ -152,13 +152,13 @@
 <body>
     <div class="container">
         <header class="header">
-            <div class="logo">
-                <img src="assets/logo.png" alt="Tabskin" class="logo-icon">
+            <a class="logo" href="index.html" aria-label="Tabskin">
+                <img src="assets/logo.png" alt="" class="logo-icon" width="40" height="40" decoding="async">
                 <span class="logo-text">Tabskin</span>
-            </div>
-            <div class="language-switcher">
-                <button class="lang-btn active" data-lang="ru">RU</button>
-                <button class="lang-btn" data-lang="en">EN</button>
+            </a>
+            <div class="language-switcher" role="group" aria-label="Выбор языка" data-translate-aria-label="language-switcher-label">
+                <button class="lang-btn active" type="button" data-lang="ru" aria-pressed="true" aria-label="Русский">RU</button>
+                <button class="lang-btn" type="button" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
             </div>
         </header>
 
@@ -181,17 +181,17 @@
                     <h2 class="section-title" data-translate="data-collection-title">Сбор и использование данных</h2>
                     <div class="section-content">
                         <p data-translate="data-collection-content">
-                            Tabskin не собирает, не хранит и не передаёт никакие персональные данные пользователей. 
-                            Все настройки, включая язык интерфейса, формат времени, тему оформления и другие параметры, 
-                            сохраняются только локально в браузере пользователя и не покидают его устройство.
+                            Tabskin не собирает, не хранит и не передаёт персональные данные пользователей.
+                            Настройки, включая язык интерфейса, формат времени, тему оформления и другие параметры,
+                            сохраняются локально в браузере пользователя и не покидают его устройство.
                         </p>
                     </div>
                 </div>
                 
                 <div class="privacy-section">
-                    <h2 class="section-title" data-translate="download-location-title">Download location</h2>
+                    <h2 class="section-title" data-translate="download-location-title">Download location Unsplash</h2>
                     <div class="section-content">
-                        <p data-translate="download-location-content"><strong>Для корректной работы и соблюдения условий использования сервиса Unsplash, расширение Tabskin отправляет на сервер техническую информацию о факте установки фонового изображения (download location). Эта информация не содержит персональных данных и используется исключительно для статистики, как того требует политика Unsplash API.</strong></p>
+                        <p data-translate="download-location-content"><strong>Для корректной работы и соблюдения условий Unsplash API расширение Tabskin отправляет техническую информацию о факте установки фонового изображения (download location). Эта информация не содержит персональных данных и используется только для статистики, требуемой Unsplash.</strong></p>
                     </div>
                 </div>
 
@@ -199,9 +199,9 @@
                     <h2 class="section-title" data-translate="data-sharing-title">Передача данных третьим лицам</h2>
                     <div class="section-content">
                         <p data-translate="data-sharing-content">
-                            Расширение не передаёт данные третьим сторонам, не использует рекламные технологии, 
-                            сторонние трекеры или аналитические сервисы. Доступ осуществляется только к изображениям 
-                            с сервиса Unsplash для отображения фонов новой вкладки.
+                            Расширение не передаёт персональные данные третьим сторонам, не использует рекламные технологии
+                            и не добавляет сторонние трекеры. Доступ осуществляется только к изображениям Unsplash
+                            для отображения фонов новой вкладки.
                         </p>
                     </div>
                 </div>
@@ -237,7 +237,7 @@
                 </div>
 
                 <div class="last-updated">
-                    <p data-translate="last-updated">Последнее обновление: июль 2025</p>
+                    <p data-translate="last-updated">Последнее обновление: май 2026</p>
                 </div>
             </div>
         </main>
@@ -245,15 +245,15 @@
         <footer class="footer">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <img src="assets/logo.png" alt="Tabskin" class="footer-logo-img">
+                    <img src="assets/logo.png" alt="" class="footer-logo-img" width="32" height="32" loading="lazy" decoding="async">
                     <span class="footer-logo-text">Tabskin</span>
                 </div>
-                <p class="footer-description" data-translate="footer-description">Превращаем каждую новую вкладку в произведение искусства</p>
+                <p class="footer-description" data-translate="footer-description">Превращаем каждую новую вкладку в спокойный визуальный старт</p>
                 <div class="footer-contact">
                     <p class="contact-label" data-translate="contact-us">Связаться с нами:</p>
                     <a href="mailto:tabskinapp@gmail.com" class="contact-email">tabskinapp@gmail.com</a>
                 </div>
-                <p class="footer-copyright" data-translate="copyright">&copy; 2025 Tabskin. Все права защищены.</p>
+                <p class="footer-copyright" data-translate="copyright">&copy; 2026 Tabskin. Все права защищены.</p>
             </div>
         </footer>
     </div>

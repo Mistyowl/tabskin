@@ -27,24 +27,27 @@
 	<!-- /Yandex.Metrika counter -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate="page-title">Tabskin — красивые новые вкладки для браузера</title>
-    <meta name="description" content="Tabskin — расширение для браузера, которое превращает новую вкладку в минималистичную страницу с красивыми обоями, часами и персонализацией." data-translate="page-description">
-    <meta name="keywords" content="новые вкладки, расширение, браузер, обои, Unsplash, минимализм, персонализация, смена фона, часы, настройки, Tabskin">
+    <title data-translate="page-title">Tabskin — красивая новая вкладка с обоями Unsplash</title>
+    <meta name="description" content="Tabskin заменяет пустую новую вкладку на быструю минималистичную страницу с красивыми обоями Unsplash, часами, локальными настройками и установкой для Chrome и Firefox." data-translate="page-description">
+    <meta name="keywords" content="новая вкладка, красивые обои, расширение Chrome, расширение Firefox, Unsplash, минималистичная новая вкладка, персонализация браузера, Tabskin">
     <meta name="author" content="Tabskin Team">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#181825">
     <link rel="canonical" href="https://tabskin.ru/">
+    <link rel="alternate" hreflang="ru" href="https://tabskin.ru/">
+    <link rel="alternate" hreflang="en" href="https://tabskin.ru/">
+    <link rel="alternate" hreflang="x-default" href="https://tabskin.ru/">
     <!-- Open Graph -->
-    <meta property="og:title" content="Tabskin — красивые новые вкладки для браузера" data-translate="og-title">
-    <meta property="og:description" content="Превратите каждую новую вкладку в произведение искусства с красивыми обоями, часами и персонализацией." data-translate="og-description">
+    <meta property="og:title" content="Tabskin — красивая новая вкладка с обоями Unsplash" data-translate="og-title">
+    <meta property="og:description" content="Замените стандартную новую вкладку на спокойную, быструю и красивую страницу с curated Unsplash-обоями, часами и персонализацией." data-translate="og-description">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tabskin.ru/">
-    <meta property="og:image" content="https://tabskin.ru/assets/logo.png">
+    <meta property="og:image" content="https://tabskin.ru/assets/screenshot-main.webp">
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Tabskin — красивые новые вкладки для браузера" data-translate="twitter-title">
-    <meta name="twitter:description" content="Превратите каждую новую вкладку в произведение искусства с красивыми обоями, часами и персонализацией." data-translate="twitter-description">
-    <meta name="twitter:image" content="https://tabskin.ru/assets/logo.png">
+    <meta name="twitter:title" content="Tabskin — красивая новая вкладка с обоями Unsplash" data-translate="twitter-title">
+    <meta name="twitter:description" content="Минималистичная новая вкладка с красивыми Unsplash-обоями, часами и приватными локальными настройками." data-translate="twitter-description">
+    <meta name="twitter:image" content="https://tabskin.ru/assets/screenshot-main.webp">
     <!-- Icons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -52,174 +55,289 @@
     <!-- Fonts and Styles -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="image" href="assets/screenshot-main.webp" type="image/webp" fetchpriority="high">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Tabskin",
+      "applicationCategory": "BrowserApplication",
+      "operatingSystem": "Chrome, Firefox, Edge",
+      "description": "Tabskin is a browser extension that turns the new tab page into a minimalist experience with curated Unsplash wallpapers, a clean clock and local personalization settings.",
+      "url": "https://tabskin.ru/",
+      "image": "https://tabskin.ru/assets/screenshot-main.webp",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Tabskin"
+      }
+    }
+    </script>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <div class="logo">
-                <img src="assets/logo.png" alt="Tabskin" class="logo-icon">
+            <a class="logo" href="index.html" aria-label="Tabskin">
+                <img src="assets/logo.png" alt="" class="logo-icon" width="40" height="40" decoding="async">
                 <span class="logo-text">Tabskin</span>
-            </div>
-            <div class="language-switcher">
-                <button class="lang-btn active" data-lang="ru">RU</button>
-                <button class="lang-btn" data-lang="en">EN</button>
+            </a>
+            <nav class="header-nav" aria-label="Основная навигация" data-translate-aria-label="main-navigation-label">
+                <a href="#preview" data-translate="nav-preview">Демо</a>
+                <a href="#features" data-translate="nav-features">Возможности</a>
+                <a href="#download" data-translate="nav-download">Установить</a>
+            </nav>
+            <div class="language-switcher" role="group" aria-label="Выбор языка" data-translate-aria-label="language-switcher-label">
+                <button class="lang-btn active" type="button" data-lang="ru" aria-pressed="true" aria-label="Русский">RU</button>
+                <button class="lang-btn" type="button" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
             </div>
         </header>
 
-        <main class="main">
-            <div class="hero">
-                <div class="hero-badge">
-                    <span class="badge-text" data-translate="launch-date">🎉 Уже доступно! 🎉</span>
-                </div>
-                
-                <h1 class="hero-title">
-                    <span data-translate="hero-title-1">Превратите каждую новую вкладку в</span> <span class="highlight-text" data-translate="hero-title-2">произведение искусства</span>
-                </h1>
-                
-                <p class="hero-description" data-translate="hero-description">
-                    Tabskin заменяет стандартную новую вкладку браузера на минималистичную страницу 
-                    с потрясающими обоями от Unsplash, элегантными часами и гибкими настройками персонализации.
-                </p>
+        <main class="main" id="main-content">
+            <section class="hero" aria-labelledby="hero-title">
+                <div class="hero-copy">
+                    <div class="hero-badge">
+                        <span class="badge-text" data-translate="launch-date">Доступно для Chrome и Firefox</span>
+                    </div>
 
-                <div class="browser-support">
-                    <span class="support-text" data-translate="supported-browsers">Поддерживаемые браузеры:</span>
-                    <div class="browser-icons">
-                        <div class="browser-icon chrome" title="Google Chrome">
-                            <img src="assets/chrome.png" alt="Chrome" class="browser-img">
-                            <span class="browser-name">Chrome</span>
-                        </div>
-                        <div class="browser-icon firefox" title="Mozilla Firefox"> 
-                            <img src="assets/firefox.png" alt="Firefox" class="browser-img">
-                            <span class="browser-name">Firefox</span>
-                        </div>
-                        <div class="browser-icon edge" title="Microsoft Edge">
-                            <img src="assets/edge.png" alt="Edge" class="browser-img">
-                            <span class="browser-name">Edge</span>
+                    <h1 class="hero-title" id="hero-title">
+                        <span data-translate="hero-title-1">Новая вкладка без шума:</span>
+                        <span class="highlight-text" data-translate="hero-title-2">красивые обои, часы и ничего лишнего</span>
+                    </h1>
+
+                    <p class="hero-description" data-translate="hero-description">
+                        Tabskin заменяет пустую стандартную вкладку на спокойную минималистичную страницу с curated Unsplash-обоями, аккуратными часами и настройками, которые остаются локально в браузере.
+                    </p>
+
+                    <div class="hero-actions" aria-label="Установка расширения" data-translate-aria-label="install-actions-label">
+                        <a href="https://chromewebstore.google.com/detail/phpikmllcahonchladgmhcphhhebncmp?utm_source=item-share-cb" target="_blank" class="download-button chrome-btn primary-cta" data-translate="install-chrome">Установить для Chrome</a>
+                        <a href="https://addons.mozilla.org/addon/tabskin" target="_blank" class="download-button firefox-btn secondary-cta" data-translate="install-firefox">Установить для Firefox</a>
+                    </div>
+
+                    <ul class="trust-list" aria-label="Преимущества Tabskin" data-translate-aria-label="trust-list-label">
+                        <li data-translate="trust-no-ads">Без рекламы и лишних виджетов</li>
+                        <li data-translate="trust-local-settings">Настройки хранятся локально</li>
+                        <li data-translate="trust-unsplash">Фото с корректной атрибуцией Unsplash</li>
+                    </ul>
+
+                    <div class="browser-support" aria-label="Поддерживаемые браузеры" data-translate-aria-label="supported-browsers">
+                        <span class="support-text" data-translate="supported-browsers">Поддерживаемые браузеры:</span>
+                        <div class="browser-icons" aria-hidden="true">
+                            <span class="browser-icon chrome">
+                                <img src="assets/chrome.png" alt="" class="browser-img" width="20" height="20" decoding="async">
+                                <span class="browser-name">Chrome</span>
+                            </span>
+                            <span class="browser-icon firefox">
+                                <img src="assets/firefox.png" alt="" class="browser-img" width="20" height="20" decoding="async">
+                                <span class="browser-name">Firefox</span>
+                            </span>
+                            <span class="browser-icon edge">
+                                <img src="assets/edge.png" alt="" class="browser-img" width="20" height="20" decoding="async">
+                                <span class="browser-name" data-translate="edge-soon-short">Edge скоро</span>
+                            </span>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="preview-section">
-                <h2 class="preview-title" data-translate="preview-title">Посмотрите, как это выглядит</h2>
+                <figure class="hero-visual screenshot-frame">
+                    <img src="assets/screenshot-main.webp" alt="Главная новая вкладка Tabskin с полноэкранными обоями, часами и минималистичным интерфейсом" class="hero-screenshot" width="1024" height="576" fetchpriority="high" decoding="async" data-translate-alt="hero-screenshot-alt">
+                    <figcaption data-translate="hero-screenshot-caption">Красивый фон, часы и быстрый доступ к настройкам на каждой новой вкладке.</figcaption>
+                </figure>
+            </section>
+
+            <section class="comparison-section section-block" aria-labelledby="comparison-title">
+                <div class="section-header">
+                    <p class="section-kicker" data-translate="comparison-kicker">До и после</p>
+                    <h2 id="comparison-title" data-translate="comparison-title">Стандартная вкладка не должна быть пустым экраном</h2>
+                    <p data-translate="comparison-description">Вместо скучного белого поля Tabskin показывает атмосферные обои, время и спокойный интерфейс, который не отвлекает от работы.</p>
+                </div>
+                <div class="comparison-grid">
+                    <article class="comparison-card standard-tab-card">
+                        <span class="comparison-label" data-translate="before-label">До: обычная новая вкладка</span>
+                        <div class="standard-tab-preview" aria-hidden="true">
+                            <span></span>
+                        </div>
+                        <p data-translate="before-description">Пустое пространство, визуальный шум или плитки, которые не помогают начать работу.</p>
+                    </article>
+                    <article class="comparison-card">
+                        <span class="comparison-label" data-translate="after-label">После: Tabskin</span>
+                        <img src="assets/screenshot-main.webp" alt="Новая вкладка Tabskin после установки расширения" class="comparison-img" width="1024" height="576" loading="lazy" decoding="async" data-translate-alt="after-screenshot-alt">
+                        <p data-translate="after-description">Минималистичная страница с красивыми Unsplash-обоями, часами и настройками под ваш ритм.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="preview-section section-block" id="preview" aria-labelledby="preview-title">
+                <div class="section-header">
+                    <p class="section-kicker" data-translate="preview-kicker">Визуальный опыт</p>
+                    <h2 class="preview-title" id="preview-title" data-translate="preview-title">Посмотрите Tabskin в действии</h2>
+                    <p data-translate="preview-description">Скриншоты показывают главный экран, выбор тем обоев и настройки персонализации.</p>
+                </div>
                 <div class="screenshot-gallery">
-                    <div class="screenshot-main">
-                        <img src="assets/screenshot-main.webp" alt="Главный экран Tabskin с красивым фоном и часами" class="screenshot-img">
-                        <div class="screenshot-overlay">
-                            <div class="play-button" id="playButton">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M8 5v14l11-7z"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                    <figure class="screenshot-main screenshot-frame">
+                        <img src="assets/screenshot-main.webp" alt="Главный экран Tabskin с полноэкранными обоями и часами" class="screenshot-img" width="1024" height="576" loading="lazy" decoding="async" data-translate-alt="preview-main-alt">
+                        <figcaption class="screenshot-caption" data-translate="preview-main-caption">Главный экран: чистый новый таб без рекламы и лишних блоков.</figcaption>
+                    </figure>
                     <div class="screenshot-grid">
-                        <div class="screenshot-item">
-                            <img src="assets/screenshot-settings-1.webp" alt="Настройки тем обоев" class="screenshot-img">
-                            <p class="screenshot-caption" data-translate="wallpaper-themes">Выбор темы обоев</p>
-                        </div>
-                        <div class="screenshot-item">
-                            <img src="assets/screenshot-settings-2.webp" alt="Дополнительные настройки" class="screenshot-img">
-                            <p class="screenshot-caption" data-translate="personalization">Персонализация</p>
-                        </div>
+                        <figure class="screenshot-item">
+                            <img src="assets/screenshot-settings-1.webp" alt="Настройки Tabskin с выбором темы обоев Unsplash" class="screenshot-img" width="1024" height="576" loading="lazy" decoding="async" data-translate-alt="settings-one-alt">
+                            <figcaption class="screenshot-caption" data-translate="wallpaper-themes">Выбор темы обоев</figcaption>
+                        </figure>
+                        <figure class="screenshot-item">
+                            <img src="assets/screenshot-settings-2.webp" alt="Экран дополнительных настроек персонализации Tabskin" class="screenshot-img" width="1024" height="576" loading="lazy" decoding="async" data-translate-alt="settings-two-alt">
+                            <figcaption class="screenshot-caption" data-translate="personalization">Персонализация</figcaption>
+                        </figure>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="features">
-                <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
-                    <h3 data-translate="feature-wallpapers-title">Красивые обои от Unsplash</h3>
-                    <p data-translate="feature-wallpapers-desc">Тысячи профессиональных фотографий высокого качества с автоматической сменой</p>
+            <section class="features-section section-block" id="features" aria-labelledby="features-title">
+                <div class="section-header">
+                    <p class="section-kicker" data-translate="features-kicker">Почему Tabskin</p>
+                    <h2 id="features-title" data-translate="features-title">Красиво, спокойно и приватно</h2>
+                    <p data-translate="features-description">Tabskin фокусируется на новой вкладке как на маленьком ежедневном ритуале: приятный фон, быстрый старт и минимум отвлечений.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🕐</div>
-                    <h3 data-translate="feature-clock-title">Элегантные часы</h3>
-                    <p data-translate="feature-clock-desc">Стильное отображение времени в красивом формате с поддержкой 12/24 часового формата</p>
+                <div class="features">
+                    <article class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">01</div>
+                        <h3 data-translate="feature-wallpapers-title">Curated Unsplash-обои</h3>
+                        <p data-translate="feature-wallpapers-desc">Профессиональные фотографии по темам: природа, архитектура, путешествия, текстуры и другие категории.</p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">02</div>
+                        <h3 data-translate="feature-clock-title">Чистые часы</h3>
+                        <p data-translate="feature-clock-desc">Аккуратное отображение времени без перегруженного интерфейса и лишних виджетов.</p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">03</div>
+                        <h3 data-translate="feature-author-title">Атрибуция авторов</h3>
+                        <p data-translate="feature-author-desc">Tabskin показывает авторов фотографий и поддерживает корректную атрибуцию Unsplash.</p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">04</div>
+                        <h3 data-translate="feature-settings-title">Локальная персонализация</h3>
+                        <p data-translate="feature-settings-desc">Язык, формат времени, тема обоев и другие настройки сохраняются на вашем устройстве.</p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">05</div>
+                        <h3 data-translate="feature-multilang-title">Русский и английский</h3>
+                        <p data-translate="feature-multilang-desc">Интерфейс сайта и расширения поддерживает быстрый выбор языка.</p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">06</div>
+                        <h3 data-translate="feature-performance-title">Лёгкий интерфейс</h3>
+                        <p data-translate="feature-performance-desc">Минимум лишнего JavaScript и стабильная разметка помогают странице загружаться быстро.</p>
+                    </article>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">😎</div>
-                    <h3 data-translate="feature-author-title">Информация об авторе</h3>
-                    <p data-translate="feature-author-desc">Узнавайте авторов потрясающих фотографий и переходите на их профили в Unsplash</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔧</div>
-                    <h3 data-translate="feature-settings-title">Гибкие настройки</h3>
-                    <p data-translate="feature-settings-desc">Выбирайте темы обоев, частоту смены, языковые настройки и многое другое</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🌍</div>
-                    <h3 data-translate="feature-multilang-title">Мультиязычность</h3>
-                    <p data-translate="feature-multilang-desc">Полная поддержка русского и английского языков с возможностью переключения</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🚀</div>
-                    <h3 data-translate="feature-performance-title">Быстрая работа</h3>
-                    <p data-translate="feature-performance-desc">Минималистичный дизайн и оптимизированный код для мгновенной загрузки</p>
-                </div>
-            </div>
+            </section>
 
-            <div class="download-section">
+            <section class="differentiation-section section-block" aria-labelledby="differentiation-title">
+                <div class="section-header">
+                    <p class="section-kicker" data-translate="differentiation-kicker">Отличие</p>
+                    <h2 id="differentiation-title" data-translate="differentiation-title">Не ещё один перегруженный dashboard</h2>
+                    <p data-translate="differentiation-description">В отличие от тяжёлых новых вкладок с множеством блоков, Tabskin делает одну вещь хорошо: показывает красивый, спокойный и быстрый стартовый экран.</p>
+                </div>
+                <div class="differentiation-grid">
+                    <article class="differentiation-card">
+                        <h3 data-translate="differentiation-minimal-title">Меньше отвлечений</h3>
+                        <p data-translate="differentiation-minimal-desc">Нет новостных лент, рекламы и перегруженных виджетов. Только фон, время и нужные настройки.</p>
+                    </article>
+                    <article class="differentiation-card">
+                        <h3 data-translate="differentiation-unsplash-title">Глубже фокус на Unsplash</h3>
+                        <p data-translate="differentiation-unsplash-desc">Темы обоев помогают выбирать настроение вкладки, а авторы фотографий остаются видимыми.</p>
+                    </article>
+                    <article class="differentiation-card">
+                        <h3 data-translate="differentiation-privacy-title">Приватность по умолчанию</h3>
+                        <p data-translate="differentiation-privacy-desc">Персональные данные не собираются, а настройки не покидают ваш браузер.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="trust-section section-block" aria-labelledby="trust-title">
+                <div class="section-header">
+                    <p class="section-kicker" data-translate="trust-kicker">Доверие</p>
+                    <h2 id="trust-title" data-translate="trust-title">Честные причины попробовать</h2>
+                </div>
+                <div class="trust-grid">
+                    <article class="trust-card">
+                        <strong data-translate="trust-card-privacy-title">Приватность</strong>
+                        <p data-translate="trust-card-privacy-desc">Tabskin не собирает персональные данные и описывает обработку данных в политике конфиденциальности.</p>
+                    </article>
+                    <article class="trust-card">
+                        <strong data-translate="trust-card-ads-title">Без рекламы</strong>
+                        <p data-translate="trust-card-ads-desc">Новая вкладка остаётся чистой: без рекламы, баннеров и навязанных новостей.</p>
+                    </article>
+                    <article class="trust-card">
+                        <strong data-translate="trust-card-install-title">Chrome и Firefox</strong>
+                        <p data-translate="trust-card-install-desc">Расширение уже можно установить из официальных каталогов Chrome и Firefox.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="download-section section-block" id="download" aria-labelledby="download-title">
                 <div class="celebration-banner">
-                    <div class="celebration-icon">🎉</div>
-                    <h2 class="celebration-title" data-translate="celebration-title">Поздравляем с релизом!</h2>
+                    <p class="section-kicker" data-translate="download-kicker">Начните сейчас</p>
+                    <h2 class="celebration-title" id="download-title" data-translate="celebration-title">Сделайте новую вкладку красивее за минуту</h2>
                     <p class="celebration-description" data-translate="celebration-description">
-                        Tabskin теперь доступен для установки! Выберите ваш браузер и наслаждайтесь красивыми новыми вкладками.
+                        Установите Tabskin, откройте новую вкладку и выберите визуальный стиль, который помогает начать день спокойнее.
                     </p>
                 </div>
-                
+
                 <div class="download-options">
-                    <div class="download-card chrome-download">
+                    <article class="download-card chrome-download">
                         <div class="download-icon">
-                            <img src="assets/chrome.png" alt="Chrome" class="download-browser-img">
+                            <img src="assets/chrome.png" alt="" class="download-browser-img" width="48" height="48" loading="lazy" decoding="async">
                         </div>
                         <div class="download-content">
                             <h3 class="download-title">Google Chrome</h3>
-                            <p class="download-description" data-translate="chrome-description">Установите расширение для Chrome</p>
+                            <p class="download-description" data-translate="chrome-description">Установка из Chrome Web Store</p>
                             <a href="https://chromewebstore.google.com/detail/phpikmllcahonchladgmhcphhhebncmp?utm_source=item-share-cb" target="_blank" class="download-button chrome-btn" data-translate="install-chrome">Установить для Chrome</a>
                         </div>
-                    </div>
-                    
-                    <div class="download-card firefox-download">
+                    </article>
+
+                    <article class="download-card firefox-download">
                         <div class="download-icon">
-                            <img src="assets/firefox.png" alt="Firefox" class="download-browser-img">
+                            <img src="assets/firefox.png" alt="" class="download-browser-img" width="48" height="48" loading="lazy" decoding="async">
                         </div>
                         <div class="download-content">
                             <h3 class="download-title">Mozilla Firefox</h3>
-                            <p class="download-description" data-translate="firefox-description">Установите расширение для Firefox</p>
+                            <p class="download-description" data-translate="firefox-description">Установка из Firefox Add-ons</p>
                             <a href="https://addons.mozilla.org/addon/tabskin" target="_blank" class="download-button firefox-btn" data-translate="install-firefox">Установить для Firefox</a>
                         </div>
-                    </div>
-                    
-                    <div class="download-card edge-download">
+                    </article>
+
+                    <article class="download-card edge-download">
                         <div class="download-icon">
-                            <img src="assets/edge.png" alt="Edge" class="download-browser-img">
+                            <img src="assets/edge.png" alt="" class="download-browser-img" width="48" height="48" loading="lazy" decoding="async">
                         </div>
                         <div class="download-content">
                             <h3 class="download-title">Microsoft Edge</h3>
-                            <p class="download-description" data-translate="edge-description">Установите расширение для Edge</p>
-                            <button class="download-button edge-btn coming-soon-btn" data-translate="coming-soon-edge">Ожидайте в ближайшее время</button>
+                            <p class="download-description" data-translate="edge-description">Версия для Edge готовится</p>
+                            <button class="download-button edge-btn coming-soon-btn" type="button" disabled data-translate="coming-soon-edge">Скоро для Edge</button>
                         </div>
-                    </div>
+                    </article>
                 </div>
-                
+
                 <div class="download-note">
                     <p class="note-text" data-translate="download-note">
-                        💡 После установки расширения, откройте новую вкладку чтобы увидеть Tabskin в действии!
+                        После установки откройте новую вкладку, чтобы увидеть Tabskin в действии.
                     </p>
                 </div>
-            </div>
+            </section>
         </main>
 
         <footer class="footer">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <img src="assets/logo.png" alt="Tabskin" class="footer-logo-img">
+                    <img src="assets/logo.png" alt="" class="footer-logo-img" width="32" height="32" loading="lazy" decoding="async">
                     <span class="footer-logo-text">Tabskin</span>
                 </div>
-                <p class="footer-description" data-translate="footer-description">Превращаем каждую новую вкладку в произведение искусства</p>
+                <p class="footer-description" data-translate="footer-description">Превращаем каждую новую вкладку в спокойный визуальный старт</p>
                 <div class="footer-contact">
                     <p class="contact-label" data-translate="contact-us">Связаться с нами:</p>
                     <a href="mailto:tabskinapp@gmail.com" class="contact-email">tabskinapp@gmail.com</a>
@@ -227,7 +345,7 @@
                 <div class="footer-links">
                     <a href="privacy.html" class="footer-link" data-translate="privacy-policy">Политика конфиденциальности</a>
                 </div>
-                <p class="footer-copyright" data-translate="copyright">&copy; 2025 Tabskin. Все права защищены.</p>
+                <p class="footer-copyright" data-translate="copyright">&copy; 2026 Tabskin. Все права защищены.</p>
             </div>
         </footer>
     </div>
