@@ -40,6 +40,7 @@ const RETRY_DELAY_MS = 1000; // 1 секунда
 
 let autoSwitchTimerId = null;
 let isServerAvailable = true; // Флаг доступности сервера
+let clockIntervalId = null;
 
 // Кэш для настроек и языка (для избежания повторных вызовов)
 let cachedSettings = null;
@@ -50,6 +51,8 @@ const UNSPLASH_UTM = '?utm_source=tabskin&utm_medium=referral';
 
 // Ключ для хранения согласия пользователя
 const USER_CONSENT_KEY = "userConsentDownloadLocation";
+let consentPreviouslyFocusedElement = null;
+let consentModalKeydownHandler = null;
 
 // Тексты для модального окна согласия
 const CONSENT_TEXTS = {
@@ -74,26 +77,61 @@ function getConsentTexts() {
   return CONSENT_TEXTS[lang] || CONSENT_TEXTS.en;
 }
 
+function getFocusableElements(container) {
+  return Array.from(container.querySelectorAll(
+    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+  )).filter((element) => element.offsetParent !== null || element === document.activeElement);
+}
+
+function trapFocusInContainer(event, container) {
+  if (event.key !== "Tab") return;
+  const focusableElements = getFocusableElements(container);
+  if (!focusableElements.length) return;
+
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
+
+  if (event.shiftKey && document.activeElement === firstElement) {
+    event.preventDefault();
+    lastElement.focus();
+  } else if (!event.shiftKey && document.activeElement === lastElement) {
+    event.preventDefault();
+    firstElement.focus();
+  }
+}
+
 function showConsentModalIfNeeded() {
   if (localStorage.getItem(USER_CONSENT_KEY) === "true") return;
   const texts = getConsentTexts();
   const modal = document.createElement("div");
   modal.id = "consentModal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "consentModalTitle");
+  modal.setAttribute("tabindex", "-1");
   modal.innerHTML = `
     <div class="consent-modal-content">
-      <h2>${texts.title}</h2>
+      <h2 id="consentModalTitle">${texts.title}</h2>
       <p>${texts.message}</p>
-      <a href="${texts.moreLink}" target="_blank">${texts.more}</a>
-      <button id="consentAgreeBtn">${texts.agree}</button>
+      <a href="${texts.moreLink}" target="_blank" rel="noopener noreferrer">${texts.more}</a>
+      <button id="consentAgreeBtn" type="button">${texts.agree}</button>
     </div>
   `;
+  consentPreviouslyFocusedElement = document.activeElement;
+  consentModalKeydownHandler = (event) => trapFocusInContainer(event, modal);
+  modal.addEventListener("keydown", consentModalKeydownHandler);
   document.body.appendChild(modal);
   document.body.classList.add("modal-open");
   document.getElementById("consentAgreeBtn").onclick = function() {
     localStorage.setItem(USER_CONSENT_KEY, "true");
+    modal.removeEventListener("keydown", consentModalKeydownHandler);
     document.body.removeChild(modal);
     document.body.classList.remove("modal-open");
+    if (consentPreviouslyFocusedElement && typeof consentPreviouslyFocusedElement.focus === "function") {
+      consentPreviouslyFocusedElement.focus();
+    }
   };
+  document.getElementById("consentAgreeBtn").focus();
 }
 
 document.addEventListener("DOMContentLoaded", showConsentModalIfNeeded);
@@ -260,17 +298,7 @@ function applyUserSettings() {
 
 // Применение формата времени
 function applyTimeFormat() {
-  const settings = loadUserSettings();
-  const timeFormat = settings.timeFormat || "24";
-  
-  // Обновляем отображение времени
-  updateClockDisplay();
-  
-  // Обновляем интервал обновления времени
-  if (window.timeUpdateInterval) {
-    clearInterval(window.timeUpdateInterval);
-  }
-  window.timeUpdateInterval = setInterval(updateClockDisplay, 1000);
+  restartClock();
 }
 
 // Применение настроек автопереключения
@@ -285,7 +313,7 @@ function applyAutoSwitchSettings() {
     const intervalMs = (settings.autoSwitchIntervalMinutes || 60) * 60 * 1000;
     window.autoSwitchInterval = setInterval(() => {
       console.log("🔄 Auto-switching background image");
-      fetchAndUpdateImage({ forceRefresh: true }).catch(console.warn);
+      fetchAndUpdateImage({ forceRefresh: true }).catch(() => {});
     }, intervalMs);
     console.log("⏰ Auto-switch enabled with interval:", intervalMs / 1000 / 60, "minutes");
   } else {
@@ -332,8 +360,16 @@ function injectFadeStyles() {
 
 // Отображение часов
 function startClock() {
+  restartClock();
+}
+
+function restartClock() {
   updateClockDisplay();
-  setInterval(updateClockDisplay, 1000);
+  if (clockIntervalId) {
+    clearInterval(clockIntervalId);
+  }
+  clockIntervalId = setInterval(updateClockDisplay, 1000);
+  window.timeUpdateInterval = clockIntervalId;
 }
 
 function updateClockDisplay() {

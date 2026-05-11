@@ -1,0 +1,19 @@
+{
+  "name": "tabskin-extension",
+  "version": "1.5.5",
+  "private": true,
+  "description": "Build pipeline for the Tabskin browser extension.",
+  "scripts": {
+    "icons:generate": "node scripts/generate-icons.mjs",
+    "build": "node scripts/build-extension.mjs --target=all --mode=production",
+    "build:chrome": "node scripts/build-extension.mjs --target=chrome --mode=production",
+    "build:firefox": "node scripts/build-extension.mjs --target=firefox --mode=production",
+    "dev:chrome": "node scripts/build-extension.mjs --target=chrome --mode=development --watch",
+    "dev:firefox": "node scripts/build-extension.mjs --target=firefox --mode=development --watch",
+    "validate:extension": "node scripts/validate-extension-assets.mjs"
+  },
+  "devDependencies": {
+    "archiver": "^8.0.0",
+    "esbuild": "^0.28.0"
+  }
+}

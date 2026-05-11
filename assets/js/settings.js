@@ -7,6 +7,8 @@ class SettingsManager {
     this.isInitialized = false;
     this.isInitializing = false;
     this.isToggling = false; // Защита от множественных вызовов
+    this.previouslyFocusedElement = null;
+    this.handleModalKeydown = (event) => this.onModalKeydown(event);
     // НЕ инициализируем сразу - только при первом использовании
     
     // Добавляем обработчик кнопки настроек сразу
@@ -58,8 +60,8 @@ class SettingsManager {
       // Встроенный HTML (как в Momentum) - убираем fetch запрос
       const html = `
         <div id="settingsModal" class="settings-modal hidden">
-          <div class="settings-content">
-            <h2 data-i18n="settingsTitle">Settings</h2>
+          <div class="settings-content" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle" tabindex="-1">
+            <h2 id="settingsModalTitle" data-i18n="settingsTitle">Settings</h2>
             <label>
               <span data-i18n="language">Language:</span>
               <select id="languageSelect">
@@ -114,8 +116,8 @@ class SettingsManager {
               <button id="clearCacheButton" class="clear-cache-btn" data-i18n="clearCacheNow">Clear cache now</button>
             </div>
             <div class="button-group">
-              <button id="saveSettings" data-i18n="save">Save</button>
-              <button id="closeSettings" data-i18n="close">Close</button>
+              <button id="saveSettings" type="button" data-i18n="save">Save</button>
+              <button id="closeSettings" type="button" data-i18n="close">Close</button>
             </div>
           </div>
         </div>
@@ -136,6 +138,7 @@ class SettingsManager {
       
       // Применяем локализацию к модальному окну сразу после создания
       this.applyLocalizationToModal();
+      this.settingsModal.addEventListener("keydown", this.handleModalKeydown);
       
     } catch (error) {
       console.error("❌ Failed to load settings HTML:", error);
@@ -180,6 +183,36 @@ class SettingsManager {
         console.log("🌐 Language changed to:", selectedLanguage);
         this.applyLanguage(selectedLanguage);
       });
+    }
+  }
+
+  getFocusableElements() {
+    if (!this.settingsModal) return [];
+    return Array.from(this.settingsModal.querySelectorAll(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    )).filter((element) => element.offsetParent !== null || element === document.activeElement);
+  }
+
+  onModalKeydown(event) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      this.closeSettings();
+      return;
+    }
+
+    if (event.key !== "Tab") return;
+    const focusableElements = this.getFocusableElements();
+    if (!focusableElements.length) return;
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (event.shiftKey && document.activeElement === firstElement) {
+      event.preventDefault();
+      lastElement.focus();
+    } else if (!event.shiftKey && document.activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
     }
   }
 
@@ -231,11 +264,14 @@ class SettingsManager {
     console.log("🔓 settingsModal:", this.settingsModal);
     console.log("🔓 settingsModal.classList:", this.settingsModal?.classList);
     
+    this.previouslyFocusedElement = document.activeElement;
     this.loadCurrentSettings();
     this.updateCacheSizeDisplay();
     
     // Убираем класс hidden
     this.settingsModal.classList.remove("hidden");
+    const firstFocusableElement = this.getFocusableElements()[0] || this.settingsModal.querySelector(".settings-content");
+    firstFocusableElement?.focus();
     console.log("🔓 After removing hidden, classList:", this.settingsModal.classList);
     
     this.updateToastZIndex();
@@ -249,6 +285,9 @@ class SettingsManager {
     console.log("🔒 settingsModal.classList before:", this.settingsModal?.classList);
     
     this.settingsModal.classList.add("hidden");
+    if (this.previouslyFocusedElement && typeof this.previouslyFocusedElement.focus === "function") {
+      this.previouslyFocusedElement.focus();
+    }
     console.log("🔒 settingsModal.classList after:", this.settingsModal?.classList);
     
     this.updateToastZIndex();

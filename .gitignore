@@ -14,3 +14,5 @@ node_modules/
 # Ignore all local history of files
 **/.history
 server_backup.js
+dist/
+artifacts/

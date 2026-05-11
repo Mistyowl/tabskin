@@ -1,16 +1,9 @@
-@font-face {
-  font-family: 'Montserrat Alternates';
-  src: url('/font/Montserrat.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-}
-
 :root {
-  --font-base: "Montserrat Alternates", sans-serif;
+  --font-base: "Montserrat Alternates", "Segoe UI", system-ui, sans-serif;
   --color-white: #fff;
   --color-accent: yellow;
   --color-transparent: rgba(255, 255, 255, 0.1);
-  --overlay-bg: url("assets/overlay.png");
+  --overlay-bg: linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.46));
   --border-radius: 25px;
   --transition-speed: 0.3s;
 

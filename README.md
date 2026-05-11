@@ -1,156 +1,203 @@
 # Tabskin
 
-**[README.ru.md](README.ru.md)**
+**[Русская версия](README.ru.md)**
 
-**Русская версия**: Tabskin — это расширение для браузера, которое заменяет стандартную вкладку на минималистичную страницу с меняющимся фоном, текущим временем и информацией об авторе изображения. Оно использует случайные изображения высокого качества из Unsplash, предлагая настройки тем, автоматическую смену фона и плавные переходы.
+Tabskin is a browser extension that replaces the default new tab with a calm, minimal page featuring curated Unsplash wallpapers, the current time, author attribution, local personalization settings, caching, and optional automatic background rotation.
 
-**Tabskin** is a browser extension that replaces the standard new tab with a minimalistic page featuring a changing background, current time, and information about the image author. It uses high-quality random images from Unsplash, offering theme settings, automatic background switching, and smooth transitions. The extension supports multiple languages and is designed with lightness and ease of use in mind.
+The repository now uses a reproducible extension build pipeline. Source files live in the project root, while production-ready packages are generated into separate Chrome and Firefox outputs.
 
 ## Features
 
-- Displays a high-quality random image from Unsplash on each new tab.
-- Supports multiple themes for image selection (e.g., nature, architecture, space).
-- Automatic background switching at user-defined intervals.
-- Smooth transitions between images with a fade effect.
-- Displays the current time on the page.
-- Provides links to the photographer's profile and the image page on Unsplash.
-- A settings modal for personalization.
-- Localization support for English and Russian.
-- Image caching to reduce API requests and improve performance.
+- Minimal new tab override for Chromium and Firefox browsers.
+- Curated Unsplash wallpaper themes: wallpapers, nature, 3D render, texture, space, travel, film, people, architecture, and street photography.
+- Current time display with 12-hour and 24-hour formats.
+- Photographer and photo attribution links for Unsplash compliance.
+- Local settings for language, time format, theme, auto-switch interval, and transition behavior.
+- Image caching through the Cache API to reduce network requests.
+- Consent flow for Unsplash download location tracking.
+- English and Russian localization.
+- Production builds with minified JS/CSS and generated release zips.
 
-## Installation for Developers
+## Project Structure
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Mistyowl/tabskin.git
-   ```
+```text
+.
+├── assets/
+│   ├── icons/
+│   ├── js/settings.js
+│   └── sprite.svg
+├── _locales/
+│   ├── en/messages.json
+│   └── ru/messages.json
+├── scripts/
+│   ├── build-extension.mjs
+│   ├── generate-icons.mjs
+│   └── validate-extension-assets.mjs
+├── index.html
+├── manifest.json
+├── script.js
+├── style.css
+├── package.json
+└── package-lock.json
+```
 
-2. Navigate to the project directory:
-   ```bash
-   cd tabskin
-   ```
+Generated directories:
 
-3. Ensure you have Node.js version 20 or higher installed.
+- `dist/chrome/` — unpacked Chrome extension build.
+- `dist/firefox/` — unpacked Firefox extension build.
+- `artifacts/` — zipped store-ready packages.
 
-4. Install server dependencies:
-   ```bash
-   npm install
-   ```
+The `site/` folder is the marketing website and is not included in extension packages. `server.js` is also excluded from extension packages.
 
-5. Create a `.env` file in the root directory with the following content:
-   ```env
-   UNSPLASH_KEY=your_unsplash_api_key
-   PORT=443
-   CACHE_TTL=43200000
-   ```
-   Replace `your_unsplash_api_key` with your actual Unsplash API key.
+## Requirements
 
-6. Start the server using the command:
-   ```bash
-   nohup node server.js > proxy.log 2>&1 &
-   ```
-   This command runs the server in the background and saves logs to `proxy.log`.
+- Node.js 20 or newer.
+- npm.
 
-7. Load the extension in your browser:
-   - **For Chrome:**
-     - Go to `chrome://extensions/`
-     - Enable "Developer mode"
-     - Click "Load unpacked" and select the `tabskin` directory
-   - **For Firefox:**
-     - Go to `about:debugging#/runtime/this-firefox`
-     - Click "Load Temporary Add-on" and select the `manifest.json` file in the `tabskin` directory
+## Install Dependencies
 
-## Usage
+```bash
+npm install
+```
 
-After installation, Tabskin automatically replaces the new tab page. You can:
+## Build Commands
 
-- Click the refresh button to load a new background image.
-- Click the settings button to open the settings modal.
-- View the current time displayed on the page.
-- Click on the photographer's name or the image link to visit their Unsplash profile or the image page.
+Build Chrome and Firefox production packages:
 
-## Configuration
+```bash
+npm run build
+```
 
-### Server Configuration
+Build only Chrome:
 
-- `UNSPLASH_KEY`: Your Unsplash API access key.
-- `PORT`: The port on which the server runs (default: 3000).
-- `CACHE_TTL`: Cache time-to-live in milliseconds (default: 43200000 ms or 12 hours).
+```bash
+npm run build:chrome
+```
 
-### Extension Settings
+Build only Firefox:
 
-- **Theme**: Choose the category of images to display (e.g., wallpapers, nature, space).
-- **Auto Switch**: Enable or disable automatic background switching.
-- **Switch Interval**: Set the interval for automatic background switching (in minutes).
-- **Transition**: Enable or disable smooth transitions between images.
+```bash
+npm run build:firefox
+```
 
-Settings are saved locally in the browser's storage.
+Validate extension source files and generated packages:
 
-## Development
+```bash
+npm run validate:extension
+```
 
-To make changes to the extension:
+Regenerate PNG extension icons from the local icon generator:
 
-1. Edit the source files in the `tabskin` directory.
-2. Reload the extension in your browser:
-   - **For Chrome:** Go to `chrome://extensions/` and click "Reload" for the Tabskin extension.
-   - **For Firefox:** Go to `about:debugging#/runtime/this-firefox`, remove the temporary add-on, and load it again.
-3. To run the server with automatic restarts on file changes, use `nodemon`:
-   ```bash
-   npm install -g nodemon
-   nodemon server.js
-   ```
-4. Ensure the server is running and accessible at `http://localhost:3000/photos`.
-5. Update `IMAGE_API_ENDPOINT` in `script.js` if the server is running on a different port or host.
+```bash
+npm run icons:generate
+```
 
-## Contribution Guide
+Development watch builds:
 
-If you want to help with the development of Tabskin, follow these steps:
+```bash
+npm run dev:chrome
+npm run dev:firefox
+```
 
-1. **Create a fork of the repository**:
-   - Go to the repository page and click "Fork" in the upper right corner.
+## Build Output
 
-2. **Clone your fork**:
-   ```bash
-   git clone https://github.com/Mistyowl/tabskin.git
-   ```
+After `npm run build`, the project creates:
 
-3. **Create a new branch** for your feature or fix:
-   ```bash
-   git checkout -b feature/your-feature
-   ```
+```text
+dist/chrome/
+dist/firefox/
+artifacts/tabskin-chrome-v1.5.5.zip
+artifacts/tabskin-firefox-v1.5.5.zip
+```
 
-4. **Make changes** and commit them:
-   ```bash
-   git add .
-   git commit -m "Description of your changes"
-   ```
+Production builds:
 
-5. **Push the branch to your fork**:
-   ```bash
-   git push origin feature/your-feature
-   ```
+- bundle `script.js` and `assets/js/settings.js` into `app.js`;
+- minify JavaScript and CSS with esbuild;
+- remove `console.*` and `debugger` from production JavaScript;
+- generate browser-specific manifests;
+- copy only extension assets required for the package;
+- exclude `site/`, `server.js`, build scripts, source-only files, and local development files from release zips.
 
-6. **Open a pull request**:
-   - Go to your fork's page on GitHub.
-   - Click "Compare & pull request".
-   - Fill out the pull request form using the following template:
+## Loading Unpacked Builds
 
-   ### Pull Request Template
+### Chrome
 
-   **Title**: Brief description of your feature or fix
+1. Run `npm run build:chrome`.
+2. Open `chrome://extensions/`.
+3. Enable Developer mode.
+4. Click Load unpacked.
+5. Select `dist/chrome`.
 
-   **Description**:
-   - What did you add or fix?
-   - Why is this important?
+### Firefox
 
-   **Screenshots** (if applicable):
-   - Attach screenshots demonstrating your changes.
+1. Run `npm run build:firefox`.
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Click Load Temporary Add-on.
+4. Select `dist/firefox/manifest.json`.
 
-   **Testing**:
-   - How did you test your changes?
-   - Are there any known issues?
+## Release Packages
 
-7. **Wait for review**:
-   - The project developers will review your pull request and may request additional changes.
+Upload these zip files to the browser stores:
 
-Ensure your code adheres to the project's standards and includes necessary tests.
+- Chrome Web Store: `artifacts/tabskin-chrome-v1.5.5.zip`
+- Firefox Add-ons: `artifacts/tabskin-firefox-v1.5.5.zip`
+
+Before publishing, run:
+
+```bash
+npm run validate:extension
+npm run build
+```
+
+Then manually test both unpacked builds.
+
+## Manual Test Checklist
+
+- New tab opens Tabskin.
+- Initial image loads or cached image is restored.
+- Refresh button loads a new image.
+- Consent modal appears when needed and stores consent locally.
+- Unsplash author and photo links open correctly.
+- Settings modal opens and closes.
+- Settings can be saved.
+- Language switch works.
+- 12-hour and 24-hour time formats work.
+- Auto-switch timer works.
+- Clear cache works.
+- Production console has no debug logs, aside from real browser/network errors.
+
+## Extension Settings
+
+Settings are saved locally in the browser through `localStorage`.
+
+Current storage keys are kept stable for backward compatibility:
+
+- `userSettings`
+- `lastImageUrl`
+- `lastImageCreator`
+- `lastImagePhotoLink`
+- `lastImageCreatorLink`
+- `lastImageLoadTime`
+- `userConsentDownloadLocation`
+
+## API Endpoints
+
+The extension expects the image service to be available at:
+
+- `https://tabskin.ru/photos`
+- `https://tabskin.ru/download`
+
+These origins are declared in `manifest.json` through `host_permissions` and CSP.
+
+## Notes For Contributors
+
+- Do not edit files in `dist/` manually. They are generated.
+- Do not put website files from `site/` into extension packages.
+- Keep Chrome and Firefox differences in the build manifest generation instead of maintaining separate handwritten manifests.
+- If a local asset is referenced from `manifest.json`, `index.html`, or `style.css`, `npm run validate:extension` must be able to find it.
+- Keep production builds small: avoid unnecessary runtime dependencies and debug logs.
+
+## License
+
+Tabskin is maintained by the Tabskin project.
