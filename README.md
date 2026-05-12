@@ -106,8 +106,8 @@ After `npm run build`, the project creates:
 ```text
 dist/chrome/
 dist/firefox/
-artifacts/tabskin-chrome-v1.5.5.zip
-artifacts/tabskin-firefox-v1.5.5.zip
+artifacts/tabskin-chrome-v1.1.0.zip
+artifacts/tabskin-firefox-v1.1.0.zip
 ```
 
 Production builds:
@@ -140,8 +140,8 @@ Production builds:
 
 Upload these zip files to the browser stores:
 
-- Chrome Web Store: `artifacts/tabskin-chrome-v1.5.5.zip`
-- Firefox Add-ons: `artifacts/tabskin-firefox-v1.5.5.zip`
+- Chrome Web Store: `artifacts/tabskin-chrome-v1.1.0.zip`
+- Firefox Add-ons: `artifacts/tabskin-firefox-v1.1.0.zip`
 
 Before publishing, run:
 

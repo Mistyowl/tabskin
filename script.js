@@ -6,13 +6,15 @@ const DEFAULT_SETTINGS = {
   theme: "wallpapers",
   autoSwitchEnabled: false,
   autoSwitchIntervalMinutes: 60,
-  transitionEnabled: true
+  transitionEnabled: true,
+  performanceModeEnabled: true
 };
 
 // DOM-элементы
 const backgroundAuthorLink   = document.querySelector("#creator");
 const backgroundImageLink    = document.querySelector("#imageLink");
 const refreshButtonElement   = document.querySelector("#changeButton");
+const pinButtonElement = document.querySelector("#pinButton");
 const timeDisplayElement     = document.querySelector("#time");
 const initialLoaderElement   = document.querySelector("#initialLoader");
 
@@ -22,12 +24,18 @@ let settingsManager = null;
 // Константы приложения
 const IMAGE_API_ENDPOINT   = "https://tabskin.ru/photos";
 
+// Кэш для настроек и языка (для избежания повторных вызовов)
+let cachedSettings = null;
+let cachedLanguage = null;
+
+const MIN_AUTO_SWITCH_INTERVAL_MINUTES = 15;
 let currentImageQuery      = loadUserSettings().theme;
 const CACHE_NAME           = "background-image-cache";
 const LOCAL_STORAGE_PREFIX = "lastImage";
+const CACHE_INDEX_STORAGE_KEY = "backgroundImageCacheIndex";
+const PINNED_IMAGE_STORAGE_KEY = "pinnedImage";
 const CACHE_TTL_MS         = 12 * 60 * 60 * 1000; // 12 часов
 const FADE_DURATION_MS     = 800;
-const BASE_STYLE_ID        = "base-fade-style";
 const DYNAMIC_STYLE_ID     = "dynamic-fade-style";
 
 // Константы для очистки кэша
@@ -38,13 +46,12 @@ const REQUEST_TIMEOUT_MS = 10000; // 10 секунд
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1000; // 1 секунда
 
-let autoSwitchTimerId = null;
 let isServerAvailable = true; // Флаг доступности сервера
 let clockIntervalId = null;
-
-// Кэш для настроек и языка (для избежания повторных вызовов)
-let cachedSettings = null;
-let cachedLanguage = null;
+let latestImageRequestId = 0;
+let activeBackgroundObjectUrl = null;
+let currentTimeFormat = loadUserSettings().timeFormat || DEFAULT_SETTINGS.timeFormat;
+let clockFormatter = createClockFormatter(currentTimeFormat);
 
 // UTM параметры для Unsplash ссылок
 const UNSPLASH_UTM = '?utm_source=tabskin&utm_medium=referral';
@@ -138,17 +145,57 @@ document.addEventListener("DOMContentLoaded", showConsentModalIfNeeded);
 
 // Функции для работы с настройками (должны быть объявлены перед использованием)
 function loadUserSettings() {
-  const savedSettingsJson = localStorage.getItem(SETTINGS_STORAGE_KEY);
-  return savedSettingsJson
-    ? JSON.parse(savedSettingsJson)
-    : { ...DEFAULT_SETTINGS };
+  if (cachedSettings) {
+    return { ...cachedSettings };
+  }
+
+  const savedSettings = readJsonStorage(SETTINGS_STORAGE_KEY, {});
+  cachedSettings = normalizeSettings(savedSettings);
+  cachedLanguage = cachedSettings.language || DEFAULT_SETTINGS.language;
+  return { ...cachedSettings };
 }
 
 function saveUserSettings(settingsObject) {
-  localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settingsObject));
-  // Сбрасываем кэш локализации при изменении настроек
-  resetLocalizationCache();
+  const normalizedSettings = normalizeSettings(settingsObject);
+  localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(normalizedSettings));
+  cachedSettings = normalizedSettings;
+  cachedLanguage = normalizedSettings.language || DEFAULT_SETTINGS.language;
+  currentTimeFormat = normalizedSettings.timeFormat || DEFAULT_SETTINGS.timeFormat;
+  clockFormatter = createClockFormatter(currentTimeFormat);
+  // Держим горячие настройки в памяти, чтобы новая вкладка не читала localStorage каждую секунду.
   console.log("💾 Settings saved");
+}
+
+function readJsonStorage(key, fallbackValue) {
+  const savedValue = localStorage.getItem(key);
+  if (!savedValue) return fallbackValue;
+
+  try {
+    return JSON.parse(savedValue);
+  } catch (error) {
+    console.warn(`⚠️ Invalid JSON in localStorage key "${key}", using fallback:`, error);
+    return fallbackValue;
+  }
+}
+
+function writeJsonStorage(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function normalizeSettings(settingsObject = {}) {
+  const source = settingsObject && typeof settingsObject === "object" ? settingsObject : {};
+  const autoSwitchIntervalMinutes = Math.max(
+    Number(source.autoSwitchIntervalMinutes) || DEFAULT_SETTINGS.autoSwitchIntervalMinutes,
+    MIN_AUTO_SWITCH_INTERVAL_MINUTES
+  );
+
+  return {
+    ...DEFAULT_SETTINGS,
+    ...source,
+    autoSwitchIntervalMinutes,
+    transitionEnabled: source.transitionEnabled !== false,
+    performanceModeEnabled: source.performanceModeEnabled !== false
+  };
 }
 
 // Собственные переводы для динамической смены языка
@@ -157,12 +204,16 @@ const TRANSLATIONS = {
     extensionDescription: "Tabskin replaces the standard tab with a minimalistic page with a changing background, current time and information about the author of the image.",
     tabTitle: "New tab",
     settingsTitle: "Settings",
+    settingsSubtitle: "Tune the new tab without slowing it down.",
+    settingsGroupInterface: "Interface",
+    settingsGroupBackground: "Background",
+    settingsGroupPerformance: "Performance",
     language: "Language:",
     english: "English",
     russian: "Русский",
     timeFormat: "Time format:",
-    time24Hour: "24-hour format",
-    time12Hour: "12-hour format (AM/PM)",
+    time24Hour: "24-hour",
+    time12Hour: "12-hour (AM/PM)",
     wallpaperTheme: "Wallpaper theme:",
     wallpapers: "Wallpapers",
     nature: "Nature",
@@ -176,11 +227,11 @@ const TRANSLATIONS = {
     streetPhotography: "Street Photography",
     autoSwitch: "Automatic background change",
     changeFrequency: "Change frequency:",
-    everyMinute: "Every minute",
     every15Minutes: "Every 15 minutes",
     everyHour: "Every hour",
     every6Hours: "Every 6 hours",
     smoothTransition: "Smooth transition animation",
+    performanceMode: "Performance mode (optimized image size)",
     clearCacheNow: "Clear cache",
     cacheCleared: "Cache cleared successfully",
     cacheSize: "Cache size:",
@@ -198,18 +249,27 @@ const TRANSLATIONS = {
     errorServerError: "Server error: Image service temporarily unavailable",
     errorServiceError: "Service error: Invalid response from image server",
     errorFailedToLoadInitialImage: "Failed to load initial image. Please try refreshing.",
-    errorFailedToClearCache: "Failed to clear cache"
+    errorFailedToClearCache: "Failed to clear cache",
+    errorOfflineKeepCurrent: "Unable to load a new image. Keeping the current background.",
+    errorNoCachedPinnedImage: "This pinned image is not available offline.",
+    pin: "Pin background",
+    unpin: "Unpin background",
+    pinnedBackground: "Pinned background is active"
   },
   ru: {
     extensionDescription: "Tabskin заменяет стандартную вкладку на минималистичную страницу с меняющимся фоном, текущим временем и информацией об авторе изображения.",
     tabTitle: "Новая вкладка",
     settingsTitle: "Настройки",
+    settingsSubtitle: "Настройте новую вкладку без потери скорости.",
+    settingsGroupInterface: "Интерфейс",
+    settingsGroupBackground: "Фон",
+    settingsGroupPerformance: "Производительность",
     language: "Язык:",
     english: "English",
     russian: "Русский",
     timeFormat: "Формат времени:",
-    time24Hour: "24-часовой формат",
-    time12Hour: "12-часовой формат (AM/PM)",
+    time24Hour: "24-часа",
+    time12Hour: "12-часов (AM/PM)",
     wallpaperTheme: "Тема обоев:",
     wallpapers: "Обои",
     nature: "Природа",
@@ -223,11 +283,11 @@ const TRANSLATIONS = {
     streetPhotography: "Уличная фотография",
     autoSwitch: "Автоматическая смена фона",
     changeFrequency: "Частота смены:",
-    everyMinute: "Каждую минуту",
     every15Minutes: "Каждые 15 минут",
     everyHour: "Каждый час",
     every6Hours: "Каждые 6 часов",
     smoothTransition: "Плавная анимация перехода",
+    performanceMode: "Режим производительности (оптимальный размер изображения)",
     clearCacheNow: "Очистить кэш",
     cacheCleared: "Кэш успешно очищен",
     cacheSize: "Размер кэша:",
@@ -245,7 +305,12 @@ const TRANSLATIONS = {
     errorServerError: "Ошибка сервера: Служба изображений временно недоступна",
     errorServiceError: "Ошибка службы: Некорректный ответ от сервера изображений",
     errorFailedToLoadInitialImage: "Не удалось загрузить начальное изображение. Попробуйте обновить страницу.",
-    errorFailedToClearCache: "Не удалось очистить кэш"
+    errorFailedToClearCache: "Не удалось очистить кэш",
+    errorOfflineKeepCurrent: "Не удалось загрузить новое изображение. Оставил текущий фон.",
+    errorNoCachedPinnedImage: "Закреплённое изображение недоступно офлайн.",
+    pin: "Закрепить фон",
+    unpin: "Открепить фон",
+    pinnedBackground: "Закреплённый фон активен"
   }
 };
 
@@ -310,10 +375,11 @@ function applyAutoSwitchSettings() {
   }
   
   if (settings.autoSwitchEnabled) {
-    const intervalMs = (settings.autoSwitchIntervalMinutes || 60) * 60 * 1000;
+    const intervalMinutes = Math.max(settings.autoSwitchIntervalMinutes || 60, MIN_AUTO_SWITCH_INTERVAL_MINUTES);
+    const intervalMs = intervalMinutes * 60 * 1000;
     window.autoSwitchInterval = setInterval(() => {
       console.log("🔄 Auto-switching background image");
-      fetchAndUpdateImage({ forceRefresh: true }).catch(() => {});
+      fetchAndUpdateImage({ forceRefresh: true, silent: true, source: "auto" }).catch(() => {});
     }, intervalMs);
     console.log("⏰ Auto-switch enabled with interval:", intervalMs / 1000 / 60, "minutes");
   } else {
@@ -335,27 +401,9 @@ function applyTransitionSettings() {
 
 // Добавляем CSS для плавного fade через ::after
 function injectFadeStyles() {
-  if (document.getElementById(BASE_STYLE_ID)) return;
-  const cssRules = `
-    body { position: relative; overflow: hidden; }
-    body::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center;
-      opacity: 0;
-      transition: opacity ${FADE_DURATION_MS}ms ease-in-out;
-      pointer-events: none;
-      z-index: -1;
-    }
-  `;
-  const styleTag = document.createElement("style");
-  styleTag.id = BASE_STYLE_ID;
-  styleTag.textContent = cssRules;
-  document.head.appendChild(styleTag);
-  console.log("🎨 Fade styles injected");
+  document.documentElement.style.setProperty("--fade-duration", `${FADE_DURATION_MS}ms`);
+  applyTransitionSettings();
+  console.log("🎨 Fade duration configured");
 }
 
 // Отображение часов
@@ -372,50 +420,43 @@ function restartClock() {
   window.timeUpdateInterval = clockIntervalId;
 }
 
-function updateClockDisplay() {
-  const now = new Date();
-  const settings = loadUserSettings();
-  const timeFormat = settings.timeFormat || "24";
-  
-  let timeOptions = {
+function createClockFormatter(timeFormat) {
+  return new Intl.DateTimeFormat(undefined, {
     hour: "2-digit",
-    minute: "2-digit"
-  };
-  
-  // Если выбран 12-часовой формат, добавляем hour12: true
-  if (timeFormat === "12") {
-    timeOptions.hour12 = true;
-  } else {
-    timeOptions.hour12 = false;
-  }
-  
-  timeDisplayElement.textContent = now.toLocaleTimeString(undefined, timeOptions);
+    minute: "2-digit",
+    hour12: timeFormat === "12"
+  });
+}
+
+function updateClockDisplay() {
+  if (!timeDisplayElement) return;
+  const now = new Date();
+  timeDisplayElement.textContent = clockFormatter.format(now);
 }
 
 // Восстановление последнего изображения из кэша
 async function displayLastCachedImage() {
-  const cachedUrl = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}Url`);
-  const cachedTimestamp = Number(localStorage.getItem(`${LOCAL_STORAGE_PREFIX}LoadTime`)) || 0;
-  if (!cachedUrl) {
+  const pinnedImage = getPinnedImage();
+  const storedMetadata = pinnedImage || getStoredImageMetadata();
+  if (!storedMetadata?.url) {
     console.log("⚠️ No cached image in localStorage");
     return false;
   }
 
-  try {
-    const cacheStorage = await caches.open(CACHE_NAME);
-    const cachedResponse = await cacheStorage.match(cachedUrl);
-    const displayUrl = cachedResponse
-      ? URL.createObjectURL(await cachedResponse.blob())
-      : cachedUrl;
-    document.body.style.backgroundImage = `url("${displayUrl}")`;
-    console.log("🗄 Displayed image from cache:", displayUrl);
-  } catch (error) {
-    console.warn("⚠️ Cache API error, falling back to direct URL:", error);
-    document.body.style.backgroundImage = `url("${cachedUrl}")`;
+  const displayed = await applyImageFromCachedMetadata(storedMetadata, {
+    updateStoredMetadata: Boolean(pinnedImage),
+    showError: false,
+    animate: false
+  });
+
+  if (!displayed && storedMetadata.url) {
+    setBodyBackgroundImage(storedMetadata.url);
+    applyMetadataToDom(storedMetadata);
+    console.log("⚠️ Cached response missing, applied stored URL as best-effort fallback");
   }
 
-  applyStoredImageMetadata();
-  return true;
+  updateLocalImageControls();
+  return displayed;
 }
 
 // Инициализация на старте
@@ -437,19 +478,22 @@ window.addEventListener("load", async () => {
     const imageLoadPromise = (async () => {
       try {
     const hadImage = await displayLastCachedImage();
-    initialLoaderElement.classList.add("hidden");
+    initialLoaderElement?.classList.add("hidden");
     const lastLoadTime = Number(localStorage.getItem(`${LOCAL_STORAGE_PREFIX}LoadTime`)) || 0;
     const isTtlExpired = Date.now() - lastLoadTime > CACHE_TTL_MS;
+    const hasPinnedImage = Boolean(getPinnedImage());
 
-    if (!hadImage || isTtlExpired) {
+    if (hasPinnedImage) {
+      console.log("📌 Pinned image active, skipping startup refresh");
+    } else if (!hadImage || isTtlExpired) {
       console.log(isTtlExpired ? "⌛ TTL expired" : "🔎 No cache on load", "- fetching new image");
-          await fetchAndUpdateImage({ forceRefresh: false });
+          await fetchAndUpdateImage({ forceRefresh: false, silent: hadImage, source: "startup", animate: false });
     } else {
       console.log("✅ Cached image is fresh, no immediate fetch required");
         }
       } catch (error) {
         console.error("❌ Initial image loading failed:", error);
-        initialLoaderElement.classList.add("hidden");
+        initialLoaderElement?.classList.add("hidden");
         // Показываем ошибку пользователю только если нет кэшированного изображения
         if (!localStorage.getItem(`${LOCAL_STORAGE_PREFIX}Url`)) {
           showToastError(getMessage("errorFailedToLoadInitialImage"), 'error');
@@ -462,6 +506,7 @@ window.addEventListener("load", async () => {
       applyLocalizedPageTitle();
       applyLocalization();
   applyUserSettings();
+      updateLocalImageControls();
     });
 
   } catch (error) {
@@ -474,12 +519,12 @@ window.addEventListener("load", async () => {
 });
 
 // Обработчик кнопки обновления
-refreshButtonElement.addEventListener("click", async () => {
+refreshButtonElement?.addEventListener("click", async () => {
   console.log("👆 Manual refresh requested");
   refreshButtonElement.disabled = true;
   refreshButtonElement.classList.add("spin-animation");
   try {
-    await fetchAndUpdateImage({ forceRefresh: true });
+    await fetchAndUpdateImage({ forceRefresh: true, source: "manual" });
   } catch (error) {
     console.error("❌ Manual refresh failed:", error);
   } finally {
@@ -488,99 +533,215 @@ refreshButtonElement.addEventListener("click", async () => {
   }
 });
 
+pinButtonElement?.addEventListener("click", togglePinnedCurrentImage);
+
+window.addEventListener("online", () => {
+  setServerAvailable(true);
+  console.log("🌐 Browser is online again");
+});
+
+window.addEventListener("offline", () => {
+  setServerAvailable(false);
+  console.log("📴 Browser is offline");
+});
+
 // Получение и отображение нового изображения
-async function fetchAndUpdateImage({ forceRefresh }) {
-  console.log(`🌐 fetchAndUpdateImage(forceRefresh=${forceRefresh})`);
-  
-  // Если сервер недоступен и это не принудительное обновление, просто выходим
+async function fetchAndUpdateImage({ forceRefresh, silent = false, source = "startup", animate = source !== "startup" }) {
+  const requestId = ++latestImageRequestId;
+  console.log(`🌐 fetchAndUpdateImage(forceRefresh=${forceRefresh}, source=${source})`);
+
+  if (getPinnedImage() && source !== "manual") {
+    console.log("📌 Pinned image active, skipping automatic image update");
+    return false;
+  }
+
+  if (navigator.onLine === false) {
+    console.log("📴 Browser reports offline, skipping image update");
+    if (!silent) showToastError(getMessage("errorOfflineKeepCurrent"), "error");
+    return false;
+  }
+
   if (!isServerAvailable && !forceRefresh) {
     console.log("🔄 Server unavailable, skipping image update");
-    return;
+    return false;
   }
-  
+
   try {
-  const queryParameters = new URLSearchParams({ query: currentImageQuery });
-  if (forceRefresh) queryParameters.set("refresh", Date.now().toString());
+    const queryParameters = new URLSearchParams({ query: currentImageQuery });
+    if (forceRefresh) queryParameters.set("refresh", Date.now().toString());
 
     const response = await fetchWithRetry(`${IMAGE_API_ENDPOINT}?${queryParameters}`);
     if (!response.ok) {
-      const errorMessage = `Server returned status ${response.status}`;
-      console.error("❌ API Error:", errorMessage);
-      showToastError(getMessage("errorFailedToLoadImage"), 'error');
-      throw new Error(errorMessage);
+      throw new Error(`Server returned status ${response.status}`);
     }
 
-  const jsonData = await response.json();
-  const imageUrl = jsonData.urls?.full;
+    const jsonData = await response.json();
+    const imageUrl = selectBestImageUrl(jsonData);
     if (!imageUrl) {
-      const errorMessage = "Invalid API response: missing image URL";
-      console.error("❌ API Error:", errorMessage);
-      showToastError(getMessage("errorFailedToLoadImage"), 'error');
-      throw new Error(errorMessage);
+      throw new Error("Invalid API response: missing image URL");
     }
 
-  console.log("📥 Received new image URL:", imageUrl);
-  await cacheImageUrl(imageUrl);
+    ensureLatestImageRequest(requestId);
+    console.log("📥 Received new image URL:", imageUrl);
 
-  // Вызываем download endpoint для отслеживания "установки" изображения
-  if (jsonData.links?.download_location) {
-    if (localStorage.getItem(USER_CONSENT_KEY) === "true") {
-      try {
-              await fetch('https://tabskin.ru/download', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          downloadLocation: jsonData.links.download_location
-        })
-      });
-      console.log("📊 Download endpoint called for tracking");
-    } catch (error) {
-      console.warn("⚠️ Failed to call download endpoint:", error);
+    const preparedImage = await prepareImageForDisplay(imageUrl);
+    ensureLatestImageRequest(requestId);
+
+    const metadata = createImageMetadata(jsonData, imageUrl);
+    if (source === "manual") {
+      clearPinnedImage();
     }
-    } else {
-      console.warn("⚠️ User consent not granted for download location tracking.");
+    await commitPreparedImage(metadata, preparedImage, { animate });
+    setServerAvailable(true);
+
+    trackDownloadLocation(jsonData.links?.download_location);
+    console.log("🎨 New image applied with metadata");
+    return true;
+  } catch (error) {
+    if (error.name === "AbortError" || error.message === "Stale image request") {
+      console.log("⏭ Ignored stale image request");
+      return false;
     }
+
+    console.error("❌ fetchAndUpdateImage failed:", error);
+    setServerAvailable(false);
+    if (!silent) showToastError(getMessage("errorOfflineKeepCurrent"), "error");
+    return false;
+  }
+}
+
+function ensureLatestImageRequest(requestId) {
+  if (requestId !== latestImageRequestId) {
+    throw new Error("Stale image request");
+  }
+}
+
+function selectBestImageUrl(jsonData) {
+  const urls = jsonData.urls || {};
+  const settings = loadUserSettings();
+
+  if (settings.performanceModeEnabled && urls.raw) {
+    return buildResponsiveUnsplashUrl(urls.raw);
   }
 
-  const metadata = {
+  return urls.regular || urls.small || urls.full || urls.raw || null;
+}
+
+function buildResponsiveUnsplashUrl(rawUrl) {
+  try {
+    const url = new URL(rawUrl);
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.min(Math.max(Math.ceil(window.innerWidth * pixelRatio), 1280), 2560);
+    const height = Math.min(Math.max(Math.ceil(window.innerHeight * pixelRatio), 720), 1600);
+
+    url.searchParams.set("auto", "format");
+    url.searchParams.set("fit", "crop");
+    url.searchParams.set("crop", "entropy");
+    url.searchParams.set("w", String(width));
+    url.searchParams.set("h", String(height));
+    url.searchParams.set("q", "82");
+    return url.toString();
+  } catch (error) {
+    console.warn("⚠️ Failed to build responsive image URL:", error);
+    return rawUrl;
+  }
+}
+
+function createImageMetadata(jsonData, imageUrl) {
+  return {
     url: imageUrl,
     authorName: jsonData.user?.name || "Unknown",
     photoPageLink: jsonData.links?.html || "#",
-    authorProfileLink: jsonData.user?.links?.html || "#", // Используем Unsplash профиль вместо портфолио
+    authorProfileLink: jsonData.user?.links?.html || "#",
     timestamp: Date.now()
   };
+}
 
-  saveImageMetadata(metadata);
-  triggerFadeTransition(imageUrl);
-    applyStoredImageMetadata();
-    console.log("🎨 New image applied with metadata");
-    
-    // Сервер доступен, сбрасываем флаг
-    isServerAvailable = true;
-    
+async function prepareImageForDisplay(imageUrl) {
+  let objectUrl = null;
+
+  try {
+    const response = await fetchWithRetry(imageUrl, { cache: "reload" });
+    if (!response.ok) {
+      throw new Error(`Image returned status ${response.status}`);
+    }
+
+    const responseForCache = response.clone();
+    const blob = await response.blob();
+    objectUrl = URL.createObjectURL(blob);
+
+    await decodeImage(objectUrl);
+    await cachePreparedImage(imageUrl, responseForCache, blob.size);
+
+    return {
+      displayUrl: objectUrl,
+      objectUrl,
+      size: blob.size
+    };
   } catch (error) {
-    console.error("❌ fetchAndUpdateImage failed:", error);
-    isServerAvailable = false;
-    showToastError(getMessage("errorFailedToLoadImage"), 'error');
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    throw error;
   }
+}
+
+function decodeImage(imageUrl) {
+  const image = new Image();
+  image.decoding = "async";
+  image.src = imageUrl;
+
+  if (typeof image.decode === "function") {
+    return image.decode();
+  }
+
+  return new Promise((resolve, reject) => {
+    image.onload = resolve;
+    image.onerror = () => reject(new Error("Image failed to load"));
+  });
+}
+
+async function commitPreparedImage(metadata, preparedImage, { animate = true } = {}) {
+  saveImageMetadata(metadata);
+  applyMetadataToDom(metadata);
+  applyBackgroundImage(preparedImage.displayUrl, { animate });
+  updateLocalImageControls();
+  scheduleCacheCleanup();
+}
+
+function trackDownloadLocation(downloadLocation) {
+  if (!downloadLocation) return;
+  if (localStorage.getItem(USER_CONSENT_KEY) !== "true") {
+    console.warn("⚠️ User consent not granted for download location tracking.");
+    return;
+  }
+
+  fetch("https://tabskin.ru/download", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ downloadLocation })
+  })
+    .then(() => console.log("📊 Download endpoint called for tracking"))
+    .catch((error) => console.warn("⚠️ Failed to call download endpoint:", error));
+}
+
+function setServerAvailable(value) {
+  isServerAvailable = value;
+  window.isServerAvailable = isServerAvailable;
 }
 
 // Улучшенная функция fetch с retry логикой и timeout
 async function fetchWithRetry(url, options = {}, retries = MAX_RETRIES) {
   for (let i = 0; i < retries; i++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-      
       const response = await fetch(url, {
         ...options,
         signal: controller.signal
       });
-      
-      clearTimeout(timeoutId);
-      
+
       if (response.ok) {
         return response;
       }
@@ -589,7 +750,8 @@ async function fetchWithRetry(url, options = {}, retries = MAX_RETRIES) {
       if (i === retries - 1) {
         return response;
       }
-      
+
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS * (i + 1)));
     } catch (error) {
       console.warn(`⚠️ Fetch attempt ${i + 1} failed:`, error.message);
       
@@ -600,31 +762,65 @@ async function fetchWithRetry(url, options = {}, retries = MAX_RETRIES) {
       
       // Ждем перед следующей попыткой
       await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS * (i + 1)));
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 }
 
 // Кэширование изображения
-async function cacheImageUrl(imageUrl) {
+async function cachePreparedImage(imageUrl, response, size) {
   const cacheStorage = await caches.open(CACHE_NAME);
-  if (!(await cacheStorage.match(imageUrl))) {
-    try {
-      await cacheStorage.add(imageUrl);
-      console.log("🗄 Image added to cache:", imageUrl);
-      
-      // Проверяем размер кэша после добавления нового изображения
-      await cleanupCacheBySize();
-    } catch (error) {
-      console.warn("⚠️ Failed to cache image:", error);
-    }
+  await cacheStorage.put(imageUrl, response);
+  upsertCacheIndexItem({
+    url: imageUrl,
+    size: Number(size) || 0,
+    cachedAt: Date.now(),
+    lastUsed: Date.now()
+  });
+  console.log("🗄 Image added to cache:", imageUrl);
+}
+
+function getCacheIndex() {
+  const index = readJsonStorage(CACHE_INDEX_STORAGE_KEY, []);
+  return Array.isArray(index) ? index.filter((item) => item?.url) : [];
+}
+
+function saveCacheIndex(index) {
+  writeJsonStorage(CACHE_INDEX_STORAGE_KEY, index);
+}
+
+function upsertCacheIndexItem(nextItem) {
+  const index = getCacheIndex().filter((item) => item.url !== nextItem.url);
+  index.unshift(nextItem);
+  saveCacheIndex(index);
+}
+
+function markCacheItemUsed(url) {
+  const index = getCacheIndex();
+  const item = index.find((entry) => entry.url === url);
+  if (!item) return;
+  item.lastUsed = Date.now();
+  saveCacheIndex(index);
+}
+
+function scheduleCacheCleanup() {
+  const runCleanup = () => cleanupCacheBySize().catch((error) => {
+    console.error("❌ Error during deferred cache cleanup:", error);
+  });
+
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(runCleanup, { timeout: 5000 });
+  } else {
+    setTimeout(runCleanup, 1500);
   }
 }
 
 // Сохранение метаданных изображения
 function saveImageMetadata({ url, authorName, photoPageLink, authorProfileLink, timestamp }) {
   // Добавляем utm-метки к ссылкам на Unsplash
-  const photoLinkWithUtm = photoPageLink && photoPageLink !== '#' ? photoPageLink + UNSPLASH_UTM : photoPageLink;
-  const authorLinkWithUtm = authorProfileLink && authorProfileLink !== '#' ? authorProfileLink + UNSPLASH_UTM : authorProfileLink;
+  const photoLinkWithUtm = addUnsplashUtm(photoPageLink);
+  const authorLinkWithUtm = addUnsplashUtm(authorProfileLink);
 
   localStorage.setItem(`${LOCAL_STORAGE_PREFIX}Url`, url);
   localStorage.setItem(`${LOCAL_STORAGE_PREFIX}Creator`, authorName);
@@ -634,26 +830,139 @@ function saveImageMetadata({ url, authorName, photoPageLink, authorProfileLink, 
   console.log("💾 Image metadata saved");
 }
 
-// Отображение сохранённых метаданных
-function applyStoredImageMetadata() {
-  const storedAuthor = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}Creator`) || "";
-  const storedPhotoLink = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}PhotoLink`) || "#";
-  const storedAuthorLink = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}CreatorLink`) || "#";
-
-  backgroundAuthorLink.textContent = storedAuthor;
-  backgroundAuthorLink.href = storedAuthorLink;
-  backgroundImageLink.href = storedPhotoLink;
-
-  console.log("🔗 Restored image metadata:", { storedAuthor, storedPhotoLink, storedAuthorLink });
+function addUnsplashUtm(link) {
+  if (!link || link === "#") return link;
+  return link.includes("utm_source=") ? link : `${link}${UNSPLASH_UTM}`;
 }
 
-// Плавный переход нового изображения
+function getStoredImageMetadata() {
+  const url = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}Url`);
+  if (!url) return null;
+
+  return {
+    url,
+    authorName: localStorage.getItem(`${LOCAL_STORAGE_PREFIX}Creator`) || "",
+    photoPageLink: localStorage.getItem(`${LOCAL_STORAGE_PREFIX}PhotoLink`) || "#",
+    authorProfileLink: localStorage.getItem(`${LOCAL_STORAGE_PREFIX}CreatorLink`) || "#",
+    timestamp: Number(localStorage.getItem(`${LOCAL_STORAGE_PREFIX}LoadTime`)) || Date.now()
+  };
+}
+
+// Отображение сохранённых метаданных
+function applyStoredImageMetadata() {
+  const metadata = getStoredImageMetadata();
+  if (!metadata) return;
+  applyMetadataToDom(metadata);
+}
+
+function applyMetadataToDom({ authorName, photoPageLink, authorProfileLink }) {
+  if (backgroundAuthorLink) {
+    backgroundAuthorLink.textContent = authorName || "";
+    backgroundAuthorLink.href = authorProfileLink || "#";
+  }
+
+  if (backgroundImageLink) {
+    backgroundImageLink.href = photoPageLink || "#";
+  }
+
+  console.log("🔗 Applied image metadata:", { authorName, photoPageLink, authorProfileLink });
+}
+
+async function applyImageFromCachedMetadata(metadata, options = {}) {
+  const {
+    updateStoredMetadata = true,
+    showError = true,
+    animate = true
+  } = options;
+
+  if (!metadata?.url) return false;
+  let objectUrl = null;
+
+  try {
+    const cacheStorage = await caches.open(CACHE_NAME);
+    const cachedResponse = await cacheStorage.match(metadata.url);
+    if (!cachedResponse) {
+      if (showError) showToastError(getMessage("errorNoCachedPinnedImage"), "error");
+      return false;
+    }
+
+    const blob = await cachedResponse.blob();
+    objectUrl = URL.createObjectURL(blob);
+    await decodeImage(objectUrl);
+
+    if (updateStoredMetadata) saveImageMetadata(metadata);
+    applyMetadataToDom(metadata);
+    markCacheItemUsed(metadata.url);
+    applyBackgroundImage(objectUrl, { animate });
+    updateLocalImageControls();
+    return true;
+  } catch (error) {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    console.warn("⚠️ Failed to apply cached image:", error);
+    if (showError) showToastError(getMessage("errorNoCachedPinnedImage"), "error");
+    return false;
+  }
+}
+
+function getPinnedImage() {
+  const pinnedImage = readJsonStorage(PINNED_IMAGE_STORAGE_KEY, null);
+  return pinnedImage?.url ? pinnedImage : null;
+}
+
+function togglePinnedCurrentImage() {
+  const metadata = getStoredImageMetadata();
+  if (!metadata?.url) return;
+
+  const pinnedImage = getPinnedImage();
+  if (pinnedImage?.url === metadata.url) {
+    clearPinnedImage();
+  } else {
+    writeJsonStorage(PINNED_IMAGE_STORAGE_KEY, { ...metadata, timestamp: Date.now() });
+  }
+
+  updateLocalImageControls();
+}
+
+function clearPinnedImage() {
+  localStorage.removeItem(PINNED_IMAGE_STORAGE_KEY);
+}
+
+function updateLocalImageControls() {
+  const metadata = getStoredImageMetadata();
+  const pinnedImage = getPinnedImage();
+  const isPinned = Boolean(metadata?.url && pinnedImage?.url === metadata.url);
+
+  if (pinButtonElement) {
+    pinButtonElement.disabled = !metadata?.url;
+    pinButtonElement.classList.toggle("active", isPinned);
+    pinButtonElement.setAttribute("aria-pressed", String(isPinned));
+    pinButtonElement.title = getMessage(isPinned ? "unpin" : "pin");
+    pinButtonElement.setAttribute("aria-label", getMessage(isPinned ? "unpin" : "pin"));
+  }
+}
+
+function applyBackgroundImage(newImageUrl, { animate = true } = {}) {
+  if (animate) {
+    triggerFadeTransition(newImageUrl);
+  } else {
+    setBodyBackgroundImage(newImageUrl);
+    document.getElementById(DYNAMIC_STYLE_ID)?.remove();
+  }
+}
+
+// Плавный переход только при смене изображения
 function triggerFadeTransition(newImageUrl) {
+  const settings = loadUserSettings();
+  if (settings.transitionEnabled === false) {
+    setBodyBackgroundImage(newImageUrl);
+    return;
+  }
+
   document.getElementById(DYNAMIC_STYLE_ID)?.remove();
 
   const dynamicCss = `
     body::after {
-      background-image: url("${newImageUrl}");
+      background-image: ${toCssUrl(newImageUrl)};
       opacity: 1;
     }
   `;
@@ -663,10 +972,25 @@ function triggerFadeTransition(newImageUrl) {
   document.head.appendChild(styleTag);
 
   setTimeout(() => {
-    document.body.style.backgroundImage = `url("${newImageUrl}")`;
+    setBodyBackgroundImage(newImageUrl);
     document.getElementById(DYNAMIC_STYLE_ID)?.remove();
     console.log("✨ Fade transition completed");
   }, FADE_DURATION_MS);
+}
+
+function setBodyBackgroundImage(imageUrl) {
+  document.body.style.backgroundImage = toCssUrl(imageUrl);
+
+  if (activeBackgroundObjectUrl && activeBackgroundObjectUrl !== imageUrl) {
+    URL.revokeObjectURL(activeBackgroundObjectUrl);
+  }
+
+  activeBackgroundObjectUrl = imageUrl.startsWith("blob:") ? imageUrl : null;
+}
+
+function toCssUrl(imageUrl) {
+  const safeUrl = String(imageUrl).replace(/["\\\n\r]/g, "\\$&");
+  return `url("${safeUrl}")`;
 }
 
 // Показ toast-сообщений
@@ -707,9 +1031,9 @@ function updateToastZIndex() {
 // Очистка кэша по кнопке
 async function clearCache() {
   const cacheStorage = await caches.open(CACHE_NAME);
-  await cacheStorage.keys().then(keys => {
-    keys.forEach(request => cacheStorage.delete(request));
-  });
+  const keys = await cacheStorage.keys();
+  await Promise.all(keys.map(request => cacheStorage.delete(request)));
+  localStorage.removeItem(CACHE_INDEX_STORAGE_KEY);
   console.log("🗑 Cache cleared");
 }
 
@@ -720,15 +1044,21 @@ function clearLocalStorage() {
   localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}PhotoLink`);
   localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}CreatorLink`);
   localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}LoadTime`);
+  localStorage.removeItem(PINNED_IMAGE_STORAGE_KEY);
+  updateLocalImageControls();
   console.log("🗑 Local storage cleared");
 }
 
 // Получение размера кэша
 async function getCacheSize() {
   try {
+    const indexedSize = getCacheIndex().reduce((total, item) => total + (Number(item.size) || 0), 0);
+    if (indexedSize > 0) return indexedSize;
+
     const cacheStorage = await caches.open(CACHE_NAME);
     const keys = await cacheStorage.keys();
     let totalSize = 0;
+    const rebuiltIndex = [];
     
     for (const request of keys) {
       try {
@@ -736,11 +1066,19 @@ async function getCacheSize() {
         if (response) {
           const blob = await response.blob();
           totalSize += blob.size;
+          rebuiltIndex.push({
+            url: request.url,
+            size: blob.size,
+            cachedAt: Date.now(),
+            lastUsed: Date.now()
+          });
         }
       } catch (error) {
         console.warn("⚠️ Error calculating size for cached item:", error);
       }
     }
+
+    if (rebuiltIndex.length) saveCacheIndex(rebuiltIndex);
     
     return totalSize;
   } catch (error) {
@@ -764,47 +1102,40 @@ function formatCacheSize(bytes) {
 async function cleanupCacheBySize() {
   try {
     const cacheStorage = await caches.open(CACHE_NAME);
-    const keys = await cacheStorage.keys();
     const sizeLimit = CACHE_SIZE_LIMIT_MB * 1024 * 1024; // Конвертируем в байты
-    
-    let totalSize = 0;
-    const items = [];
-    
-    // Собираем информацию о всех кэшированных элементах
-    for (const request of keys) {
-      try {
-        const response = await cacheStorage.match(request);
-        if (response) {
-          const blob = await response.blob();
-          const size = blob.size;
-          totalSize += size;
-          
-          items.push({
-            request,
-            size,
-            date: new Date(response.headers.get('date') || Date.now()).getTime()
-          });
-        }
-      } catch (error) {
-        console.warn("⚠️ Error processing cached item:", error);
-      }
+
+    let items = getCacheIndex();
+    if (!items.length) {
+      await getCacheSize();
+      items = getCacheIndex();
     }
-    
-    // Если размер превышает лимит, удаляем старые элементы
+
+    const protectedUrls = getProtectedCacheUrls();
+    let totalSize = items.reduce((total, item) => total + (Number(item.size) || 0), 0);
+
     if (totalSize > sizeLimit) {
       // Сортируем по дате (старые сначала)
-      items.sort((a, b) => a.date - b.date);
+      items.sort((a, b) => (a.lastUsed || a.cachedAt || 0) - (b.lastUsed || b.cachedAt || 0));
       
       let removedSize = 0;
       let removedCount = 0;
+      const keptItems = [];
       
       for (const item of items) {
-        if (totalSize - removedSize <= sizeLimit) break;
-        
-        await cacheStorage.delete(item.request);
-        removedSize += item.size;
+        if (totalSize - removedSize <= sizeLimit || protectedUrls.has(item.url)) {
+          keptItems.push(item);
+          continue;
+        }
+
+        await cacheStorage.delete(item.url);
+        removedSize += Number(item.size) || 0;
         removedCount++;
       }
+
+      saveCacheIndex([
+        ...keptItems,
+        ...items.filter((item) => protectedUrls.has(item.url) && !keptItems.includes(item))
+      ]);
       
       if (removedCount > 0) {
         console.log(`🗑 Cache size limit exceeded, removed ${removedCount} items (${formatCacheSize(removedSize)})`);
@@ -814,6 +1145,16 @@ async function cleanupCacheBySize() {
   } catch (error) {
     console.error("❌ Error during cache size cleanup:", error);
   }
+}
+
+function getProtectedCacheUrls() {
+  const urls = new Set();
+  const storedMetadata = getStoredImageMetadata();
+  const pinnedImage = getPinnedImage();
+
+  if (storedMetadata?.url) urls.add(storedMetadata.url);
+  if (pinnedImage?.url) urls.add(pinnedImage.url);
+  return urls;
 }
 
 // Инициализация модуля настроек (неблокирующая)
@@ -850,9 +1191,9 @@ window.isServerAvailable = isServerAvailable;
 
 // Централизованная функция получения текущего языка (с кэшированием)
 function getCurrentLanguage() {
-  if (!cachedSettings) {
-    cachedSettings = loadUserSettings();
-    cachedLanguage = cachedSettings.language || "en";
+  if (!cachedLanguage) {
+    const settings = loadUserSettings();
+    cachedLanguage = settings.language || "en";
   }
   return cachedLanguage;
 }

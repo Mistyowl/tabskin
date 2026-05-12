@@ -85,13 +85,23 @@ async function writeManifest(browser, targetDir) {
   return manifest.version
 }
 
-async function writeHtml(targetDir) {
+function minifyHtml(html) {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/\s+/g, " ")
+    .replace(/>\s+(?=<(?:html|head|body|meta|link|title|div|button|svg|use|p|script)\b|<\/(?:html|head|body|div|button|svg|p|script)>)/gi, ">")
+    .replace(/(<\/(?:html|head|body|div|button|svg|p|script)>|<(?:html|head|body|meta|link|title|div|button|svg|use|p|script)\b[^>]*>)\s+</gi, "$1<")
+    .trim()
+}
+
+async function writeHtml(targetDir, mode) {
+  const isProduction = mode === "production"
   const html = await fs.readFile(path.join(rootDir, "index.html"), "utf8")
   const outputHtml = html.replace(
     /\s*<script\s+src=["']script\.js["']><\/script>\s*<script\s+src=["']assets\/js\/settings\.js["']><\/script>/,
     "\n  <script src=\"app.js\"></script>"
   )
-  await fs.writeFile(path.join(targetDir, "index.html"), outputHtml)
+  await fs.writeFile(path.join(targetDir, "index.html"), `${isProduction ? minifyHtml(outputHtml) : outputHtml}`)
 }
 
 async function writeJavaScript(targetDir, mode) {
@@ -165,7 +175,7 @@ async function buildTarget(browser, mode) {
   await ensureEmptyDir(targetDir)
 
   const version = await writeManifest(browser, targetDir)
-  await writeHtml(targetDir)
+  await writeHtml(targetDir, mode)
   await writeJavaScript(targetDir, mode)
   await writeCss(targetDir, mode)
   await copyStaticAssets(targetDir)

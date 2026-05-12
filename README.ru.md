@@ -106,8 +106,8 @@ npm run dev:firefox
 ```text
 dist/chrome/
 dist/firefox/
-artifacts/tabskin-chrome-v1.5.5.zip
-artifacts/tabskin-firefox-v1.5.5.zip
+artifacts/tabskin-chrome-v1.1.0.zip
+artifacts/tabskin-firefox-v1.1.0.zip
 ```
 
 Production-сборка:
@@ -140,8 +140,8 @@ Production-сборка:
 
 Для загрузки в магазины используются:
 
-- Chrome Web Store: `artifacts/tabskin-chrome-v1.5.5.zip`
-- Firefox Add-ons: `artifacts/tabskin-firefox-v1.5.5.zip`
+- Chrome Web Store: `artifacts/tabskin-chrome-v1.1.0.zip`
+- Firefox Add-ons: `artifacts/tabskin-firefox-v1.1.0.zip`
 
 Перед публикацией выполните:
 

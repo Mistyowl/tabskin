@@ -61,59 +61,108 @@ class SettingsManager {
       const html = `
         <div id="settingsModal" class="settings-modal hidden">
           <div class="settings-content" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle" tabindex="-1">
-            <h2 id="settingsModalTitle" data-i18n="settingsTitle">Settings</h2>
-            <label>
-              <span data-i18n="language">Language:</span>
-              <select id="languageSelect">
-                <option value="en" data-i18n="english">English</option>
-                <option value="ru" data-i18n="russian">Русский</option>
-              </select>
-            </label>
-            <label>
-              <span data-i18n="timeFormat">Time format:</span>
-              <select id="timeFormatSelect">
-                <option value="24" data-i18n="time24Hour">24-hour format</option>
-                <option value="12" data-i18n="time12Hour">12-hour format (AM/PM)</option>
-              </select>
-            </label>
-            <label>
-              <span data-i18n="wallpaperTheme">Wallpaper theme:</span>
-              <select id="themeSelect">
-                <option value="wallpapers" data-i18n="wallpapers">Wallpapers</option>
-                <option value="nature" data-i18n="nature">Nature</option>
-                <option value="render" data-i18n="render3d">3D Render</option>
-                <option value="textures" data-i18n="textures">Texture</option>
-                <option value="space" data-i18n="space">Space</option>
-                <option value="travel" data-i18n="travel">Travel</option>
-                <option value="film" data-i18n="film">Film</option>
-                <option value="people" data-i18n="people">People</option>
-                <option value="architecture" data-i18n="architecture">Architecture</option>
-                <option value="street" data-i18n="streetPhotography">Street Photography</option>
-              </select>
-            </label>
-            <label>
-              <input type="checkbox" id="autoSwitchToggle" />
-              <span data-i18n="autoSwitch">Automatic background change</span>
-            </label>
-            <label>
-              <span data-i18n="changeFrequency">Change frequency:</span>
-              <select id="autoSwitchInterval">
-                <option value="1" data-i18n="everyMinute">Every minute</option>
-                <option value="15" data-i18n="every15Minutes">Every 15 minutes</option>
-                <option value="60" data-i18n="everyHour">Every hour</option>
-                <option value="360" data-i18n="every6Hours">Every 6 hours</option>
-              </select>
-            </label>
-            <label>
-              <input type="checkbox" id="transitionToggle" />
-              <span data-i18n="smoothTransition">Smooth transition animation</span>
-            </label>
-            <div class="cache-info">
-              <div class="cache-details">
-                <span class="cache-label" data-i18n="cacheSize">Cache size:</span>
-                <span id="cacheSizeDisplay">Calculating...</span>
-              </div>
-              <button id="clearCacheButton" class="clear-cache-btn" data-i18n="clearCacheNow">Clear cache now</button>
+            <div class="settings-header">
+              <h2 id="settingsModalTitle" data-i18n="settingsTitle">Settings</h2>
+            </div>
+            <div class="settings-groups">
+              <section class="settings-group" aria-label="Interface settings">
+                <h3 class="settings-group-title" data-i18n="settingsGroupInterface">Interface</h3>
+                <div class="settings-row">
+                  <span class="settings-row-label" data-i18n="language">Language:</span>
+                  <div class="settings-control">
+                    <div class="segmented-control" role="radiogroup" aria-label="Language">
+                      <label class="segmented-option">
+                        <input type="radio" name="language" value="en" />
+                        <span data-i18n="english">English</span>
+                      </label>
+                      <label class="segmented-option">
+                        <input type="radio" name="language" value="ru" />
+                        <span data-i18n="russian">Русский</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="settings-row">
+                  <span class="settings-row-label" data-i18n="timeFormat">Time format:</span>
+                  <div class="settings-control">
+                    <div class="segmented-control" role="radiogroup" aria-label="Time format">
+                      <label class="segmented-option">
+                        <input type="radio" name="timeFormat" value="24" />
+                        <span data-i18n="time24Hour">24-hour format</span>
+                      </label>
+                      <label class="segmented-option">
+                        <input type="radio" name="timeFormat" value="12" />
+                        <span data-i18n="time12Hour">12-hour format (AM/PM)</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="settings-group" aria-label="Background settings">
+                <h3 class="settings-group-title" data-i18n="settingsGroupBackground">Background</h3>
+                <label class="settings-row" for="themeSelect">
+                  <span class="settings-row-label" data-i18n="wallpaperTheme">Wallpaper theme:</span>
+                  <span class="settings-control">
+                    <select id="themeSelect">
+                      <option value="wallpapers" data-i18n="wallpapers">Wallpapers</option>
+                      <option value="nature" data-i18n="nature">Nature</option>
+                      <option value="render" data-i18n="render3d">3D Render</option>
+                      <option value="textures" data-i18n="textures">Texture</option>
+                      <option value="space" data-i18n="space">Space</option>
+                      <option value="travel" data-i18n="travel">Travel</option>
+                      <option value="film" data-i18n="film">Film</option>
+                      <option value="people" data-i18n="people">People</option>
+                      <option value="architecture" data-i18n="architecture">Architecture</option>
+                      <option value="street" data-i18n="streetPhotography">Street Photography</option>
+                    </select>
+                  </span>
+                </label>
+                <label class="settings-row settings-row-switch">
+                  <span class="settings-row-label" data-i18n="autoSwitch">Automatic background change</span>
+                  <span class="settings-control">
+                    <input class="switch-input" type="checkbox" id="autoSwitchToggle" />
+                    <span class="switch-track" aria-hidden="true"></span>
+                  </span>
+                </label>
+                <label class="settings-row" for="autoSwitchInterval">
+                  <span class="settings-row-label" data-i18n="changeFrequency">Change frequency:</span>
+                  <span class="settings-control">
+                    <select id="autoSwitchInterval">
+                      <option value="15" data-i18n="every15Minutes">Every 15 minutes</option>
+                      <option value="60" data-i18n="everyHour">Every hour</option>
+                      <option value="360" data-i18n="every6Hours">Every 6 hours</option>
+                    </select>
+                  </span>
+                </label>
+              </section>
+
+              <section class="settings-group" aria-label="Performance and storage settings">
+                <h3 class="settings-group-title" data-i18n="settingsGroupPerformance">Performance</h3>
+                <label class="settings-row settings-row-switch">
+                  <span class="settings-row-label" data-i18n="smoothTransition">Smooth transition animation</span>
+                  <span class="settings-control">
+                    <input class="switch-input" type="checkbox" id="transitionToggle" />
+                    <span class="switch-track" aria-hidden="true"></span>
+                  </span>
+                </label>
+                <label class="settings-row settings-row-switch">
+                  <span class="settings-row-label" data-i18n="performanceMode">Performance mode (optimized image size)</span>
+                  <span class="settings-control">
+                    <input class="switch-input" type="checkbox" id="performanceModeToggle" />
+                    <span class="switch-track" aria-hidden="true"></span>
+                  </span>
+                </label>
+                <div class="settings-row cache-row">
+                  <div class="settings-row-label">
+                    <span data-i18n="cacheSize">Cache size:</span>
+                    <span id="cacheSizeDisplay">Calculating...</span>
+                  </div>
+                  <div class="settings-control">
+                    <button id="clearCacheButton" class="clear-cache-btn" type="button" data-i18n="clearCacheNow">Clear cache now</button>
+                  </div>
+                </div>
+              </section>
             </div>
             <div class="button-group">
               <button id="saveSettings" type="button" data-i18n="save">Save</button>
@@ -176,14 +225,14 @@ class SettingsManager {
     }
 
     // Обработчик изменения языка
-    const languageSelect = this.settingsModal.querySelector("#languageSelect");
-    if (languageSelect) {
-      languageSelect.addEventListener("change", (event) => {
+    this.settingsModal.querySelectorAll('input[name="language"]').forEach((input) => {
+      input.addEventListener("change", (event) => {
+        if (!event.target.checked) return;
         const selectedLanguage = event.target.value;
         console.log("🌐 Language changed to:", selectedLanguage);
         this.applyLanguage(selectedLanguage);
       });
-    }
+    });
   }
 
   getFocusableElements() {
@@ -299,13 +348,15 @@ class SettingsManager {
     const settings = window.loadUserSettings();
     
     const elements = {
-      languageSelect: settings.language || "en",
-      timeFormatSelect: settings.timeFormat || "24",
       themeSelect: settings.theme,
       autoSwitchToggle: settings.autoSwitchEnabled,
       autoSwitchInterval: settings.autoSwitchIntervalMinutes,
-      transitionToggle: settings.transitionEnabled
+      transitionToggle: settings.transitionEnabled,
+      performanceModeToggle: settings.performanceModeEnabled
     };
+
+    this.setRadioValue("language", settings.language || "en");
+    this.setRadioValue("timeFormat", settings.timeFormat || "24");
 
     // Применяем настройки к элементам формы
     Object.entries(elements).forEach(([selector, value]) => {
@@ -323,12 +374,13 @@ class SettingsManager {
   // Сохранение настроек
   saveSettings() {
     const newSettings = {
-      language: this.settingsModal.querySelector("#languageSelect").value,
-      timeFormat: this.settingsModal.querySelector("#timeFormatSelect").value,
+      language: this.getRadioValue("language", "en"),
+      timeFormat: this.getRadioValue("timeFormat", "24"),
       theme: this.settingsModal.querySelector("#themeSelect").value,
       autoSwitchEnabled: this.settingsModal.querySelector("#autoSwitchToggle").checked,
       autoSwitchIntervalMinutes: Number(this.settingsModal.querySelector("#autoSwitchInterval").value),
-      transitionEnabled: this.settingsModal.querySelector("#transitionToggle").checked
+      transitionEnabled: this.settingsModal.querySelector("#transitionToggle").checked,
+      performanceModeEnabled: this.settingsModal.querySelector("#performanceModeToggle").checked
     };
 
     window.saveUserSettings(newSettings);
@@ -339,6 +391,15 @@ class SettingsManager {
     window.showToastError(successMessage, 'success');
     
     this.closeSettings();
+  }
+
+  getRadioValue(name, fallbackValue) {
+    return this.settingsModal.querySelector(`input[name="${name}"]:checked`)?.value || fallbackValue;
+  }
+
+  setRadioValue(name, value) {
+    const input = this.settingsModal.querySelector(`input[name="${name}"][value="${value}"]`);
+    if (input) input.checked = true;
   }
 
   // Применение языка
