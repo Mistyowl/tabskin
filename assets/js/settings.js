@@ -92,7 +92,7 @@ class SettingsManager {
                       </label>
                       <label class="segmented-option">
                         <input type="radio" name="timeFormat" value="12" />
-                        <span data-i18n="time12Hour">12-hour format (AM/PM)</span>
+                        <span data-i18n="time12Hour">12-hour format</span>
                       </label>
                     </div>
                   </div>
