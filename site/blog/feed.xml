@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Блог Tabskin</title>
+    <link>https://tabskin.ru/blog/</link>
+    <description>Статьи о новой вкладке, обоях Unsplash и минимализме</description>
+    <language>ru</language>
+    <lastBuildDate>Tue, 30 Jun 2026 09:52:12 GMT</lastBuildDate>
+    <atom:link href="https://tabskin.ru/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Почему минималистичная новая вкладка улучшает фокус</title>
+      <link>https://tabskin.ru/blog/minimalistichnaya-novaya-vkladka/</link>
+      <guid isPermaLink="true">https://tabskin.ru/blog/minimalistichnaya-novaya-vkladka/</guid>
+      <description>Меньше визуального шума на каждой новой вкладке — спокойнее старт. Как минималистичная вкладка с обоями и часами помогает сосредоточиться.</description>
+      <pubDate>Wed, 10 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Лучшие обои для новой вкладки</title>
+      <link>https://tabskin.ru/blog/oboi-na-novuyu-vkladku/</link>
+      <guid isPermaLink="true">https://tabskin.ru/blog/oboi-na-novuyu-vkladku/</guid>
+      <description>Как выбрать красивые обои для новой вкладки браузера. Почему Unsplash подходит для фона вкладки и как настроить темы в Tabskin.</description>
+      <pubDate>Fri, 05 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Как изменить новую вкладку в Chrome</title>
+      <link>https://tabskin.ru/blog/kak-izmenit-novuyu-vkladku-chrome/</link>
+      <guid isPermaLink="true">https://tabskin.ru/blog/kak-izmenit-novuyu-vkladku-chrome/</guid>
+      <description>Узнайте, как заменить стандартную новую вкладку в Google Chrome на красивую страницу с обоями Unsplash и часами с помощью расширения Tabskin.</description>
+      <pubDate>Mon, 01 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

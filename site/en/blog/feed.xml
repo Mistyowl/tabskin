@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tabskin Blog</title>
+    <link>https://tabskin.ru/en/blog/</link>
+    <description>Articles about new tabs, Unsplash wallpapers, and minimalism</description>
+    <language>en</language>
+    <lastBuildDate>Tue, 30 Jun 2026 09:52:12 GMT</lastBuildDate>
+    <atom:link href="https://tabskin.ru/en/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Why a Minimalist New Tab Improves Focus</title>
+      <link>https://tabskin.ru/en/blog/minimalist-new-tab-focus/</link>
+      <guid isPermaLink="true">https://tabskin.ru/en/blog/minimalist-new-tab-focus/</guid>
+      <description>Less visual noise on every new tab means a calmer start. How a minimalist new tab with wallpapers and a clock helps focus and productivity.</description>
+      <pubDate>Wed, 10 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Best New Tab Wallpapers</title>
+      <link>https://tabskin.ru/en/blog/best-new-tab-wallpapers/</link>
+      <guid isPermaLink="true">https://tabskin.ru/en/blog/best-new-tab-wallpapers/</guid>
+      <description>How to choose beautiful wallpapers for your browser new tab. Why Unsplash works for tab backgrounds and how to set up themes in Tabskin.</description>
+      <pubDate>Fri, 05 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>How to Change New Tab in Chrome</title>
+      <link>https://tabskin.ru/en/blog/change-new-tab-chrome/</link>
+      <guid isPermaLink="true">https://tabskin.ru/en/blog/change-new-tab-chrome/</guid>
+      <description>Learn how to replace the default new tab in Google Chrome with a beautiful page featuring Unsplash wallpapers and a clock using the Tabskin extension.</description>
+      <pubDate>Mon, 01 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

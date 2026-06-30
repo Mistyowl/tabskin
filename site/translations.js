@@ -308,13 +308,8 @@ function updatePageContent(lang) {
   elements.forEach((element) => {
     const key = element.getAttribute("data-translate")
     if (translations[lang] && Object.prototype.hasOwnProperty.call(translations[lang], key)) {
-      if (element.tagName === "META") {
-        element.setAttribute("content", translations[lang][key])
-      } else if (element.tagName === "TITLE") {
-        element.textContent = translations[lang][key]
-      } else {
-        element.innerHTML = translations[lang][key]
-      }
+      if (element.tagName === "TITLE" || element.tagName === "META") return
+      element.innerHTML = translations[lang][key]
     }
   })
 

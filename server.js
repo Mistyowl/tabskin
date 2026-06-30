@@ -35,7 +35,7 @@ const serveStatic = (req, res, next) => {
   const url = req.url;
   
   // Разрешенные расширения файлов
-  const allowedExtensions = ['.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico'];
+  const allowedExtensions = ['.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp'];
   const ext = path.extname(url).toLowerCase();
   
   if (!allowedExtensions.includes(ext)) {

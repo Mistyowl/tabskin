@@ -10,7 +10,10 @@
     "build:firefox": "node scripts/build-extension.mjs --target=firefox --mode=production",
     "dev:chrome": "node scripts/build-extension.mjs --target=chrome --mode=development --watch",
     "dev:firefox": "node scripts/build-extension.mjs --target=firefox --mode=development --watch",
-    "validate:extension": "node scripts/validate-extension-assets.mjs"
+    "validate:extension": "node scripts/validate-extension-assets.mjs",
+    "build:site": "node scripts/build-site.mjs",
+    "validate:site": "node scripts/validate-site-seo.mjs",
+    "migrate:site-head": "node scripts/migrate-site-head.mjs"
   },
   "devDependencies": {
     "archiver": "^8.0.0",

@@ -48,6 +48,10 @@
       "url": "/blog/oboi-na-novuyu-vkladku/",
       "keywords": ["лучшие обои для новой вкладки", "обои unsplash новая вкладка"]
     },
+    "blog-wallpapers-en": {
+      "url": "/en/blog/best-new-tab-wallpapers/",
+      "keywords": ["best new tab wallpapers", "unsplash new tab wallpaper"]
+    },
     "blog-chrome-en": {
       "url": "/en/blog/change-new-tab-chrome/",
       "keywords": ["how to change new tab chrome", "customize chrome new tab"]
@@ -55,6 +59,10 @@
     "blog-focus-en": {
       "url": "/en/blog/minimalist-new-tab-focus/",
       "keywords": ["minimalist new tab focus", "new tab clock wallpaper", "calm browser start page"]
+    },
+    "blog-focus-ru": {
+      "url": "/blog/minimalistichnaya-novaya-vkladka/",
+      "keywords": ["минималистичная новая вкладка", "новая вкладка фокус", "спокойная стартовая страница браузера"]
     }
   }
 }

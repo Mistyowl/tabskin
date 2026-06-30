@@ -1,0 +1,394 @@
+{
+  "defaults": {
+    "analytics": { "ga": true, "ym": true },
+    "og": { "type": "website", "image": "/assets/screenshot-main.webp" },
+    "stylesheet": "/styles.css",
+    "sitemap": {
+      "changefreq": "monthly",
+      "priority": 0.7
+    }
+  },
+  "pages": [
+    {
+      "path": "/",
+      "file": "index.html",
+      "lang": "ru",
+      "title": "Tabskin — расширение для новой вкладки с обоями Unsplash | Chrome и Firefox",
+      "description": "Tabskin — бесплатное расширение для новой вкладки: красивые обои Unsplash, часы, локальные настройки без рекламы. Установка для Chrome и Firefox за минуту.",
+      "keywords": "новая вкладка, обои на новую вкладку, расширение Chrome, расширение Firefox, минималистичная новая вкладка, Unsplash обои, Tabskin, новая вкладка без рекламы",
+      "alternates": { "ru": "/", "en": "/en/", "xDefault": "/" },
+      "stylesheet": "styles.css",
+      "preloadImage": "assets/screenshot-main.webp",
+      "schema": ["softwareApplicationRu", "webSiteRu", "faqHomeRu"],
+      "sitemap": { "changefreq": "weekly", "priority": 1.0 }
+    },
+    {
+      "path": "/en/",
+      "file": "en/index.html",
+      "lang": "en",
+      "title": "Tabskin — New Tab Extension with Unsplash Wallpapers | Chrome & Firefox",
+      "description": "Tabskin is a free minimalist new tab extension with Unsplash wallpapers, a clock, and local settings. No ads. Install for Chrome and Firefox in one minute.",
+      "keywords": "new tab extension, minimalist new tab, unsplash new tab, chrome new tab wallpaper, firefox new tab, clean new tab, Tabskin",
+      "alternates": { "ru": "/", "en": "/en/", "xDefault": "/" },
+      "preloadImage": "/assets/screenshot-main.webp",
+      "schema": ["softwareApplicationEn", "webSiteEn", "faqHomeEn"],
+      "sitemap": { "changefreq": "weekly", "priority": 1.0 }
+    },
+    {
+      "path": "/privacy.html",
+      "file": "privacy.html",
+      "lang": "ru",
+      "title": "Политика конфиденциальности - Tabskin",
+      "description": "Политика конфиденциальности расширения Tabskin для Chrome и Firefox. Узнайте, как Tabskin обрабатывает данные, настройки и Unsplash download location.",
+      "alternates": { "ru": "/privacy.html", "en": "/en/privacy.html", "xDefault": "/privacy.html" },
+      "stylesheet": "styles.css",
+      "schema": [],
+      "sitemap": { "changefreq": "yearly", "priority": 0.5 }
+    },
+    {
+      "path": "/en/privacy.html",
+      "file": "en/privacy.html",
+      "lang": "en",
+      "title": "Privacy Policy - Tabskin",
+      "description": "Privacy policy for the Tabskin Chrome and Firefox extension. Learn how Tabskin handles data, settings, and Unsplash download location.",
+      "alternates": { "ru": "/privacy.html", "en": "/en/privacy.html", "xDefault": "/privacy.html" },
+      "schema": [],
+      "sitemap": { "changefreq": "yearly", "priority": 0.5 }
+    },
+    {
+      "path": "/faq/",
+      "file": "faq/index.html",
+      "lang": "ru",
+      "title": "FAQ — Tabskin | вопросы о расширении для новой вкладки",
+      "description": "Ответы на частые вопросы о Tabskin: безопасность, приватность, установка в Chrome и Firefox, обои Unsplash, бесплатность и отличия от других расширений.",
+      "alternates": { "ru": "/faq/", "en": "/en/faq/", "xDefault": "/faq/" },
+      "og": { "type": "website", "image": "/assets/screenshot-main.webp" },
+      "schema": ["breadcrumb", "faqPageRu"],
+      "breadcrumb": [
+        { "name": "Главная", "url": "https://tabskin.ru/" },
+        { "name": "FAQ", "url": "https://tabskin.ru/faq/" }
+      ],
+      "sitemap": { "changefreq": "monthly", "priority": 0.8 }
+    },
+    {
+      "path": "/en/faq/",
+      "file": "en/faq/index.html",
+      "lang": "en",
+      "title": "FAQ — Tabskin | New Tab Extension Questions",
+      "description": "Answers about Tabskin: safety, privacy, Chrome and Firefox installation, Unsplash wallpapers, pricing, and how it compares to other new tab extensions.",
+      "alternates": { "ru": "/faq/", "en": "/en/faq/", "xDefault": "/faq/" },
+      "schema": ["breadcrumb", "faqPageEn"],
+      "breadcrumb": [
+        { "name": "Home", "url": "https://tabskin.ru/en/" },
+        { "name": "FAQ", "url": "https://tabskin.ru/en/faq/" }
+      ],
+      "sitemap": { "changefreq": "monthly", "priority": 0.8 }
+    },
+    {
+      "path": "/install/chrome/",
+      "file": "install/chrome/index.html",
+      "lang": "ru",
+      "title": "Как установить Tabskin в Chrome — обои на новую вкладку",
+      "description": "Пошаговая инструкция: как установить расширение Tabskin в Google Chrome и заменить стандартную новую вкладку на красивые обои Unsplash с часами.",
+      "alternates": { "ru": "/install/chrome/", "en": "/en/install/chrome/", "xDefault": "/install/chrome/" },
+      "schema": ["breadcrumb", "howToChromeRu"],
+      "breadcrumb": [
+        { "name": "Главная", "url": "https://tabskin.ru/" },
+        { "name": "Установка Chrome", "url": "https://tabskin.ru/install/chrome/" }
+      ],
+      "sitemap": { "changefreq": "monthly", "priority": 0.8 }
+    },
+    {
+      "path": "/en/install/chrome/",
+      "file": "en/install/chrome/index.html",
+      "lang": "en",
+      "title": "How to Install Tabskin in Chrome — New Tab Wallpaper Extension",
+      "description": "Step-by-step guide: install the Tabskin extension in Google Chrome and replace the default new tab with beautiful Unsplash wallpapers and a clock.",
+      "alternates": { "ru": "/install/chrome/", "en": "/en/install/chrome/", "xDefault": "/install/chrome/" },
+      "schema": ["breadcrumb", "howToChromeEn"],
+      "breadcrumb": [
+        { "name": "Home", "url": "https://tabskin.ru/en/" },
+        { "name": "Chrome install", "url": "https://tabskin.ru/en/install/chrome/" }
+      ],
+      "sitemap": { "changefreq": "monthly", "priority": 0.8 }
+    },
+    {
+      "path": "/install/firefox/",
+      "file": "install/firefox/index.html",
+      "lang": "ru",
+      "title": "Как установить Tabskin в Firefox — замена новой вкладки",
+      "description": "Пошаговая инструкция: как установить расширение Tabskin в Mozilla Firefox и заменить стандартную новую вкладку на минималистичную страницу с обоями.",
+      "alternates": { "ru": "/install/firefox/", "en": "/en/install/firefox/", "xDefault": "/install/firefox/" },
+      "schema": ["breadcrumb", "howToFirefoxRu"],
+      "breadcrumb": [
+        { "name": "Главная", "url": "https://tabskin.ru/" },
+        { "name": "Установка Firefox", "url": "https://tabskin.ru/install/firefox/" }
+      ],
+      "sitemap": { "changefreq": "monthly", "priority": 0.8 }
+    },
+    {
+      "path": "/en/install/firefox/",
+      "file": "en/install/firefox/index.html",
+      "lang": "en",
+      "title": "How to Install Tabskin in Firefox — New Tab Extension",
+      "description": "Step-by-step guide: install Tabskin in Mozilla Firefox and replace the default new tab with a minimalist page featuring Unsplash wallpapers.",
+      "alternates": { "ru": "/install/firefox/", "en": "/en/install/firefox/", "xDefault": "/install/firefox/" },
+      "schema": ["breadcrumb", "howToFirefoxEn"],
+      "breadcrumb": [
+        { "name": "Home", "url": "https://tabskin.ru/en/" },
+        { "name": "Firefox install", "url": "https://tabskin.ru/en/install/firefox/" }
+      ],
+      "sitemap": { "changefreq": "monthly", "priority": 0.8 }
+    },
+    {
+      "path": "/alternatives/",
+      "file": "alternatives/index.html",
+      "lang": "ru",
+      "title": "Tabskin vs Momentum и другие — лёгкая альтернатива новой вкладке",
+      "description": "Сравнение Tabskin с Momentum и другими расширениями для новой вкладки. Минималистичная новая вкладка без рекламы, с обоями Unsplash и локальными настройками.",
+      "alternates": { "ru": "/alternatives/", "en": "/en/alternatives/", "xDefault": "/alternatives/" },
+      "schema": ["breadcrumb"],
+      "breadcrumb": [
+        { "name": "Главная", "url": "https://tabskin.ru/" },
+        { "name": "Альтернативы", "url": "https://tabskin.ru/alternatives/" }
+      ],
+      "sitemap": { "changefreq": "monthly", "priority": 0.7 }
+    },
+    {
+      "path": "/en/alternatives/",
+      "file": "en/alternatives/index.html",
+      "lang": "en",
+      "title": "Tabskin vs Momentum — Free Lightweight New Tab Alternative",
+      "description": "Compare Tabskin with Momentum and other new tab extensions. A minimalist new tab without ads, with Unsplash wallpapers and local settings.",
+      "alternates": { "ru": "/alternatives/", "en": "/en/alternatives/", "xDefault": "/alternatives/" },
+      "schema": ["breadcrumb"],
+      "breadcrumb": [
+        { "name": "Home", "url": "https://tabskin.ru/en/" },
+        { "name": "Alternatives", "url": "https://tabskin.ru/en/alternatives/" }
+      ],
+      "sitemap": { "changefreq": "monthly", "priority": 0.7 }
+    },
+    {
+      "path": "/blog/",
+      "file": "blog/index.html",
+      "lang": "ru",
+      "title": "Блог Tabskin — новая вкладка, обои и советы",
+      "description": "Статьи о новой вкладке браузера: как изменить вкладку в Chrome, лучшие обои Unsplash, минимализм и продуктивность с Tabskin.",
+      "alternates": { "ru": "/blog/", "en": "/en/blog/", "xDefault": "/blog/" },
+      "schema": ["breadcrumb"],
+      "breadcrumb": [
+        { "name": "Главная", "url": "https://tabskin.ru/" },
+        { "name": "Блог", "url": "https://tabskin.ru/blog/" }
+      ],
+      "sitemap": { "changefreq": "weekly", "priority": 0.7 }
+    },
+    {
+      "path": "/en/blog/",
+      "file": "en/blog/index.html",
+      "lang": "en",
+      "title": "Tabskin Blog — New Tab Tips, Wallpapers & Guides",
+      "description": "Articles about the browser new tab: how to change Chrome new tab, best Unsplash wallpapers, minimalism and productivity with Tabskin.",
+      "alternates": { "ru": "/blog/", "en": "/en/blog/", "xDefault": "/blog/" },
+      "schema": ["breadcrumb"],
+      "breadcrumb": [
+        { "name": "Home", "url": "https://tabskin.ru/en/" },
+        { "name": "Blog", "url": "https://tabskin.ru/en/blog/" }
+      ],
+      "sitemap": { "changefreq": "weekly", "priority": 0.7 }
+    },
+    {
+      "path": "/blog/kak-izmenit-novuyu-vkladku-chrome/",
+      "file": "blog/kak-izmenit-novuyu-vkladku-chrome/index.html",
+      "lang": "ru",
+      "title": "Как изменить новую вкладку в Chrome — гайд Tabskin",
+      "description": "Узнайте, как заменить стандартную новую вкладку в Google Chrome на красивую страницу с обоями Unsplash и часами с помощью расширения Tabskin.",
+      "alternates": {
+        "ru": "/blog/kak-izmenit-novuyu-vkladku-chrome/",
+        "en": "/en/blog/change-new-tab-chrome/",
+        "xDefault": "/blog/kak-izmenit-novuyu-vkladku-chrome/"
+      },
+      "og": { "type": "article", "image": "/assets/screenshot-main.webp" },
+      "schema": ["breadcrumb", "article"],
+      "breadcrumb": [
+        { "name": "Главная", "url": "https://tabskin.ru/" },
+        { "name": "Блог", "url": "https://tabskin.ru/blog/" },
+        { "name": "Как изменить новую вкладку в Chrome", "url": "https://tabskin.ru/blog/kak-izmenit-novuyu-vkladku-chrome/" }
+      ],
+      "article": {
+        "headline": "Как изменить новую вкладку в Chrome",
+        "description": "Гайд по замене стандартной новой вкладки Chrome на минималистичную страницу Tabskin.",
+        "datePublished": "2026-06-01",
+        "dateModified": "2026-06-30"
+      },
+      "feed": {
+        "title": "Как изменить новую вкладку в Chrome",
+        "lang": "ru"
+      },
+      "sitemap": { "changefreq": "monthly", "priority": 0.6 }
+    },
+    {
+      "path": "/en/blog/change-new-tab-chrome/",
+      "file": "en/blog/change-new-tab-chrome/index.html",
+      "lang": "en",
+      "title": "How to Change New Tab in Chrome — Tabskin Guide",
+      "description": "Learn how to replace the default new tab in Google Chrome with a beautiful page featuring Unsplash wallpapers and a clock using the Tabskin extension.",
+      "alternates": {
+        "ru": "/blog/kak-izmenit-novuyu-vkladku-chrome/",
+        "en": "/en/blog/change-new-tab-chrome/",
+        "xDefault": "/blog/kak-izmenit-novuyu-vkladku-chrome/"
+      },
+      "og": { "type": "article", "image": "/assets/screenshot-main.webp" },
+      "schema": ["breadcrumb", "article"],
+      "breadcrumb": [
+        { "name": "Home", "url": "https://tabskin.ru/en/" },
+        { "name": "Blog", "url": "https://tabskin.ru/en/blog/" },
+        { "name": "How to change new tab in Chrome", "url": "https://tabskin.ru/en/blog/change-new-tab-chrome/" }
+      ],
+      "article": {
+        "headline": "How to Change New Tab in Chrome",
+        "description": "Guide to replacing the default Chrome new tab with Tabskin's minimalist page.",
+        "datePublished": "2026-06-01",
+        "dateModified": "2026-06-30"
+      },
+      "feed": {
+        "title": "How to Change New Tab in Chrome",
+        "lang": "en"
+      },
+      "sitemap": { "changefreq": "monthly", "priority": 0.6 }
+    },
+    {
+      "path": "/blog/oboi-na-novuyu-vkladku/",
+      "file": "blog/oboi-na-novuyu-vkladku/index.html",
+      "lang": "ru",
+      "title": "Лучшие обои для новой вкладки — Unsplash и Tabskin",
+      "description": "Как выбрать красивые обои для новой вкладки браузера. Почему Unsplash подходит для фона вкладки и как настроить темы в Tabskin.",
+      "alternates": {
+        "ru": "/blog/oboi-na-novuyu-vkladku/",
+        "en": "/en/blog/best-new-tab-wallpapers/",
+        "xDefault": "/blog/oboi-na-novuyu-vkladku/"
+      },
+      "og": { "type": "article", "image": "/assets/screenshot-main.webp" },
+      "schema": ["breadcrumb", "article"],
+      "breadcrumb": [
+        { "name": "Главная", "url": "https://tabskin.ru/" },
+        { "name": "Блог", "url": "https://tabskin.ru/blog/" },
+        { "name": "Обои на новую вкладку", "url": "https://tabskin.ru/blog/oboi-na-novuyu-vkladku/" }
+      ],
+      "article": {
+        "headline": "Лучшие обои для новой вкладки",
+        "description": "Как выбрать обои Unsplash для новой вкладки в Tabskin.",
+        "datePublished": "2026-06-05",
+        "dateModified": "2026-06-30"
+      },
+      "feed": {
+        "title": "Лучшие обои для новой вкладки",
+        "lang": "ru"
+      },
+      "sitemap": { "changefreq": "monthly", "priority": 0.6 }
+    },
+    {
+      "path": "/en/blog/best-new-tab-wallpapers/",
+      "file": "en/blog/best-new-tab-wallpapers/index.html",
+      "lang": "en",
+      "title": "Best New Tab Wallpapers — Unsplash & Tabskin",
+      "description": "How to choose beautiful wallpapers for your browser new tab. Why Unsplash works for tab backgrounds and how to set up themes in Tabskin.",
+      "alternates": {
+        "ru": "/blog/oboi-na-novuyu-vkladku/",
+        "en": "/en/blog/best-new-tab-wallpapers/",
+        "xDefault": "/blog/oboi-na-novuyu-vkladku/"
+      },
+      "og": { "type": "article", "image": "/assets/screenshot-main.webp" },
+      "schema": ["breadcrumb", "article"],
+      "breadcrumb": [
+        { "name": "Home", "url": "https://tabskin.ru/en/" },
+        { "name": "Blog", "url": "https://tabskin.ru/en/blog/" },
+        { "name": "Best new tab wallpapers", "url": "https://tabskin.ru/en/blog/best-new-tab-wallpapers/" }
+      ],
+      "article": {
+        "headline": "Best New Tab Wallpapers",
+        "description": "How to choose Unsplash wallpapers for your new tab in Tabskin.",
+        "datePublished": "2026-06-05",
+        "dateModified": "2026-06-30"
+      },
+      "feed": {
+        "title": "Best New Tab Wallpapers",
+        "lang": "en"
+      },
+      "sitemap": { "changefreq": "monthly", "priority": 0.6 }
+    },
+    {
+      "path": "/en/blog/minimalist-new-tab-focus/",
+      "file": "en/blog/minimalist-new-tab-focus/index.html",
+      "lang": "en",
+      "title": "Why a Minimalist New Tab Improves Focus — Tabskin Blog",
+      "description": "Less visual noise on every new tab means a calmer start. How a minimalist new tab with wallpapers and a clock helps focus and productivity.",
+      "alternates": {
+        "ru": "/blog/minimalistichnaya-novaya-vkladka/",
+        "en": "/en/blog/minimalist-new-tab-focus/",
+        "xDefault": "/blog/minimalistichnaya-novaya-vkladka/"
+      },
+      "og": { "type": "article", "image": "/assets/screenshot-main.webp" },
+      "schema": ["breadcrumb", "article"],
+      "breadcrumb": [
+        { "name": "Home", "url": "https://tabskin.ru/en/" },
+        { "name": "Blog", "url": "https://tabskin.ru/en/blog/" },
+        { "name": "Minimalist new tab focus", "url": "https://tabskin.ru/en/blog/minimalist-new-tab-focus/" }
+      ],
+      "article": {
+        "headline": "Why a minimalist new tab improves focus",
+        "description": "How reducing new tab clutter helps productivity.",
+        "datePublished": "2026-06-10",
+        "dateModified": "2026-06-30"
+      },
+      "feed": {
+        "title": "Why a Minimalist New Tab Improves Focus",
+        "lang": "en"
+      },
+      "sitemap": { "changefreq": "monthly", "priority": 0.6 }
+    },
+    {
+      "path": "/blog/minimalistichnaya-novaya-vkladka/",
+      "file": "blog/minimalistichnaya-novaya-vkladka/index.html",
+      "lang": "ru",
+      "title": "Почему минималистичная новая вкладка улучшает фокус — блог Tabskin",
+      "description": "Меньше визуального шума на каждой новой вкладке — спокойнее старт. Как минималистичная вкладка с обоями и часами помогает сосредоточиться.",
+      "alternates": {
+        "ru": "/blog/minimalistichnaya-novaya-vkladka/",
+        "en": "/en/blog/minimalist-new-tab-focus/",
+        "xDefault": "/blog/minimalistichnaya-novaya-vkladka/"
+      },
+      "og": { "type": "article", "image": "/assets/screenshot-main.webp" },
+      "schema": ["breadcrumb", "article"],
+      "breadcrumb": [
+        { "name": "Главная", "url": "https://tabskin.ru/" },
+        { "name": "Блог", "url": "https://tabskin.ru/blog/" },
+        { "name": "Минималистичная новая вкладка", "url": "https://tabskin.ru/blog/minimalistichnaya-novaya-vkladka/" }
+      ],
+      "article": {
+        "headline": "Почему минималистичная новая вкладка улучшает фокус",
+        "description": "Как уменьшение визуального шума на новой вкладке помогает продуктивности.",
+        "datePublished": "2026-06-10",
+        "dateModified": "2026-06-30"
+      },
+      "feed": {
+        "title": "Почему минималистичная новая вкладка улучшает фокус",
+        "lang": "ru"
+      },
+      "sitemap": { "changefreq": "monthly", "priority": 0.6 }
+    },
+    {
+      "path": "/uninstall.html",
+      "file": "uninstall.html",
+      "lang": "en",
+      "title": "Tabskin — Uninstall Feedback",
+      "description": "Tell Tabskin why you uninstalled the extension. Your feedback helps improve the beautiful, minimalist new tab experience.",
+      "robots": "noindex, nofollow",
+      "author": false,
+      "analytics": { "ga": false, "ym": false },
+      "stylesheet": "styles.css",
+      "preloadImage": "assets/screenshot-main.webp",
+      "schema": [],
+      "sitemap": false
+    }
+  ]
+}
