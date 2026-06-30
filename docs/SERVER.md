@@ -126,7 +126,7 @@ flowchart LR
   node --> unsplash
 ```
 
-1. Run `npm run build:site` and deploy `site/` to the web root
+1. Run `npm run build:site` (builds `site/demo/embed/` and injects SEO heads) and deploy `site/` to the web root
 2. Run `node server.js` (or PM2/systemd) behind nginx
 3. Proxy `/photos` and `/download` to the Node process
 4. Configure SSL for `tabskin.ru`

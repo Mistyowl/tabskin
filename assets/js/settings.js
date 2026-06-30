@@ -8,7 +8,8 @@ class SettingsManager {
     this.isInitializing = false;
     this.isToggling = false; // Защита от множественных вызовов
     this.previouslyFocusedElement = null;
-    this.handleModalKeydown = (event) => this.onModalKeydown(event);
+    this.handleDocumentPointerDown = (event) => this.onDocumentPointerDown(event);
+    this.openPicker = null;
     // НЕ инициализируем сразу - только при первом использовании
     
     // Добавляем обработчик кнопки настроек сразу
@@ -41,6 +42,7 @@ class SettingsManager {
     
     try {
       await this.loadSettingsHTML();
+      this.initPickers();
       this.setupEventListeners();
       this.isInitialized = true;
       console.log("⚙️ Settings module initialized");
@@ -67,33 +69,35 @@ class SettingsManager {
             <div class="settings-groups">
               <section class="settings-group" aria-label="Interface settings">
                 <h3 class="settings-group-title" data-i18n="settingsGroupInterface">Interface</h3>
-                <div class="settings-row">
-                  <span class="settings-row-label" data-i18n="language">Language:</span>
-                  <div class="settings-control">
-                    <div class="segmented-control" role="radiogroup" aria-label="Language">
-                      <label class="segmented-option">
-                        <input type="radio" name="language" value="en" />
-                        <span data-i18n="english">English</span>
-                      </label>
-                      <label class="segmented-option">
-                        <input type="radio" name="language" value="ru" />
-                        <span data-i18n="russian">Русский</span>
-                      </label>
+                <div class="settings-group-card">
+                  <div class="settings-row">
+                    <span class="settings-row-label" data-i18n="language">Language</span>
+                    <div class="settings-control">
+                      <div class="segmented-control" role="radiogroup" aria-label="Language">
+                        <label class="segmented-option">
+                          <input type="radio" name="language" value="en" />
+                          <span data-i18n="english">English</span>
+                        </label>
+                        <label class="segmented-option">
+                          <input type="radio" name="language" value="ru" />
+                          <span data-i18n="russian">Русский</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="settings-row">
-                  <span class="settings-row-label" data-i18n="timeFormat">Time format:</span>
-                  <div class="settings-control">
-                    <div class="segmented-control" role="radiogroup" aria-label="Time format">
-                      <label class="segmented-option">
-                        <input type="radio" name="timeFormat" value="24" />
-                        <span data-i18n="time24Hour">24-hour format</span>
-                      </label>
-                      <label class="segmented-option">
-                        <input type="radio" name="timeFormat" value="12" />
-                        <span data-i18n="time12Hour">12-hour format</span>
-                      </label>
+                  <div class="settings-row">
+                    <span class="settings-row-label" data-i18n="timeFormat">Time format</span>
+                    <div class="settings-control">
+                      <div class="segmented-control" role="radiogroup" aria-label="Time format">
+                        <label class="segmented-option">
+                          <input type="radio" name="timeFormat" value="24" />
+                          <span data-i18n="time24Hour">24 hour</span>
+                        </label>
+                        <label class="segmented-option">
+                          <input type="radio" name="timeFormat" value="12" />
+                          <span data-i18n="time12Hour">12 hour</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -101,72 +105,81 @@ class SettingsManager {
 
               <section class="settings-group" aria-label="Background settings">
                 <h3 class="settings-group-title" data-i18n="settingsGroupBackground">Background</h3>
-                <label class="settings-row" for="themeSelect">
-                  <span class="settings-row-label" data-i18n="wallpaperTheme">Wallpaper theme:</span>
-                  <span class="settings-control">
-                    <select id="themeSelect">
-                      <option value="wallpapers" data-i18n="wallpapers">Wallpapers</option>
-                      <option value="nature" data-i18n="nature">Nature</option>
-                      <option value="render" data-i18n="render3d">3D Render</option>
-                      <option value="textures" data-i18n="textures">Texture</option>
-                      <option value="space" data-i18n="space">Space</option>
-                      <option value="travel" data-i18n="travel">Travel</option>
-                      <option value="film" data-i18n="film">Film</option>
-                      <option value="people" data-i18n="people">People</option>
-                      <option value="architecture" data-i18n="architecture">Architecture</option>
-                      <option value="street" data-i18n="streetPhotography">Street Photography</option>
-                    </select>
-                  </span>
-                </label>
-                <label class="settings-row settings-row-switch">
-                  <span class="settings-row-label" data-i18n="autoSwitch">Automatic background change</span>
-                  <span class="settings-control">
-                    <input class="switch-input" type="checkbox" id="autoSwitchToggle" />
-                    <span class="switch-track" aria-hidden="true"></span>
-                  </span>
-                </label>
-                <label class="settings-row" for="autoSwitchInterval">
-                  <span class="settings-row-label" data-i18n="changeFrequency">Change frequency:</span>
-                  <span class="settings-control">
-                    <select id="autoSwitchInterval">
-                      <option value="15" data-i18n="every15Minutes">Every 15 minutes</option>
-                      <option value="60" data-i18n="everyHour">Every hour</option>
-                      <option value="360" data-i18n="every6Hours">Every 6 hours</option>
-                    </select>
-                  </span>
-                </label>
+                <div class="settings-group-card">
+                  <div class="settings-row">
+                    <span class="settings-row-label" data-i18n="wallpaperTheme">Wallpaper theme</span>
+                    <span class="settings-control">
+                      <div class="settings-picker">
+                        <select id="themeSelect" class="settings-picker-native" tabindex="-1" aria-hidden="true">
+                          <option value="wallpapers" data-i18n="wallpapers">Wallpapers</option>
+                          <option value="nature" data-i18n="nature">Nature</option>
+                          <option value="render" data-i18n="render3d">3D Render</option>
+                          <option value="textures" data-i18n="textures">Texture</option>
+                          <option value="space" data-i18n="space">Space</option>
+                          <option value="travel" data-i18n="travel">Travel</option>
+                          <option value="film" data-i18n="film">Film</option>
+                          <option value="people" data-i18n="people">People</option>
+                          <option value="architecture" data-i18n="architecture">Architecture</option>
+                          <option value="street" data-i18n="streetPhotography">Street Photography</option>
+                        </select>
+                      </div>
+                    </span>
+                  </div>
+                  <label class="settings-row settings-row-switch">
+                    <span class="settings-row-label" data-i18n="autoSwitch">Automatic background change</span>
+                    <span class="settings-control">
+                      <input class="switch-input" type="checkbox" id="autoSwitchToggle" />
+                      <span class="switch-track" aria-hidden="true"></span>
+                    </span>
+                  </label>
+                  <div class="settings-row">
+                    <span class="settings-row-label" data-i18n="changeFrequency">Change frequency</span>
+                    <span class="settings-control">
+                      <div class="settings-picker">
+                        <select id="autoSwitchInterval" class="settings-picker-native" tabindex="-1" aria-hidden="true">
+                          <option value="15" data-i18n="every15Minutes">Every 15 minutes</option>
+                          <option value="60" data-i18n="everyHour">Every hour</option>
+                          <option value="360" data-i18n="every6Hours">Every 6 hours</option>
+                        </select>
+                      </div>
+                    </span>
+                  </div>
+                </div>
               </section>
 
               <section class="settings-group" aria-label="Performance and storage settings">
                 <h3 class="settings-group-title" data-i18n="settingsGroupPerformance">Performance</h3>
-                <label class="settings-row settings-row-switch">
-                  <span class="settings-row-label" data-i18n="smoothTransition">Smooth transition animation</span>
-                  <span class="settings-control">
-                    <input class="switch-input" type="checkbox" id="transitionToggle" />
-                    <span class="switch-track" aria-hidden="true"></span>
-                  </span>
-                </label>
-                <label class="settings-row settings-row-switch">
-                  <span class="settings-row-label" data-i18n="performanceMode">Performance mode (optimized image size)</span>
-                  <span class="settings-control">
-                    <input class="switch-input" type="checkbox" id="performanceModeToggle" />
-                    <span class="switch-track" aria-hidden="true"></span>
-                  </span>
-                </label>
-                <div class="settings-row cache-row">
-                  <div class="settings-row-label">
-                    <span data-i18n="cacheSize">Cache size:</span>
-                    <span id="cacheSizeDisplay">Calculating...</span>
+                <div class="settings-group-card">
+                  <label class="settings-row settings-row-switch">
+                    <span class="settings-row-label" data-i18n="smoothTransition">Smooth transition animation</span>
+                    <span class="settings-control">
+                      <input class="switch-input" type="checkbox" id="transitionToggle" />
+                      <span class="switch-track" aria-hidden="true"></span>
+                    </span>
+                  </label>
+                  <label class="settings-row settings-row-switch">
+                    <span class="settings-row-label" data-i18n="performanceMode">Optimized image size</span>
+                    <span class="settings-control">
+                      <input class="switch-input" type="checkbox" id="performanceModeToggle" />
+                      <span class="switch-track" aria-hidden="true"></span>
+                    </span>
+                  </label>
+                </div>
+                <div class="settings-group-card">
+                  <div class="settings-row settings-row-static">
+                    <span class="settings-row-label" data-i18n="cacheSize">Cache size</span>
+                    <span class="settings-control settings-control-value">
+                      <span id="cacheSizeDisplay">Calculating...</span>
+                    </span>
                   </div>
-                  <div class="settings-control">
-                    <button id="clearCacheButton" class="clear-cache-btn" type="button" data-i18n="clearCacheNow">Clear cache now</button>
-                  </div>
+                </div>
+                <div class="settings-group-card">
+                  <button id="clearCacheButton" class="settings-destructive-btn" type="button" data-i18n="clearCacheNow">Clear cache</button>
                 </div>
               </section>
             </div>
             <div class="button-group">
-              <button id="saveSettings" type="button" data-i18n="save">Save</button>
-              <button id="closeSettings" type="button" data-i18n="close">Close</button>
+              <button id="saveSettings" type="button" data-i18n="done">Done</button>
             </div>
           </div>
         </div>
@@ -201,20 +214,218 @@ class SettingsManager {
     
     // Используем новую централизованную функцию
     window.localizeContainer(this.settingsModal);
+    this.syncAllPickers();
     
     console.log("🌐 Settings modal localized");
+  }
+
+  initPickers() {
+    if (!this.settingsModal) return;
+
+    this.settingsModal.querySelectorAll(".settings-picker").forEach((picker) => {
+      if (picker.dataset.pickerReady === "true") return;
+
+      const select = picker.querySelector("select.settings-picker-native");
+      if (!select) return;
+
+      const trigger = document.createElement("button");
+      trigger.type = "button";
+      trigger.className = "settings-picker-trigger";
+      trigger.setAttribute("aria-haspopup", "listbox");
+      trigger.setAttribute("aria-expanded", "false");
+
+      const valueLabel = document.createElement("span");
+      valueLabel.className = "settings-picker-value";
+
+      const chevron = document.createElement("span");
+      chevron.className = "settings-chevron";
+      chevron.setAttribute("aria-hidden", "true");
+      chevron.textContent = "›";
+
+      trigger.append(valueLabel, chevron);
+
+      const menu = document.createElement("div");
+      menu.className = "settings-picker-menu";
+      menu.setAttribute("role", "listbox");
+      menu.hidden = true;
+
+      Array.from(select.options).forEach((option) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "settings-picker-option";
+        item.setAttribute("role", "option");
+        item.dataset.value = option.value;
+        item.textContent = option.textContent;
+
+        item.addEventListener("click", (event) => {
+          event.stopPropagation();
+          select.value = option.value;
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+          this.syncPicker(picker);
+          this.closePicker(picker);
+        });
+
+        menu.appendChild(item);
+      });
+
+      trigger.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (this.openPicker === picker) {
+          this.closePicker(picker);
+        } else {
+          this.openPickerMenu(picker);
+        }
+      });
+
+      picker.pickerMenu = menu;
+      picker.append(trigger, menu);
+      picker.dataset.pickerReady = "true";
+      this.syncPicker(picker);
+    });
+  }
+
+  getPickerMenu(picker) {
+    return picker?.pickerMenu || null;
+  }
+
+  syncPicker(picker) {
+    const select = picker.querySelector("select.settings-picker-native");
+    const valueLabel = picker.querySelector(".settings-picker-value");
+    const menu = this.getPickerMenu(picker);
+    const options = menu ? menu.querySelectorAll(".settings-picker-option") : [];
+    if (!select || !valueLabel) return;
+
+    const selectedOption = select.options[select.selectedIndex];
+    valueLabel.textContent = selectedOption ? selectedOption.textContent : "";
+
+    options.forEach((item) => {
+      const isSelected = item.dataset.value === select.value;
+      item.classList.toggle("is-selected", isSelected);
+      item.setAttribute("aria-selected", isSelected ? "true" : "false");
+    });
+
+    const trigger = picker.querySelector(".settings-picker-trigger");
+    if (trigger && select.id) {
+      trigger.setAttribute("aria-labelledby", select.id);
+    }
+  }
+
+  syncAllPickers() {
+    if (!this.settingsModal) return;
+    this.settingsModal.querySelectorAll(".settings-picker").forEach((picker) => {
+      const select = picker.querySelector("select.settings-picker-native");
+      const menu = this.getPickerMenu(picker);
+      if (!select || !menu) return;
+
+      const optionButtons = Array.from(menu.querySelectorAll(".settings-picker-option"));
+      Array.from(select.options).forEach((option, index) => {
+        if (optionButtons[index]) {
+          optionButtons[index].textContent = option.textContent;
+        }
+      });
+
+      this.syncPicker(picker);
+    });
+  }
+
+  openPickerMenu(picker) {
+    if (this.openPicker && this.openPicker !== picker) {
+      this.closePicker(this.openPicker);
+    }
+
+    const menu = this.getPickerMenu(picker);
+    const trigger = picker.querySelector(".settings-picker-trigger");
+    if (!menu || !trigger) return;
+
+    document.body.appendChild(menu);
+    menu.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    picker.classList.add("is-open");
+    this.openPicker = picker;
+    this.positionPickerMenu(picker);
+
+    if (!this.documentPickerListenerAttached) {
+      document.addEventListener("pointerdown", this.handleDocumentPointerDown, true);
+      this.documentPickerListenerAttached = true;
+    }
+  }
+
+  closePicker(picker) {
+    if (!picker) return;
+
+    const menu = this.getPickerMenu(picker);
+    const trigger = picker.querySelector(".settings-picker-trigger");
+    if (menu) {
+      menu.hidden = true;
+      menu.style.top = "";
+      menu.style.left = "";
+      menu.style.width = "";
+      menu.classList.remove("settings-picker-menu--above");
+      picker.appendChild(menu);
+    }
+    if (trigger) trigger.setAttribute("aria-expanded", "false");
+    picker.classList.remove("is-open");
+
+    if (this.openPicker === picker) {
+      this.openPicker = null;
+    }
+
+    if (!this.openPicker && this.documentPickerListenerAttached) {
+      document.removeEventListener("pointerdown", this.handleDocumentPointerDown, true);
+      this.documentPickerListenerAttached = false;
+    }
+  }
+
+  closeAllPickers() {
+    if (!this.settingsModal) return;
+    this.settingsModal.querySelectorAll(".settings-picker.is-open").forEach((picker) => {
+      this.closePicker(picker);
+    });
+  }
+
+  positionPickerMenu(picker) {
+    const menu = this.getPickerMenu(picker);
+    const trigger = picker.querySelector(".settings-picker-trigger");
+    if (!menu || !trigger) return;
+
+    menu.classList.remove("settings-picker-menu--above");
+    const triggerRect = trigger.getBoundingClientRect();
+    const menuWidth = Math.min(Math.max(triggerRect.width, 200), window.innerWidth - 16);
+    const menuHeight = Math.min(menu.scrollHeight, 240);
+    const gap = 6;
+
+    let left = Math.min(
+      Math.max(8, triggerRect.right - menuWidth),
+      window.innerWidth - menuWidth - 8
+    );
+
+    let top = triggerRect.bottom + gap;
+    let openAbove = false;
+
+    if (top + menuHeight > window.innerHeight - 8 && triggerRect.top - gap - menuHeight > 8) {
+      top = triggerRect.top - gap - menuHeight;
+      openAbove = true;
+    }
+
+    menu.style.width = `${menuWidth}px`;
+    menu.style.left = `${left}px`;
+    menu.style.top = `${top}px`;
+    menu.classList.toggle("settings-picker-menu--above", openAbove);
+  }
+
+  onDocumentPointerDown(event) {
+    if (!this.openPicker) return;
+    const menu = this.getPickerMenu(this.openPicker);
+    if (this.openPicker.contains(event.target)) return;
+    if (menu && menu.contains(event.target)) return;
+    this.closePicker(this.openPicker);
   }
 
   // Настройка обработчиков событий
   setupEventListeners() {
     // Обработчики внутри модального окна
-    const closeButton = this.settingsModal.querySelector("#closeSettings");
     const saveButton = this.settingsModal.querySelector("#saveSettings");
     const clearCacheButton = this.settingsModal.querySelector("#clearCacheButton");
-
-    if (closeButton) {
-      closeButton.addEventListener("click", () => this.closeSettings());
-    }
 
     if (saveButton) {
       saveButton.addEventListener("click", () => this.saveSettings());
@@ -244,6 +455,12 @@ class SettingsManager {
 
   onModalKeydown(event) {
     if (event.key === "Escape") {
+      if (this.openPicker) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.closePicker(this.openPicker);
+        return;
+      }
       event.preventDefault();
       this.closeSettings();
       return;
@@ -333,6 +550,7 @@ class SettingsManager {
     console.log("🔒 settingsModal:", this.settingsModal);
     console.log("🔒 settingsModal.classList before:", this.settingsModal?.classList);
     
+    this.closeAllPickers();
     this.settingsModal.classList.add("hidden");
     if (this.previouslyFocusedElement && typeof this.previouslyFocusedElement.focus === "function") {
       this.previouslyFocusedElement.focus();
@@ -369,6 +587,8 @@ class SettingsManager {
         }
       }
     });
+
+    this.syncAllPickers();
   }
 
   // Сохранение настроек

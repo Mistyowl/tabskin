@@ -16,6 +16,7 @@ npm run validate:site
 Test these URLs:
 
 - https://tabskin.ru/
+- https://tabskin.ru/demo/
 - https://tabskin.ru/faq/
 - https://tabskin.ru/install/chrome/
 - https://tabskin.ru/blog/kak-izmenit-novuyu-vkladku-chrome/
@@ -65,6 +66,14 @@ Verify feeds load:
 
 - https://tabskin.ru/blog/feed.xml
 - https://tabskin.ru/en/blog/feed.xml
+
+### 7. Interactive demo
+
+Verify:
+
+- https://tabskin.ru/demo/ — iframe loads; wallpaper, clock, pin, and settings work
+- https://tabskin.ru/demo/embed/?embed=1&lang=ru — fullscreen demo without site chrome
+- https://tabskin.ru/en/demo/ — English iframe (`lang=en`)
 
 ## Monitoring (1–2 weeks after deploy)
 

@@ -38,6 +38,24 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tabskin.ru/privacy.html"/>
   </url>
   <url>
+    <loc>https://tabskin.ru/demo/</loc>
+    <lastmod>2026-06-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/demo/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/demo/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabskin.ru/demo/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/en/demo/</loc>
+    <lastmod>2026-06-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/demo/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/demo/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabskin.ru/demo/"/>
+  </url>
+  <url>
     <loc>https://tabskin.ru/faq/</loc>
     <lastmod>2026-06-30</lastmod>
     <changefreq>monthly</changefreq>

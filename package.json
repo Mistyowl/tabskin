@@ -11,7 +11,8 @@
     "dev:chrome": "node scripts/build-extension.mjs --target=chrome --mode=development --watch",
     "dev:firefox": "node scripts/build-extension.mjs --target=firefox --mode=development --watch",
     "validate:extension": "node scripts/validate-extension-assets.mjs",
-    "build:site": "node scripts/build-site.mjs",
+    "build:demo-embed": "node scripts/build-demo-embed.mjs",
+    "build:site": "node scripts/build-demo-embed.mjs && node scripts/build-site.mjs",
     "validate:site": "node scripts/validate-site-seo.mjs",
     "migrate:site-head": "node scripts/migrate-site-head.mjs"
   },

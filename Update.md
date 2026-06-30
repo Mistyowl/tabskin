@@ -15,7 +15,39 @@ Two schemes coexist:
 
 Starting with **Update 1.5.8**, the store version in `manifest.json` was reset to `1.1.0` for publication. Later `Update 1.5.x` / `1.6.x` labels are milestone names, not store versions.
 
-To find a commit by label: `git log --oneline --grep="Update 1.6.2"`.
+To find a commit by label: `git log --oneline --grep="Update 1.6.3"`.
+
+---
+
+## Update 1.6.3 — 2026-06-30
+
+**manifest version:** `1.1.0`
+
+### Extension
+
+- **Settings modal redesign** — iOS-style dark grouped layout: section titles, `settings-group-card` rows, system font stack, green toggle switches
+- **Custom dropdown pickers** — theme and auto-switch interval use `settings-picker` (hidden native `<select>` + trigger + portal menu with flip-above positioning, click-outside and Escape to close)
+- **Simplified settings footer** — removed Close button; single **Done** button saves and closes; cache clear moved to a full-width destructive button in its own card; cache size shown as a static read-only row
+- **Label copy cleanup** — removed trailing colons, shorter time-format labels (`24 hour` / `12 hour`), performance toggle renamed to “Optimized image size”
+- **Demo embed mode** in `script.js` — detected via `?embed=1` or `/demo/embed/` path; isolated `localStorage` keys (`demo_*`), separate Cache API namespace, default language from `?lang=ru|en`, extra consent-modal note for website demo context
+
+### Website
+
+- Added **interactive demo pages** (`/demo/`, `/en/demo/`): live iframe embed, screenshot gallery, install CTA, bilingual SEO head and breadcrumbs
+- Home nav **Demo** link now points to `/demo/` instead of `#preview`; unified header on all inner pages (Demo + FAQ added where missing)
+- **Site styles** for demo: `.demo-live`, `.demo-frame`, fullscreen link; `.content-page--gallery` for gallery layout; content-page max-width on container; download buttons no longer inherit article link underline styles
+- Updated `site/seo/pages.json`, `sitemap.xml`, and `site/seo/post-deploy.md` with demo URLs and post-deploy checks
+
+### Build / Infrastructure
+
+- Added **`scripts/build-demo-embed.mjs`** — bundles extension UI into `site/demo/embed/` (esbuild minify, single `app.js`, copied assets, `noindex` + `<base>` + `?lang=` patch)
+- New npm script **`build:demo-embed`**; **`build:site`** now builds demo embed before SEO head injection
+- Added `site/demo/embed/` to **`.gitignore`** (generated output)
+
+### Documentation
+
+- **README.md** / **README.ru.md** — documented `build:demo-embed` and updated `build:site` description
+- **docs/SITE.md** / **docs/SITE.ru.md** and **docs/SERVER.md** / **docs/SERVER.ru.md** — deploy steps mention demo embed build
 
 ---
 

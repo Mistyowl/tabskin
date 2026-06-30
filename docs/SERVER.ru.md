@@ -126,7 +126,7 @@ flowchart LR
   node --> unsplash
 ```
 
-1. Запустите `npm run build:site` и задеплойте `site/` в web root
+1. Запустите `npm run build:site` (собирает `site/demo/embed/` и вставляет SEO head) и задеплойте `site/` в web root
 2. Запустите `node server.js` (или PM2/systemd) за nginx
 3. Проксируйте `/photos` и `/download` на Node-процесс
 4. Настройте SSL для `tabskin.ru`

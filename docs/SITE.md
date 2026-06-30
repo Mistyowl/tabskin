@@ -34,7 +34,8 @@ RSS feeds:
 ## Commands
 
 ```bash
-npm run build:site       # inject SEO head into all pages + regenerate sitemap
+npm run build:demo-embed # extension UI → site/demo/embed/
+npm run build:site       # demo embed + inject SEO head into all pages + regenerate sitemap
 npm run validate:site    # verify required meta tags, hreflang, sitemap
 npm run migrate:site-head   # replace <head> blocks with <!-- @head --> marker
 ```

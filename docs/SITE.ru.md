@@ -34,7 +34,8 @@ RSS-ленты:
 ## Команды
 
 ```bash
-npm run build:site       # вставка SEO head на все страницы + пересборка sitemap
+npm run build:demo-embed # UI расширения → site/demo/embed/
+npm run build:site       # demo embed + вставка SEO head на все страницы + пересборка sitemap
 npm run validate:site    # проверка meta-тегов, hreflang, sitemap
 npm run migrate:site-head   # замена <head> на маркер <!-- @head -->
 ```

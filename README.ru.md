@@ -172,7 +172,8 @@ Production-сборка объединяет `script.js` и `assets/js/settings.
 Папка `site/` относится к маркетинговому сайту и **не попадает** в пакеты расширения.
 
 ```bash
-npm run build:site      # вставка head из site/seo/pages.json
+npm run build:demo-embed # UI расширения → site/demo/embed/ (также в build:site)
+npm run build:site      # demo embed + вставка head из site/seo/pages.json
 npm run validate:site   # проверка SEO-тегов, hreflang, sitemap
 npm run migrate:site-head   # сброс head в HTML к маркеру <!-- @head -->
 ```

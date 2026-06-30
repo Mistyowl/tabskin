@@ -172,7 +172,8 @@ See [docs/EXTENSION.md](docs/EXTENSION.md) for architecture, storage keys, and c
 The `site/` folder is the marketing website and is **not** included in extension packages.
 
 ```bash
-npm run build:site      # inject head from site/seo/pages.json
+npm run build:demo-embed # extension UI → site/demo/embed/ (also runs via build:site)
+npm run build:site      # demo embed + inject head from site/seo/pages.json
 npm run validate:site   # check SEO tags, hreflang, sitemap
 npm run migrate:site-head   # reset HTML heads to <!-- @head --> markers
 ```

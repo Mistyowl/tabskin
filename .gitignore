@@ -16,3 +16,4 @@ node_modules/
 server_backup.js
 dist/
 artifacts/
+site/demo/embed/

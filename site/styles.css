@@ -481,6 +481,58 @@ figcaption,
   gap: 24px;
 }
 
+.demo-live {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.demo-live-title {
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.demo-hint {
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.demo-frame {
+  aspect-ratio: 16 / 9;
+  min-height: 560px;
+}
+
+.demo-frame iframe {
+  height: 100%;
+  min-height: 560px;
+}
+
+.demo-fullscreen {
+  margin: 0;
+  text-align: center;
+}
+
+.demo-fullscreen a {
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.demo-fullscreen a:hover {
+  text-decoration: underline;
+}
+
+.demo-screenshots-title {
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 20px;
+}
+
 .screenshot-main {
   border-radius: 28px;
   margin: 0;
@@ -941,15 +993,20 @@ figcaption,
 
 /* Content pages (FAQ, blog, install guides, alternatives) */
 .content-page {
+  max-width: 800px;
+  margin-inline: auto;
   padding: 12px 0 48px;
 }
 
-.content-page > .breadcrumbs,
-.content-page > .content-hero,
-.content-page > .content-article,
-.content-page > .faq-list,
-.content-page > .content-cta {
-  max-width: 800px;
+.content-page--gallery {
+  max-width: 1000px;
+}
+
+.content-page--gallery .screenshot-caption {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-top: 12px;
+  text-align: center;
 }
 
 .breadcrumbs {
@@ -1054,7 +1111,7 @@ figcaption,
   margin-top: 8px;
 }
 
-.content-article a {
+.content-article a:not(.download-button) {
   color: var(--accent-strong);
   font-weight: 500;
   text-decoration: underline;
@@ -1062,8 +1119,20 @@ figcaption,
   text-underline-offset: 3px;
 }
 
-.content-article a:hover {
+.content-article a:not(.download-button):hover {
   text-decoration-color: var(--accent-strong);
+}
+
+.content-article .download-button,
+.content-cta .download-button {
+  color: #ffffff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.content-article .download-button:hover,
+.content-cta .download-button:hover {
+  text-decoration: none;
 }
 
 .content-article kbd {
@@ -1088,15 +1157,6 @@ figcaption,
 }
 
 /* FAQ — landing + /faq/ */
-.faq-section .faq-list {
-  max-width: 820px;
-}
-
-.faq-section .faq-list,
-.content-page > .faq-list {
-  margin-inline: auto;
-}
-
 .faq-list {
   display: grid;
   gap: 18px;
@@ -1291,7 +1351,6 @@ figcaption,
   background: rgba(155, 140, 255, 0.12);
   border: 1px solid rgba(155, 140, 255, 0.35);
   box-shadow: var(--shadow);
-  text-align: center;
 }
 
 .content-cta p {
@@ -1350,5 +1409,17 @@ a.lang-btn.active {
 
   .blog-card {
     padding: 22px;
+  }
+
+  .demo-frame,
+  .demo-frame iframe {
+    aspect-ratio: auto;
+    min-height: 420px;
+  }
+
+  .demo-fullscreen a {
+    display: inline-block;
+    font-size: 1rem;
+    padding: 4px 0;
   }
 }

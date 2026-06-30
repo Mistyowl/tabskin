@@ -10,6 +10,26 @@ const DEFAULT_SETTINGS = {
   performanceModeEnabled: true
 };
 
+const isDemoEmbed =
+  new URLSearchParams(location.search).has("embed") ||
+  location.pathname.includes("/demo/embed");
+
+function storageKey(key) {
+  return isDemoEmbed ? `demo_${key}` : key;
+}
+
+function imageMetaKey(suffix) {
+  return storageKey(`${LOCAL_STORAGE_PREFIX}${suffix}`);
+}
+
+function getDemoDefaultLanguage() {
+  const langParam = new URLSearchParams(location.search).get("lang");
+  if (langParam === "ru" || langParam === "en") return langParam;
+  const docLang = document.documentElement.lang?.slice(0, 2);
+  if (docLang === "ru" || docLang === "en") return docLang;
+  return DEFAULT_SETTINGS.language;
+}
+
 // DOM-элементы
 const backgroundAuthorLink   = document.querySelector("#creator");
 const backgroundImageLink    = document.querySelector("#imageLink");
@@ -30,7 +50,7 @@ let cachedLanguage = null;
 
 const MIN_AUTO_SWITCH_INTERVAL_MINUTES = 15;
 let currentImageQuery      = loadUserSettings().theme;
-const CACHE_NAME           = "background-image-cache";
+const CACHE_NAME           = isDemoEmbed ? "demo-background-image-cache" : "background-image-cache";
 const LOCAL_STORAGE_PREFIX = "lastImage";
 const CACHE_INDEX_STORAGE_KEY = "backgroundImageCacheIndex";
 const PINNED_IMAGE_STORAGE_KEY = "pinnedImage";
@@ -81,7 +101,12 @@ const CONSENT_TEXTS = {
 
 function getConsentTexts() {
   const lang = getCurrentLanguage();
-  return CONSENT_TEXTS[lang] || CONSENT_TEXTS.en;
+  const base = CONSENT_TEXTS[lang] || CONSENT_TEXTS.en;
+  if (!isDemoEmbed) return base;
+  const demoNote = lang === "ru"
+    ? " Это демо на сайте — настройки сохраняются только в браузере для этой страницы."
+    : " This is a website demo — settings are stored only in your browser for this page.";
+  return { ...base, message: base.message + demoNote };
 }
 
 function getFocusableElements(container) {
@@ -108,7 +133,7 @@ function trapFocusInContainer(event, container) {
 }
 
 function showConsentModalIfNeeded() {
-  if (localStorage.getItem(USER_CONSENT_KEY) === "true") return;
+  if (localStorage.getItem(storageKey(USER_CONSENT_KEY)) === "true") return;
   const texts = getConsentTexts();
   const modal = document.createElement("div");
   modal.id = "consentModal";
@@ -130,7 +155,7 @@ function showConsentModalIfNeeded() {
   document.body.appendChild(modal);
   document.body.classList.add("modal-open");
   document.getElementById("consentAgreeBtn").onclick = function() {
-    localStorage.setItem(USER_CONSENT_KEY, "true");
+    localStorage.setItem(storageKey(USER_CONSENT_KEY), "true");
     modal.removeEventListener("keydown", consentModalKeydownHandler);
     document.body.removeChild(modal);
     document.body.classList.remove("modal-open");
@@ -150,14 +175,18 @@ function loadUserSettings() {
   }
 
   const savedSettings = readJsonStorage(SETTINGS_STORAGE_KEY, {});
-  cachedSettings = normalizeSettings(savedSettings);
+  let normalizedSettings = normalizeSettings(savedSettings);
+  if (isDemoEmbed && !Object.keys(savedSettings).length) {
+    normalizedSettings = { ...normalizedSettings, language: getDemoDefaultLanguage() };
+  }
+  cachedSettings = normalizedSettings;
   cachedLanguage = cachedSettings.language || DEFAULT_SETTINGS.language;
   return { ...cachedSettings };
 }
 
 function saveUserSettings(settingsObject) {
   const normalizedSettings = normalizeSettings(settingsObject);
-  localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(normalizedSettings));
+  localStorage.setItem(storageKey(SETTINGS_STORAGE_KEY), JSON.stringify(normalizedSettings));
   cachedSettings = normalizedSettings;
   cachedLanguage = normalizedSettings.language || DEFAULT_SETTINGS.language;
   currentTimeFormat = normalizedSettings.timeFormat || DEFAULT_SETTINGS.timeFormat;
@@ -167,7 +196,7 @@ function saveUserSettings(settingsObject) {
 }
 
 function readJsonStorage(key, fallbackValue) {
-  const savedValue = localStorage.getItem(key);
+  const savedValue = localStorage.getItem(storageKey(key));
   if (!savedValue) return fallbackValue;
 
   try {
@@ -179,7 +208,7 @@ function readJsonStorage(key, fallbackValue) {
 }
 
 function writeJsonStorage(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  localStorage.setItem(storageKey(key), JSON.stringify(value));
 }
 
 function normalizeSettings(settingsObject = {}) {
@@ -208,13 +237,13 @@ const TRANSLATIONS = {
     settingsGroupInterface: "Interface",
     settingsGroupBackground: "Background",
     settingsGroupPerformance: "Performance",
-    language: "Language:",
+    language: "Language",
     english: "English",
     russian: "Русский",
-    timeFormat: "Time format:",
-    time24Hour: "24-hour",
-    time12Hour: "12-hour",
-    wallpaperTheme: "Wallpaper theme:",
+    timeFormat: "Time format",
+    time24Hour: "24 hour",
+    time12Hour: "12 hour",
+    wallpaperTheme: "Wallpaper theme",
     wallpapers: "Wallpapers",
     nature: "Nature",
     render3d: "3D Render",
@@ -226,15 +255,16 @@ const TRANSLATIONS = {
     architecture: "Architecture",
     streetPhotography: "Street Photography",
     autoSwitch: "Automatic background change",
-    changeFrequency: "Change frequency:",
+    changeFrequency: "Change frequency",
     every15Minutes: "Every 15 minutes",
     everyHour: "Every hour",
     every6Hours: "Every 6 hours",
     smoothTransition: "Smooth transition animation",
-    performanceMode: "Performance mode (optimized image size)",
+    performanceMode: "Optimized image size",
     clearCacheNow: "Clear cache",
     cacheCleared: "Cache cleared successfully",
-    cacheSize: "Cache size:",
+    cacheSize: "Cache size",
+    done: "Done",
     save: "Save",
     close: "Close",
     loading: "Loading…",
@@ -264,13 +294,13 @@ const TRANSLATIONS = {
     settingsGroupInterface: "Интерфейс",
     settingsGroupBackground: "Фон",
     settingsGroupPerformance: "Производительность",
-    language: "Язык:",
+    language: "Язык",
     english: "English",
     russian: "Русский",
-    timeFormat: "Формат времени:",
-    time24Hour: "24-часа",
-    time12Hour: "12-часов",
-    wallpaperTheme: "Тема обоев:",
+    timeFormat: "Формат времени",
+    time24Hour: "24 часа",
+    time12Hour: "12 часов",
+    wallpaperTheme: "Тема обоев",
     wallpapers: "Обои",
     nature: "Природа",
     render3d: "3D Рендер",
@@ -282,15 +312,16 @@ const TRANSLATIONS = {
     architecture: "Архитектура",
     streetPhotography: "Уличная фотография",
     autoSwitch: "Автоматическая смена фона",
-    changeFrequency: "Частота смены:",
+    changeFrequency: "Частота смены",
     every15Minutes: "Каждые 15 минут",
     everyHour: "Каждый час",
     every6Hours: "Каждые 6 часов",
     smoothTransition: "Плавная анимация перехода",
-    performanceMode: "Режим производительности (оптимальный размер изображения)",
+    performanceMode: "Оптимальный размер изображения",
     clearCacheNow: "Очистить кэш",
     cacheCleared: "Кэш успешно очищен",
-    cacheSize: "Размер кэша:",
+    cacheSize: "Размер кэша",
+    done: "Готово",
     save: "Сохранить",
     close: "Закрыть",
     loading: "Загрузка…",
@@ -479,7 +510,7 @@ window.addEventListener("load", async () => {
       try {
     const hadImage = await displayLastCachedImage();
     initialLoaderElement?.classList.add("hidden");
-    const lastLoadTime = Number(localStorage.getItem(`${LOCAL_STORAGE_PREFIX}LoadTime`)) || 0;
+    const lastLoadTime = Number(localStorage.getItem(imageMetaKey("LoadTime"))) || 0;
     const isTtlExpired = Date.now() - lastLoadTime > CACHE_TTL_MS;
     const hasPinnedImage = Boolean(getPinnedImage());
 
@@ -495,7 +526,7 @@ window.addEventListener("load", async () => {
         console.error("❌ Initial image loading failed:", error);
         initialLoaderElement?.classList.add("hidden");
         // Показываем ошибку пользователю только если нет кэшированного изображения
-        if (!localStorage.getItem(`${LOCAL_STORAGE_PREFIX}Url`)) {
+        if (!localStorage.getItem(imageMetaKey("Url"))) {
           showToastError(getMessage("errorFailedToLoadInitialImage"), 'error');
         }
     }
@@ -709,7 +740,7 @@ async function commitPreparedImage(metadata, preparedImage, { animate = true } =
 
 function trackDownloadLocation(downloadLocation) {
   if (!downloadLocation) return;
-  if (localStorage.getItem(USER_CONSENT_KEY) !== "true") {
+  if (localStorage.getItem(storageKey(USER_CONSENT_KEY)) !== "true") {
     console.warn("⚠️ User consent not granted for download location tracking.");
     return;
   }
@@ -822,11 +853,11 @@ function saveImageMetadata({ url, authorName, photoPageLink, authorProfileLink, 
   const photoLinkWithUtm = addUnsplashUtm(photoPageLink);
   const authorLinkWithUtm = addUnsplashUtm(authorProfileLink);
 
-  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}Url`, url);
-  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}Creator`, authorName);
-  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}PhotoLink`, photoLinkWithUtm);
-  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}CreatorLink`, authorLinkWithUtm);
-  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}LoadTime`, timestamp.toString());
+  localStorage.setItem(imageMetaKey("Url"), url);
+  localStorage.setItem(imageMetaKey("Creator"), authorName);
+  localStorage.setItem(imageMetaKey("PhotoLink"), photoLinkWithUtm);
+  localStorage.setItem(imageMetaKey("CreatorLink"), authorLinkWithUtm);
+  localStorage.setItem(imageMetaKey("LoadTime"), timestamp.toString());
   console.log("💾 Image metadata saved");
 }
 
@@ -836,15 +867,15 @@ function addUnsplashUtm(link) {
 }
 
 function getStoredImageMetadata() {
-  const url = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}Url`);
+  const url = localStorage.getItem(imageMetaKey("Url"));
   if (!url) return null;
 
   return {
     url,
-    authorName: localStorage.getItem(`${LOCAL_STORAGE_PREFIX}Creator`) || "",
-    photoPageLink: localStorage.getItem(`${LOCAL_STORAGE_PREFIX}PhotoLink`) || "#",
-    authorProfileLink: localStorage.getItem(`${LOCAL_STORAGE_PREFIX}CreatorLink`) || "#",
-    timestamp: Number(localStorage.getItem(`${LOCAL_STORAGE_PREFIX}LoadTime`)) || Date.now()
+    authorName: localStorage.getItem(imageMetaKey("Creator")) || "",
+    photoPageLink: localStorage.getItem(imageMetaKey("PhotoLink")) || "#",
+    authorProfileLink: localStorage.getItem(imageMetaKey("CreatorLink")) || "#",
+    timestamp: Number(localStorage.getItem(imageMetaKey("LoadTime"))) || Date.now()
   };
 }
 
@@ -924,7 +955,7 @@ function togglePinnedCurrentImage() {
 }
 
 function clearPinnedImage() {
-  localStorage.removeItem(PINNED_IMAGE_STORAGE_KEY);
+  localStorage.removeItem(storageKey(PINNED_IMAGE_STORAGE_KEY));
 }
 
 function updateLocalImageControls() {
@@ -1033,18 +1064,18 @@ async function clearCache() {
   const cacheStorage = await caches.open(CACHE_NAME);
   const keys = await cacheStorage.keys();
   await Promise.all(keys.map(request => cacheStorage.delete(request)));
-  localStorage.removeItem(CACHE_INDEX_STORAGE_KEY);
+  localStorage.removeItem(storageKey(CACHE_INDEX_STORAGE_KEY));
   console.log("🗑 Cache cleared");
 }
 
 // Очистка локального хранилища по кнопке
 function clearLocalStorage() {
-  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}Url`);
-  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}Creator`);
-  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}PhotoLink`);
-  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}CreatorLink`);
-  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}LoadTime`);
-  localStorage.removeItem(PINNED_IMAGE_STORAGE_KEY);
+  localStorage.removeItem(imageMetaKey("Url"));
+  localStorage.removeItem(imageMetaKey("Creator"));
+  localStorage.removeItem(imageMetaKey("PhotoLink"));
+  localStorage.removeItem(imageMetaKey("CreatorLink"));
+  localStorage.removeItem(imageMetaKey("LoadTime"));
+  localStorage.removeItem(storageKey(PINNED_IMAGE_STORAGE_KEY));
   updateLocalImageControls();
   console.log("🗑 Local storage cleared");
 }

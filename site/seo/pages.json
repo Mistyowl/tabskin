@@ -56,6 +56,34 @@
       "sitemap": { "changefreq": "yearly", "priority": 0.5 }
     },
     {
+      "path": "/demo/",
+      "file": "demo/index.html",
+      "lang": "ru",
+      "title": "Демо Tabskin — интерактивная новая вкладка с обоями Unsplash",
+      "description": "Попробуйте Tabskin без установки: интерактивное демо новой вкладки, обои Unsplash, часы и настройки персонализации.",
+      "alternates": { "ru": "/demo/", "en": "/en/demo/", "xDefault": "/demo/" },
+      "schema": ["breadcrumb"],
+      "breadcrumb": [
+        { "name": "Главная", "url": "https://tabskin.ru/" },
+        { "name": "Демо", "url": "https://tabskin.ru/demo/" }
+      ],
+      "sitemap": { "changefreq": "monthly", "priority": 0.8 }
+    },
+    {
+      "path": "/en/demo/",
+      "file": "en/demo/index.html",
+      "lang": "en",
+      "title": "Tabskin Demo — Interactive New Tab with Unsplash Wallpapers",
+      "description": "Try Tabskin without installing: interactive new tab demo, Unsplash wallpapers, clock, and personalization settings.",
+      "alternates": { "ru": "/demo/", "en": "/en/demo/", "xDefault": "/demo/" },
+      "schema": ["breadcrumb"],
+      "breadcrumb": [
+        { "name": "Home", "url": "https://tabskin.ru/en/" },
+        { "name": "Demo", "url": "https://tabskin.ru/en/demo/" }
+      ],
+      "sitemap": { "changefreq": "monthly", "priority": 0.8 }
+    },
+    {
       "path": "/faq/",
       "file": "faq/index.html",
       "lang": "ru",
