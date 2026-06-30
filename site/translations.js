@@ -32,7 +32,6 @@ const translations = {
     "trust-local-settings": "Настройки хранятся локально",
     "trust-unsplash": "Фото с корректной атрибуцией Unsplash",
     "supported-browsers": "Поддерживаемые браузеры:",
-    "edge-soon-short": "Edge скоро",
     "hero-screenshot-alt": "Главная новая вкладка Tabskin с полноэкранными обоями, часами и минималистичным интерфейсом",
     "hero-screenshot-caption": "Красивый фон, часы и быстрый доступ к настройкам на каждой новой вкладке.",
     "comparison-kicker": "До и после",
@@ -95,9 +94,6 @@ const translations = {
       "Установите Tabskin, откройте новую вкладку и выберите визуальный стиль, который помогает начать день спокойнее.",
     "chrome-description": "Установка из Chrome Web Store",
     "firefox-description": "Установка из Firefox Add-ons",
-    "edge-description": "Версия для Edge готовится",
-    "install-edge": "Установить для Edge",
-    "coming-soon-edge": "Скоро для Edge",
     "download-note": "После установки откройте новую вкладку, чтобы увидеть Tabskin в действии.",
     "faq-kicker": "Вопросы и ответы",
     "faq-title": "Частые вопросы о Tabskin",
@@ -120,7 +116,7 @@ const translations = {
     "back-to-home": "Вернуться на главную",
     "privacy-title": "Политика конфиденциальности",
     "privacy-subtitle":
-      "Настоящая политика конфиденциальности описывает, как расширение Tabskin для Google Chrome, Mozilla Firefox и Microsoft Edge обрабатывает пользовательские данные.",
+      "Настоящая политика конфиденциальности описывает, как расширение Tabskin для Google Chrome и Mozilla Firefox обрабатывает пользовательские данные.",
     "data-collection-title": "Сбор и использование данных",
     "data-collection-content":
       "Tabskin не собирает, не хранит и не передаёт персональные данные пользователей. Настройки, включая язык интерфейса, формат времени, тему оформления и другие параметры, сохраняются локально в браузере пользователя и не покидают его устройство.",
@@ -173,7 +169,6 @@ const translations = {
     "trust-local-settings": "Settings are stored locally",
     "trust-unsplash": "Photos with proper Unsplash attribution",
     "supported-browsers": "Supported browsers:",
-    "edge-soon-short": "Edge soon",
     "hero-screenshot-alt": "Tabskin main new tab with full-screen wallpaper, clock, and minimalist interface",
     "hero-screenshot-caption": "A beautiful background, clock, and quick settings access on every new tab.",
     "comparison-kicker": "Before and after",
@@ -236,9 +231,6 @@ const translations = {
       "Install Tabskin, open a new tab, and choose a visual style that helps you start the day calmly.",
     "chrome-description": "Install from Chrome Web Store",
     "firefox-description": "Install from Firefox Add-ons",
-    "edge-description": "Edge version is in progress",
-    "install-edge": "Install for Edge",
-    "coming-soon-edge": "Coming soon for Edge",
     "download-note": "After installation, open a new tab to see Tabskin in action.",
     "faq-kicker": "Questions and answers",
     "faq-title": "Frequently asked questions about Tabskin",
@@ -260,7 +252,7 @@ const translations = {
     "back-to-home": "Back to home",
     "privacy-title": "Privacy Policy",
     "privacy-subtitle":
-      "This privacy policy describes how the Tabskin extension for Google Chrome, Mozilla Firefox, and Microsoft Edge handles user data.",
+      "This privacy policy describes how the Tabskin extension for Google Chrome and Mozilla Firefox handles user data.",
     "data-collection-title": "Data Collection and Usage",
     "data-collection-content":
       "Tabskin does not collect, store, or transmit personal user data. Settings, including interface language, time format, theme design, and other parameters, are stored locally in the user's browser and do not leave their device.",

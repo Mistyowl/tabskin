@@ -62,113 +62,47 @@
 <body>
     <div class="container">
         <header class="header">
-            <a class="logo" href="index.html" aria-label="Tabskin">
-                <img src="assets/logo.png" alt="Tabskin" class="logo-icon" width="40" height="40" decoding="async">
+            <a class="logo" href="/" aria-label="Tabskin">
+                <img src="/assets/logo.png" alt="Tabskin" class="logo-icon" width="40" height="40" decoding="async">
                 <span class="logo-text">Tabskin</span>
             </a>
+            <nav class="header-nav" aria-label="Основная навигация" data-translate-aria-label="main-navigation-label">
+                <a href="/#features" data-translate="nav-features">Возможности</a>
+                <a href="/blog/" data-translate="nav-blog">Блог</a>
+                <a href="/#download" data-translate="nav-download">Установить</a>
+            </nav>
             <div class="language-switcher" role="group" aria-label="Выбор языка" data-translate-aria-label="language-switcher-label">
                 <a class="lang-btn active" href="/privacy.html" hreflang="ru" aria-current="true">RU</a>
                 <a class="lang-btn" href="/en/privacy.html" hreflang="en">EN</a>
             </div>
         </header>
 
-        <main class="main">
-            <div class="privacy-content">
-                <div class="privacy-header">
-                    <a href="index.html" class="back-link">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                        </svg>
-                        <span data-translate="back-to-home">Вернуться на главную</span>
-                    </a>
-                    <h1 class="privacy-title" data-translate="privacy-title">Политика конфиденциальности</h1>
-                    <p class="privacy-subtitle" data-translate="privacy-subtitle">
-                        Настоящая политика конфиденциальности описывает, как расширение Tabskin для браузера Google Chrome/Mozilla Firefox/Microsoft Edge обрабатывает пользовательские данные.
-                    </p>
-                </div>
-
-                <div class="privacy-section">
-                    <h2 class="section-title" data-translate="data-collection-title">Сбор и использование данных</h2>
-                    <div class="section-content">
-                        <p data-translate="data-collection-content">
-                            Tabskin не собирает, не хранит и не передаёт персональные данные пользователей.
-                            Настройки, включая язык интерфейса, формат времени, тему оформления и другие параметры,
-                            сохраняются локально в браузере пользователя и не покидают его устройство.
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="privacy-section">
-                    <h2 class="section-title" data-translate="download-location-title">Download location Unsplash</h2>
-                    <div class="section-content">
-                        <p data-translate="download-location-content"><strong>Для корректной работы и соблюдения условий Unsplash API расширение Tabskin отправляет техническую информацию о факте установки фонового изображения (download location). Эта информация не содержит персональных данных и используется только для статистики, требуемой Unsplash.</strong></p>
-                    </div>
-                </div>
-
-                <div class="privacy-section">
-                    <h2 class="section-title" data-translate="data-sharing-title">Передача данных третьим лицам</h2>
-                    <div class="section-content">
-                        <p data-translate="data-sharing-content">
-                            Расширение не передаёт персональные данные третьим сторонам, не использует рекламные технологии
-                            и не добавляет сторонние трекеры. Доступ осуществляется только к изображениям Unsplash
-                            для отображения фонов новой вкладки.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="privacy-section">
-                    <h2 class="section-title" data-translate="security-title">Безопасность</h2>
-                    <div class="section-content">
-                        <p data-translate="security-content">
-                            Расширение работает в рамках разрешений, необходимых для своей основной функции, 
-                            и не запрашивает доступ к конфиденциальной информации. Tabskin не взаимодействует 
-                            с другими сайтами, за исключением загрузки изображений с Unsplash.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="privacy-section">
-                    <div class="section-content">
-                        <p data-translate="agreement-content">
-                            <strong>Используя расширение Tabskin, вы подтверждаете, что ознакомились с настоящей 
-                            политикой конфиденциальности и соглашаетесь с её условиями.</strong>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="privacy-section contact-info">
-                    <h2 class="section-title" data-translate="contact-title">Контактная информация</h2>
-                    <div class="section-content">
-                        <p data-translate="contact-content">
-                            Если у вас есть вопросы, замечания или предложения по поводу конфиденциальности и безопасности, 
-                            свяжитесь с нами по адресу: <a href="mailto:tabskinapp@gmail.com" class="contact-email-link">tabskinapp@gmail.com</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="last-updated">
-                    <p data-translate="last-updated">Последнее обновление: май 2026</p>
-                </div>
-            </div>
+        <main class="content-page">
+            <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="/">Главная</a><span aria-hidden="true">/</span><span data-translate="privacy-title">Политика конфиденциальности</span></nav>
+            <header class="content-hero">
+                <h1 data-translate="privacy-title">Политика конфиденциальности</h1>
+                <p data-translate="privacy-subtitle">Настоящая политика конфиденциальности описывает, как расширение Tabskin для Google Chrome и Mozilla Firefox обрабатывает пользовательские данные.</p>
+            </header>
+            <article class="content-article">
+                <h2 data-translate="data-collection-title">Сбор и использование данных</h2>
+                <p data-translate="data-collection-content">Tabskin не собирает, не хранит и не передаёт персональные данные пользователей. Настройки, включая язык интерфейса, формат времени, тему оформления и другие параметры, сохраняются локально в браузере пользователя и не покидают его устройство.</p>
+                <h2 data-translate="download-location-title">Download location Unsplash</h2>
+                <p data-translate="download-location-content">Для корректной работы и соблюдения условий Unsplash API расширение Tabskin отправляет техническую информацию о факте установки фонового изображения (download location). Эта информация не содержит персональных данных и используется только для статистики, требуемой Unsplash.</p>
+                <h2 data-translate="data-sharing-title">Передача данных третьим лицам</h2>
+                <p data-translate="data-sharing-content">Расширение не передаёт персональные данные третьим сторонам, не использует рекламные технологии и не добавляет сторонние трекеры. Доступ осуществляется только к изображениям Unsplash для отображения фонов новой вкладки.</p>
+                <h2 data-translate="security-title">Безопасность</h2>
+                <p data-translate="security-content">Расширение работает в рамках разрешений, необходимых для основной функции, и не запрашивает доступ к конфиденциальной информации. Tabskin не взаимодействует с другими сайтами, за исключением загрузки изображений Unsplash.</p>
+                <p data-translate="agreement-content"><strong>Используя расширение Tabskin, вы подтверждаете, что ознакомились с настоящей политикой конфиденциальности и соглашаетесь с её условиями.</strong></p>
+                <h2 data-translate="contact-title">Контактная информация</h2>
+                <p data-translate="contact-content">Если у вас есть вопросы, замечания или предложения по поводу конфиденциальности и безопасности, свяжитесь с нами по адресу: <a href="mailto:tabskinapp@gmail.com">tabskinapp@gmail.com</a></p>
+                <p><em data-translate="last-updated">Последнее обновление: май 2026</em></p>
+            </article>
         </main>
 
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="assets/logo.png" alt="" class="footer-logo-img" width="32" height="32" loading="lazy" decoding="async">
-                    <span class="footer-logo-text">Tabskin</span>
-                </div>
-                <p class="footer-description" data-translate="footer-description">Превращаем каждую новую вкладку в спокойный визуальный старт</p>
-                <div class="footer-contact">
-                    <p class="contact-label" data-translate="contact-us">Связаться с нами:</p>
-                    <a href="mailto:tabskinapp@gmail.com" class="contact-email">tabskinapp@gmail.com</a>
-                </div>
-                <p class="footer-copyright" data-translate="copyright">&copy; 2026 Tabskin. Все права защищены.</p>
-            </div>
-        </footer>
+        <footer class="footer"><div class="footer-content"><p class="footer-copyright">&copy; 2026 Tabskin</p></div></footer>
     </div>
 
-    <script src="translations.js"></script>
-    <script src="script.js"></script>
+    <script src="/translations.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
