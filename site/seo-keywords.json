@@ -1,0 +1,60 @@
+{
+  "clusters": {
+    "home-ru": {
+      "url": "/",
+      "keywords": ["красивая новая вкладка", "минималистичная новая вкладка", "расширение новая вкладка unsplash", "новая вкладка без рекламы"]
+    },
+    "home-en": {
+      "url": "/en/",
+      "keywords": ["minimalist new tab", "new tab wallpaper extension", "unsplash new tab", "clean new tab chrome"]
+    },
+    "faq-ru": {
+      "url": "/faq/",
+      "keywords": ["как работает новая вкладка", "безопасно ли расширение новой вкладки", "tabskin вопросы"]
+    },
+    "faq-en": {
+      "url": "/en/faq/",
+      "keywords": ["new tab extension safe", "how does tabskin work", "tabskin faq"]
+    },
+    "install-chrome-ru": {
+      "url": "/install/chrome/",
+      "keywords": ["обои на новую вкладку chrome", "установить расширение новая вкладка chrome"]
+    },
+    "install-firefox-ru": {
+      "url": "/install/firefox/",
+      "keywords": ["замена новой вкладки firefox", "расширение новая вкладка firefox"]
+    },
+    "install-chrome-en": {
+      "url": "/en/install/chrome/",
+      "keywords": ["install new tab extension chrome", "chrome new tab wallpaper"]
+    },
+    "install-firefox-en": {
+      "url": "/en/install/firefox/",
+      "keywords": ["firefox new tab extension", "install tabskin firefox"]
+    },
+    "alternatives-ru": {
+      "url": "/alternatives/",
+      "keywords": ["альтернатива momentum", "лёгкая новая вкладка", "минималистичная новая вкладка без рекламы"]
+    },
+    "alternatives-en": {
+      "url": "/en/alternatives/",
+      "keywords": ["momentum alternative free", "lightweight new tab extension", "minimal new tab no ads"]
+    },
+    "blog-chrome-ru": {
+      "url": "/blog/kak-izmenit-novuyu-vkladku-chrome/",
+      "keywords": ["как изменить новую вкладку в chrome", "настроить новую вкладку chrome"]
+    },
+    "blog-wallpapers-ru": {
+      "url": "/blog/oboi-na-novuyu-vkladku/",
+      "keywords": ["лучшие обои для новой вкладки", "обои unsplash новая вкладка"]
+    },
+    "blog-chrome-en": {
+      "url": "/en/blog/change-new-tab-chrome/",
+      "keywords": ["how to change new tab chrome", "customize chrome new tab"]
+    },
+    "blog-focus-en": {
+      "url": "/en/blog/minimalist-new-tab-focus/",
+      "keywords": ["minimalist new tab focus", "new tab clock wallpaper", "calm browser start page"]
+    }
+  }
+}

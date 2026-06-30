@@ -27,18 +27,20 @@
 	<!-- /Yandex.Metrika counter -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate="page-title">Tabskin — красивая новая вкладка с обоями Unsplash</title>
-    <meta name="description" content="Tabskin заменяет пустую новую вкладку на быструю минималистичную страницу с красивыми обоями Unsplash, часами, локальными настройками и установкой для Chrome и Firefox." data-translate="page-description">
-    <meta name="keywords" content="новая вкладка, красивые обои, расширение Chrome, расширение Firefox, Unsplash, минималистичная новая вкладка, персонализация браузера, Tabskin">
+    <title data-translate="page-title">Tabskin — расширение для новой вкладки с обоями Unsplash | Chrome и Firefox</title>
+    <meta name="description" content="Tabskin — бесплатное расширение для новой вкладки: красивые обои Unsplash, часы, локальные настройки без рекламы. Установка для Chrome и Firefox за минуту." data-translate="page-description">
+    <meta name="keywords" content="новая вкладка, обои на новую вкладку, расширение Chrome, расширение Firefox, минималистичная новая вкладка, Unsplash обои, Tabskin, новая вкладка без рекламы">
     <meta name="author" content="Tabskin Team">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#181825">
     <link rel="canonical" href="https://tabskin.ru/">
     <link rel="alternate" hreflang="ru" href="https://tabskin.ru/">
-    <link rel="alternate" hreflang="en" href="https://tabskin.ru/">
+    <link rel="alternate" hreflang="en" href="https://tabskin.ru/en/">
     <link rel="alternate" hreflang="x-default" href="https://tabskin.ru/">
     <!-- Open Graph -->
-    <meta property="og:title" content="Tabskin — красивая новая вкладка с обоями Unsplash" data-translate="og-title">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:title" content="Tabskin — расширение для новой вкладки с обоями Unsplash | Chrome и Firefox" data-translate="og-title">
     <meta property="og:description" content="Замените стандартную новую вкладку на спокойную, быструю и красивую страницу с curated Unsplash-обоями, часами и персонализацией." data-translate="og-description">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tabskin.ru/">
@@ -65,7 +67,7 @@
       "name": "Tabskin",
       "applicationCategory": "BrowserApplication",
       "operatingSystem": "Chrome, Firefox, Edge",
-      "description": "Tabskin is a browser extension that turns the new tab page into a minimalist experience with curated Unsplash wallpapers, a clean clock and local personalization settings.",
+      "description": "Tabskin — бесплатное расширение для браузера, которое превращает новую вкладку в минималистичную страницу с обоями Unsplash, часами и локальными настройками без рекламы.",
       "url": "https://tabskin.ru/",
       "image": "https://tabskin.ru/assets/screenshot-main.webp",
       "offers": {
@@ -79,6 +81,46 @@
       }
     }
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Что такое Tabskin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tabskin — бесплатное расширение для Chrome и Firefox, которое заменяет стандартную новую вкладку на минималистичную страницу с обоями Unsplash, часами и локальными настройками."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Безопасно ли расширение Tabskin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tabskin не собирает персональные данные. Настройки хранятся локально в браузере. Расширение не показывает рекламу и не добавляет сторонние трекеры."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Как установить Tabskin в Chrome или Firefox?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Нажмите «Установить для Chrome» или «Установить для Firefox» на этой странице, подтвердите установку в магазине расширений и откройте новую вкладку."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Tabskin бесплатный?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Да, Tabskin полностью бесплатен. Нет подписок, скрытых платежей и рекламы на новой вкладке."
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -90,11 +132,13 @@
             <nav class="header-nav" aria-label="Основная навигация" data-translate-aria-label="main-navigation-label">
                 <a href="#preview" data-translate="nav-preview">Демо</a>
                 <a href="#features" data-translate="nav-features">Возможности</a>
+                <a href="/faq/" data-translate="nav-faq">FAQ</a>
+                <a href="/blog/" data-translate="nav-blog">Блог</a>
                 <a href="#download" data-translate="nav-download">Установить</a>
             </nav>
             <div class="language-switcher" role="group" aria-label="Выбор языка" data-translate-aria-label="language-switcher-label">
-                <button class="lang-btn active" type="button" data-lang="ru" aria-pressed="true" aria-label="Русский">RU</button>
-                <button class="lang-btn" type="button" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
+                <a class="lang-btn active" href="/" hreflang="ru" aria-current="true">RU</a>
+                <a class="lang-btn" href="/en/" hreflang="en">EN</a>
             </div>
         </header>
 
@@ -279,6 +323,32 @@
                 </div>
             </section>
 
+            <section class="faq-section section-block" id="faq" aria-labelledby="faq-title">
+                <div class="section-header">
+                    <p class="section-kicker" data-translate="faq-kicker">Вопросы и ответы</p>
+                    <h2 id="faq-title" data-translate="faq-title">Частые вопросы о Tabskin</h2>
+                    <p data-translate="faq-intro">Короткие ответы о новой вкладке, приватности и установке. Подробнее — на странице <a href="/faq/">FAQ</a>.</p>
+                </div>
+                <div class="faq-list">
+                    <article class="faq-item">
+                        <h3 data-translate="faq-q1">Что такое Tabskin?</h3>
+                        <p data-translate="faq-a1">Tabskin — бесплатное расширение для Chrome и Firefox, которое заменяет стандартную новую вкладку на минималистичную страницу с обоями Unsplash и часами.</p>
+                    </article>
+                    <article class="faq-item">
+                        <h3 data-translate="faq-q2">Безопасно ли расширение?</h3>
+                        <p data-translate="faq-a2">Да. Персональные данные не собираются, настройки хранятся локально, рекламы и сторонних трекеров нет.</p>
+                    </article>
+                    <article class="faq-item">
+                        <h3 data-translate="faq-q3">Как установить?</h3>
+                        <p data-translate="faq-a3">Выберите браузер: <a href="/install/chrome/">инструкция для Chrome</a> или <a href="/install/firefox/">для Firefox</a>, затем откройте новую вкладку.</p>
+                    </article>
+                    <article class="faq-item">
+                        <h3 data-translate="faq-q4">Чем Tabskin отличается от Momentum и других?</h3>
+                        <p data-translate="faq-a4">Tabskin — лёгкая альтернатива без перегруженного dashboard. Сравнение — на странице <a href="/alternatives/">альтернативы</a>.</p>
+                    </article>
+                </div>
+            </section>
+
             <section class="download-section section-block" id="download" aria-labelledby="download-title">
                 <div class="celebration-banner">
                     <p class="section-kicker" data-translate="download-kicker">Начните сейчас</p>
@@ -343,6 +413,11 @@
                     <a href="mailto:tabskinapp@gmail.com" class="contact-email">tabskinapp@gmail.com</a>
                 </div>
                 <div class="footer-links">
+                    <a href="/faq/" class="footer-link" data-translate="nav-faq">FAQ</a>
+                    <a href="/blog/" class="footer-link" data-translate="nav-blog">Блог</a>
+                    <a href="/alternatives/" class="footer-link" data-translate="nav-alternatives">Альтернативы</a>
+                    <a href="/install/chrome/" class="footer-link" data-translate="nav-install-chrome">Установка Chrome</a>
+                    <a href="/install/firefox/" class="footer-link" data-translate="nav-install-firefox">Установка Firefox</a>
                     <a href="privacy.html" class="footer-link" data-translate="privacy-policy">Политика конфиденциальности</a>
                 </div>
                 <p class="footer-copyright" data-translate="copyright">&copy; 2026 Tabskin. Все права защищены.</p>

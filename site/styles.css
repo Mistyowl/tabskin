@@ -949,3 +949,258 @@ figcaption,
     transform: none;
   }
 }
+
+/* Content pages (FAQ, blog, install guides, alternatives) */
+.content-page {
+  padding: 12px 0 48px;
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 28px;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.breadcrumbs a {
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs span[aria-hidden="true"] {
+  opacity: 0.5;
+}
+
+.content-hero {
+  margin-bottom: 40px;
+}
+
+.content-hero h1 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.content-hero p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 68ch;
+}
+
+.content-article {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.content-article h2 {
+  font-size: 1.45rem;
+  margin: 28px 0 12px;
+}
+
+.content-article h2:first-child {
+  margin-top: 0;
+}
+
+.content-article h3 {
+  font-size: 1.15rem;
+  margin: 20px 0 10px;
+}
+
+.content-article p,
+.content-article li {
+  color: var(--text-muted);
+}
+
+.content-article ul,
+.content-article ol {
+  margin: 12px 0 12px 1.4rem;
+}
+
+.content-article a {
+  color: var(--accent-strong);
+}
+
+.faq-list {
+  display: grid;
+  gap: 16px;
+}
+
+.faq-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.faq-item h2,
+.faq-item h3 {
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+}
+
+.faq-item p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.howto-steps {
+  counter-reset: step;
+  display: grid;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.howto-step {
+  background: var(--card-strong);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 20px 20px 56px;
+  position: relative;
+}
+
+.howto-step::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #0b0b12;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: grid;
+  place-items: center;
+}
+
+.howto-step h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.howto-step p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.comparison-table-wrap {
+  overflow-x: auto;
+  margin: 20px 0;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.comparison-table th {
+  background: var(--card-strong);
+}
+
+.comparison-table td {
+  color: var(--text-muted);
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.blog-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.blog-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.blog-card h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.blog-card p {
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
+
+.blog-meta {
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.content-cta {
+  margin-top: 32px;
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(155, 140, 255, 0.12);
+  border: 1px solid rgba(155, 140, 255, 0.35);
+}
+
+.content-cta p {
+  margin-bottom: 16px;
+  color: var(--text-muted);
+}
+
+.content-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.content-links a {
+  color: var(--accent-strong);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.content-links a:hover {
+  text-decoration: underline;
+}
+
+.lang-btn[aria-current="true"],
+a.lang-btn.active {
+  background: var(--card-strong);
+  border-color: var(--border-strong);
+}
+
+@media (max-width: 768px) {
+  .content-article {
+    padding: 22px 18px;
+  }
+
+  .faq-item {
+    padding: 18px;
+  }
+}

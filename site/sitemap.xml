@@ -1,15 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://tabskin.ru/</loc>
-    <lastmod>2026-05-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabskin.ru/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/en/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabskin.ru/"/>
   </url>
   <url>
     <loc>https://tabskin.ru/privacy.html</loc>
-    <lastmod>2026-05-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/privacy.html"/>
   </url>
-</urlset> 
+  <url>
+    <loc>https://tabskin.ru/en/privacy.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/privacy.html"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/faq/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/faq/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/faq/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/en/faq/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/faq/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/faq/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/install/chrome/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/install/chrome/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/install/chrome/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/en/install/chrome/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/install/chrome/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/install/chrome/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/install/firefox/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/install/firefox/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/install/firefox/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/en/install/firefox/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/install/firefox/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/install/firefox/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/alternatives/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/alternatives/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/alternatives/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/en/alternatives/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/alternatives/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/alternatives/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/blog/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/blog/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/blog/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/en/blog/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/blog/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/blog/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/blog/kak-izmenit-novuyu-vkladku-chrome/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/blog/kak-izmenit-novuyu-vkladku-chrome/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/blog/change-new-tab-chrome/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/en/blog/change-new-tab-chrome/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabskin.ru/blog/kak-izmenit-novuyu-vkladku-chrome/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabskin.ru/en/blog/change-new-tab-chrome/"/>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/blog/oboi-na-novuyu-vkladku/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://tabskin.ru/en/blog/minimalist-new-tab-focus/</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>

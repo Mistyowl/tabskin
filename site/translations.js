@@ -1,9 +1,9 @@
 const translations = {
   ru: {
-    "page-title": "Tabskin — красивая новая вкладка с обоями Unsplash",
+    "page-title": "Tabskin — расширение для новой вкладки с обоями Unsplash | Chrome и Firefox",
     "page-description":
-      "Tabskin заменяет пустую новую вкладку на быструю минималистичную страницу с красивыми обоями Unsplash, часами, локальными настройками и установкой для Chrome и Firefox.",
-    "og-title": "Tabskin — красивая новая вкладка с обоями Unsplash",
+      "Tabskin — бесплатное расширение для новой вкладки: красивые обои Unsplash, часы, локальные настройки без рекламы. Установка для Chrome и Firefox за минуту.",
+    "og-title": "Tabskin — расширение для новой вкладки с обоями Unsplash | Chrome и Firefox",
     "og-description":
       "Замените стандартную новую вкладку на спокойную, быструю и красивую страницу с curated Unsplash-обоями, часами и персонализацией.",
     "twitter-title": "Tabskin — красивая новая вкладка с обоями Unsplash",
@@ -15,6 +15,11 @@ const translations = {
     "trust-list-label": "Преимущества Tabskin",
     "nav-preview": "Демо",
     "nav-features": "Возможности",
+    "nav-faq": "FAQ",
+    "nav-blog": "Блог",
+    "nav-alternatives": "Альтернативы",
+    "nav-install-chrome": "Установка Chrome",
+    "nav-install-firefox": "Установка Firefox",
     "nav-download": "Установить",
     "launch-date": "Доступно для Chrome и Firefox",
     "hero-title-1": "Новая вкладка без шума:",
@@ -94,6 +99,17 @@ const translations = {
     "install-edge": "Установить для Edge",
     "coming-soon-edge": "Скоро для Edge",
     "download-note": "После установки откройте новую вкладку, чтобы увидеть Tabskin в действии.",
+    "faq-kicker": "Вопросы и ответы",
+    "faq-title": "Частые вопросы о Tabskin",
+    "faq-intro": "Короткие ответы о новой вкладке, приватности и установке. Подробнее — на странице <a href=\"/faq/\">FAQ</a>.",
+    "faq-q1": "Что такое Tabskin?",
+    "faq-a1": "Tabskin — бесплатное расширение для Chrome и Firefox, которое заменяет стандартную новую вкладку на минималистичную страницу с обоями Unsplash и часами.",
+    "faq-q2": "Безопасно ли расширение?",
+    "faq-a2": "Да. Персональные данные не собираются, настройки хранятся локально, рекламы и сторонних трекеров нет.",
+    "faq-q3": "Как установить?",
+    "faq-a3": "Выберите браузер: <a href=\"/install/chrome/\">инструкция для Chrome</a> или <a href=\"/install/firefox/\">для Firefox</a>, затем откройте новую вкладку.",
+    "faq-q4": "Чем Tabskin отличается от Momentum и других?",
+    "faq-a4": "Tabskin — лёгкая альтернатива без перегруженного dashboard. Сравнение — на странице <a href=\"/alternatives/\">альтернативы</a>.",
     "footer-description": "Превращаем каждую новую вкладку в спокойный визуальный старт",
     "contact-us": "Связаться с нами:",
     "privacy-policy": "Политика конфиденциальности",
@@ -140,6 +156,11 @@ const translations = {
     "trust-list-label": "Tabskin benefits",
     "nav-preview": "Demo",
     "nav-features": "Features",
+    "nav-faq": "FAQ",
+    "nav-blog": "Blog",
+    "nav-alternatives": "Alternatives",
+    "nav-install-chrome": "Chrome install",
+    "nav-install-firefox": "Firefox install",
     "nav-download": "Install",
     "launch-date": "Available for Chrome and Firefox",
     "hero-title-1": "A new tab without noise:",
@@ -219,6 +240,17 @@ const translations = {
     "install-edge": "Install for Edge",
     "coming-soon-edge": "Coming soon for Edge",
     "download-note": "After installation, open a new tab to see Tabskin in action.",
+    "faq-kicker": "Questions and answers",
+    "faq-title": "Frequently asked questions about Tabskin",
+    "faq-intro": "Quick answers about the new tab, privacy, and installation. More details on the <a href=\"/en/faq/\">FAQ page</a>.",
+    "faq-q1": "What is Tabskin?",
+    "faq-a1": "Tabskin is a free Chrome and Firefox extension that replaces the default new tab with a minimalist page featuring Unsplash wallpapers and a clock.",
+    "faq-q2": "Is the extension safe?",
+    "faq-a2": "Yes. No personal data is collected, settings stay local, and there are no ads or third-party trackers.",
+    "faq-q3": "How do I install it?",
+    "faq-a3": "Pick your browser: <a href=\"/en/install/chrome/\">Chrome guide</a> or <a href=\"/en/install/firefox/\">Firefox guide</a>, then open a new tab.",
+    "faq-q4": "How is Tabskin different from Momentum and others?",
+    "faq-a4": "Tabskin is a lightweight alternative without an overloaded dashboard. See our <a href=\"/en/alternatives/\">alternatives page</a>.",
     "footer-description": "Turning every new tab into a calm visual start",
     "contact-us": "Contact us:",
     "privacy-policy": "Privacy Policy",
@@ -249,7 +281,13 @@ const translations = {
   },
 }
 
+function isRussianHomePage() {
+  const path = window.location.pathname.replace(/\/$/, "") || "/"
+  return path === "" || path === "/" || path === "/index.html"
+}
+
 function getCurrentLanguage() {
+  if (isRussianHomePage()) return "ru"
   const saved = localStorage.getItem("tabskin-language")
   if (saved === "ru" || saved === "en") return saved
   const browserLang = (navigator.language || navigator.userLanguage || "").toLowerCase()
@@ -303,9 +341,11 @@ function updateLanguageButtons(lang) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  if (window.location.pathname.startsWith("/en")) return
+
   const currentLang = getCurrentLanguage()
   setLanguage(currentLang)
-  const langButtons = document.querySelectorAll(".lang-btn")
+  const langButtons = document.querySelectorAll("button.lang-btn")
   langButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const lang = btn.getAttribute("data-lang")
