@@ -74,7 +74,7 @@ let currentTimeFormat = loadUserSettings().timeFormat || DEFAULT_SETTINGS.timeFo
 let clockFormatter = createClockFormatter(currentTimeFormat);
 
 // UTM параметры для Unsplash ссылок
-const UNSPLASH_UTM = '?utm_source=tabskin&utm_medium=referral';
+const UNSPLASH_UTM_PARAMS = "utm_source=tabskin&utm_medium=referral";
 
 // Ключ для хранения согласия пользователя
 const USER_CONSENT_KEY = "userConsentDownloadLocation";
@@ -132,23 +132,44 @@ function trapFocusInContainer(event, container) {
   }
 }
 
-function showConsentModalIfNeeded() {
-  if (localStorage.getItem(storageKey(USER_CONSENT_KEY)) === "true") return;
-  const texts = getConsentTexts();
+function createConsentModal(texts) {
   const modal = document.createElement("div");
   modal.id = "consentModal";
   modal.setAttribute("role", "dialog");
   modal.setAttribute("aria-modal", "true");
   modal.setAttribute("aria-labelledby", "consentModalTitle");
   modal.setAttribute("tabindex", "-1");
-  modal.innerHTML = `
-    <div class="consent-modal-content">
-      <h2 id="consentModalTitle">${texts.title}</h2>
-      <p>${texts.message}</p>
-      <a href="${texts.moreLink}" target="_blank" rel="noopener noreferrer">${texts.more}</a>
-      <button id="consentAgreeBtn" type="button">${texts.agree}</button>
-    </div>
-  `;
+
+  const content = document.createElement("div");
+  content.className = "consent-modal-content";
+
+  const title = document.createElement("h2");
+  title.id = "consentModalTitle";
+  title.textContent = texts.title;
+
+  const message = document.createElement("p");
+  message.textContent = texts.message;
+
+  const moreLink = document.createElement("a");
+  moreLink.href = texts.moreLink;
+  moreLink.target = "_blank";
+  moreLink.rel = "noopener noreferrer";
+  moreLink.textContent = texts.more;
+
+  const agreeButton = document.createElement("button");
+  agreeButton.id = "consentAgreeBtn";
+  agreeButton.type = "button";
+  agreeButton.textContent = texts.agree;
+
+  content.append(title, message, moreLink, agreeButton);
+  modal.appendChild(content);
+  return modal;
+}
+
+function showConsentModalIfNeeded() {
+  if (localStorage.getItem(storageKey(USER_CONSENT_KEY)) === "true") return;
+  const texts = getConsentTexts();
+  const modal = createConsentModal(texts);
   consentPreviouslyFocusedElement = document.activeElement;
   consentModalKeydownHandler = (event) => trapFocusInContainer(event, modal);
   modal.addEventListener("keydown", consentModalKeydownHandler);
@@ -625,7 +646,7 @@ async function fetchAndUpdateImage({ forceRefresh, silent = false, source = "sta
     await commitPreparedImage(metadata, preparedImage, { animate });
     setServerAvailable(true);
 
-    trackDownloadLocation(jsonData.links?.download_location);
+    await trackDownloadLocation(jsonData.links?.download_location);
     console.log("🎨 New image applied with metadata");
     return true;
   } catch (error) {
@@ -731,16 +752,38 @@ function decodeImage(imageUrl) {
 }
 
 async function commitPreparedImage(metadata, preparedImage, { animate = true } = {}) {
-  saveImageMetadata(metadata);
-  applyMetadataToDom(metadata);
+  const savedMetadata = saveImageMetadata(metadata);
+  applyMetadataToDom(savedMetadata);
   applyBackgroundImage(preparedImage.displayUrl, { animate });
   updateLocalImageControls();
   scheduleCacheCleanup();
 }
 
-function trackDownloadLocation(downloadLocation) {
-  if (!downloadLocation) return;
+async function hasDownloadTrackingConsent() {
   if (localStorage.getItem(storageKey(USER_CONSENT_KEY)) !== "true") {
+    return false;
+  }
+
+  const permissionsApi = globalThis.browser?.permissions || globalThis.chrome?.permissions;
+  if (!permissionsApi?.getAll) {
+    return true;
+  }
+
+  try {
+    const permissions = await permissionsApi.getAll();
+    if (!("data_collection" in permissions)) {
+      return true;
+    }
+    return permissions.data_collection?.includes("technicalAndInteraction") ?? false;
+  } catch (error) {
+    console.warn("⚠️ Failed to read Firefox data collection permissions:", error);
+    return false;
+  }
+}
+
+async function trackDownloadLocation(downloadLocation) {
+  if (!downloadLocation) return;
+  if (!(await hasDownloadTrackingConsent())) {
     console.warn("⚠️ User consent not granted for download location tracking.");
     return;
   }
@@ -847,23 +890,34 @@ function scheduleCacheCleanup() {
   }
 }
 
-// Сохранение метаданных изображения
-function saveImageMetadata({ url, authorName, photoPageLink, authorProfileLink, timestamp }) {
-  // Добавляем utm-метки к ссылкам на Unsplash
-  const photoLinkWithUtm = addUnsplashUtm(photoPageLink);
-  const authorLinkWithUtm = addUnsplashUtm(authorProfileLink);
+function enrichImageMetadata({ url, authorName, photoPageLink, authorProfileLink, timestamp }) {
+  return {
+    url,
+    authorName,
+    photoPageLink: addUnsplashUtm(photoPageLink),
+    authorProfileLink: addUnsplashUtm(authorProfileLink),
+    timestamp
+  };
+}
 
-  localStorage.setItem(imageMetaKey("Url"), url);
-  localStorage.setItem(imageMetaKey("Creator"), authorName);
-  localStorage.setItem(imageMetaKey("PhotoLink"), photoLinkWithUtm);
-  localStorage.setItem(imageMetaKey("CreatorLink"), authorLinkWithUtm);
-  localStorage.setItem(imageMetaKey("LoadTime"), timestamp.toString());
+// Сохранение метаданных изображения
+function saveImageMetadata(metadata) {
+  const enriched = enrichImageMetadata(metadata);
+
+  localStorage.setItem(imageMetaKey("Url"), enriched.url);
+  localStorage.setItem(imageMetaKey("Creator"), enriched.authorName);
+  localStorage.setItem(imageMetaKey("PhotoLink"), enriched.photoPageLink);
+  localStorage.setItem(imageMetaKey("CreatorLink"), enriched.authorProfileLink);
+  localStorage.setItem(imageMetaKey("LoadTime"), enriched.timestamp.toString());
   console.log("💾 Image metadata saved");
+  return enriched;
 }
 
 function addUnsplashUtm(link) {
   if (!link || link === "#") return link;
-  return link.includes("utm_source=") ? link : `${link}${UNSPLASH_UTM}`;
+  if (link.includes("utm_source=")) return link;
+  const separator = link.includes("?") ? "&" : "?";
+  return `${link}${separator}${UNSPLASH_UTM_PARAMS}`;
 }
 
 function getStoredImageMetadata() {
@@ -887,16 +941,19 @@ function applyStoredImageMetadata() {
 }
 
 function applyMetadataToDom({ authorName, photoPageLink, authorProfileLink }) {
+  const authorLink = addUnsplashUtm(authorProfileLink) || "#";
+  const photoLink = addUnsplashUtm(photoPageLink) || "#";
+
   if (backgroundAuthorLink) {
     backgroundAuthorLink.textContent = authorName || "";
-    backgroundAuthorLink.href = authorProfileLink || "#";
+    backgroundAuthorLink.href = authorLink;
   }
 
   if (backgroundImageLink) {
-    backgroundImageLink.href = photoPageLink || "#";
+    backgroundImageLink.href = photoLink;
   }
 
-  console.log("🔗 Applied image metadata:", { authorName, photoPageLink, authorProfileLink });
+  console.log("🔗 Applied image metadata:", { authorName, photoPageLink: photoLink, authorProfileLink: authorLink });
 }
 
 async function applyImageFromCachedMetadata(metadata, options = {}) {
@@ -921,8 +978,10 @@ async function applyImageFromCachedMetadata(metadata, options = {}) {
     objectUrl = URL.createObjectURL(blob);
     await decodeImage(objectUrl);
 
-    if (updateStoredMetadata) saveImageMetadata(metadata);
-    applyMetadataToDom(metadata);
+    const displayMetadata = updateStoredMetadata
+      ? saveImageMetadata(metadata)
+      : enrichImageMetadata(metadata);
+    applyMetadataToDom(displayMetadata);
     markCacheItemUsed(metadata.url);
     applyBackgroundImage(objectUrl, { animate });
     updateLocalImageControls();

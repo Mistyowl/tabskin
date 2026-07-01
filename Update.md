@@ -15,7 +15,38 @@ Two schemes coexist:
 
 Starting with **Update 1.5.8**, the store version in `manifest.json` was reset to `1.1.0` for publication. Later `Update 1.5.x` / `1.6.x` labels are milestone names, not store versions.
 
-To find a commit by label: `git log --oneline --grep="Update 1.6.3"`.
+To find a commit by label: `git log --oneline --grep="Update 1.6.4"`.
+
+---
+
+## Update 1.6.4 — 2026-07-01
+
+**manifest version:** `1.1.0` → `1.1.1`
+
+### Extension
+
+- **Settings modal markup moved to `index.html`** — settings UI now lives in `<template id="settingsModalTemplate">`; `SettingsManager.loadSettingsHTML()` clones the template instead of embedding a large HTML string in `settings.js` (clearer AMO source, single markup source of truth)
+- **Consent modal DOM construction** — `createConsentModal()` builds the dialog with `createElement` / `textContent` instead of `innerHTML`
+- **Firefox data collection compliance** — `hasDownloadTrackingConsent()` checks Firefox 140+ `browser.permissions.getAll()` for optional `data_collection.technicalAndInteraction` in addition to the in-extension consent flag; `trackDownloadLocation()` is now `async` and awaits this check before `POST /download`
+- **Unsplash UTM fix** — `addUnsplashUtm()` appends `&utm_…` when the URL already has query parameters; new `enrichImageMetadata()` helper; `saveImageMetadata()` returns enriched links; `applyMetadataToDom()` always applies UTM at display time (fixes legacy stored links)
+
+### Build / Infrastructure
+
+- **Store version bump** — `manifest.json` and `package.json` → `1.1.1`
+- **Firefox manifest updates** in `scripts/build-extension.mjs`:
+  - `gecko.id`: `tabskin@tabskin.ru` → `tabskinapp@gmail.com`
+  - `strict_min_version`: `109.0` → `140.0`
+  - Added `gecko_android.strict_min_version: 142.0`
+  - Added `data_collection_permissions`: required `none`, optional `technicalAndInteraction`
+- Added **`scripts/build-firefox-source.mjs`** and npm script **`build:firefox-source`** — zip of readable source + `SOURCE_CODE_README.md` for AMO source code review (`artifacts/tabskin-firefox-source-v{version}.zip`)
+- Added **`scripts/minify-for-production.mjs`** — shared HTML/CSS/template-literal/JS minification helpers
+- **`build-demo-embed.mjs`** refactored to use shared minify module; pre-minifies bundled JS source before esbuild; minifies final embed HTML
+
+### Documentation
+
+- **README.md** / **README.ru.md** — updated Firefox `gecko.id`, documented `build:firefox-source` and AMO source archive upload
+- **docs/EXTENSION.md** / **docs/EXTENSION.ru.md** — Firefox manifest schema and data collection permissions
+- Added **SOURCE_CODE_README.md** — step-by-step AMO reviewer guide to reproduce the Firefox production zip
 
 ---
 

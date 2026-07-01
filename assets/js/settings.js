@@ -53,151 +53,18 @@ class SettingsManager {
     }
   }
 
-  // Загрузка HTML настроек (оптимизированная)
+  // Загрузка HTML настроек из <template> в index.html
   async loadSettingsHTML() {
-    // Проверяем, может HTML уже загружен
     if (this.settingsModal) return;
-    
+
+    const template = document.getElementById("settingsModalTemplate");
+    if (!template?.content?.firstElementChild) {
+      throw new Error("Settings modal template not found");
+    }
+
     try {
-      // Встроенный HTML (как в Momentum) - убираем fetch запрос
-      const html = `
-        <div id="settingsModal" class="settings-modal hidden">
-          <div class="settings-content" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle" tabindex="-1">
-            <div class="settings-header">
-              <h2 id="settingsModalTitle" data-i18n="settingsTitle">Settings</h2>
-            </div>
-            <div class="settings-groups">
-              <section class="settings-group" aria-label="Interface settings">
-                <h3 class="settings-group-title" data-i18n="settingsGroupInterface">Interface</h3>
-                <div class="settings-group-card">
-                  <div class="settings-row">
-                    <span class="settings-row-label" data-i18n="language">Language</span>
-                    <div class="settings-control">
-                      <div class="segmented-control" role="radiogroup" aria-label="Language">
-                        <label class="segmented-option">
-                          <input type="radio" name="language" value="en" />
-                          <span data-i18n="english">English</span>
-                        </label>
-                        <label class="segmented-option">
-                          <input type="radio" name="language" value="ru" />
-                          <span data-i18n="russian">Русский</span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="settings-row">
-                    <span class="settings-row-label" data-i18n="timeFormat">Time format</span>
-                    <div class="settings-control">
-                      <div class="segmented-control" role="radiogroup" aria-label="Time format">
-                        <label class="segmented-option">
-                          <input type="radio" name="timeFormat" value="24" />
-                          <span data-i18n="time24Hour">24 hour</span>
-                        </label>
-                        <label class="segmented-option">
-                          <input type="radio" name="timeFormat" value="12" />
-                          <span data-i18n="time12Hour">12 hour</span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <section class="settings-group" aria-label="Background settings">
-                <h3 class="settings-group-title" data-i18n="settingsGroupBackground">Background</h3>
-                <div class="settings-group-card">
-                  <div class="settings-row">
-                    <span class="settings-row-label" data-i18n="wallpaperTheme">Wallpaper theme</span>
-                    <span class="settings-control">
-                      <div class="settings-picker">
-                        <select id="themeSelect" class="settings-picker-native" tabindex="-1" aria-hidden="true">
-                          <option value="wallpapers" data-i18n="wallpapers">Wallpapers</option>
-                          <option value="nature" data-i18n="nature">Nature</option>
-                          <option value="render" data-i18n="render3d">3D Render</option>
-                          <option value="textures" data-i18n="textures">Texture</option>
-                          <option value="space" data-i18n="space">Space</option>
-                          <option value="travel" data-i18n="travel">Travel</option>
-                          <option value="film" data-i18n="film">Film</option>
-                          <option value="people" data-i18n="people">People</option>
-                          <option value="architecture" data-i18n="architecture">Architecture</option>
-                          <option value="street" data-i18n="streetPhotography">Street Photography</option>
-                        </select>
-                      </div>
-                    </span>
-                  </div>
-                  <label class="settings-row settings-row-switch">
-                    <span class="settings-row-label" data-i18n="autoSwitch">Automatic background change</span>
-                    <span class="settings-control">
-                      <input class="switch-input" type="checkbox" id="autoSwitchToggle" />
-                      <span class="switch-track" aria-hidden="true"></span>
-                    </span>
-                  </label>
-                  <div class="settings-row">
-                    <span class="settings-row-label" data-i18n="changeFrequency">Change frequency</span>
-                    <span class="settings-control">
-                      <div class="settings-picker">
-                        <select id="autoSwitchInterval" class="settings-picker-native" tabindex="-1" aria-hidden="true">
-                          <option value="15" data-i18n="every15Minutes">Every 15 minutes</option>
-                          <option value="60" data-i18n="everyHour">Every hour</option>
-                          <option value="360" data-i18n="every6Hours">Every 6 hours</option>
-                        </select>
-                      </div>
-                    </span>
-                  </div>
-                </div>
-              </section>
-
-              <section class="settings-group" aria-label="Performance and storage settings">
-                <h3 class="settings-group-title" data-i18n="settingsGroupPerformance">Performance</h3>
-                <div class="settings-group-card">
-                  <label class="settings-row settings-row-switch">
-                    <span class="settings-row-label" data-i18n="smoothTransition">Smooth transition animation</span>
-                    <span class="settings-control">
-                      <input class="switch-input" type="checkbox" id="transitionToggle" />
-                      <span class="switch-track" aria-hidden="true"></span>
-                    </span>
-                  </label>
-                  <label class="settings-row settings-row-switch">
-                    <span class="settings-row-label" data-i18n="performanceMode">Optimized image size</span>
-                    <span class="settings-control">
-                      <input class="switch-input" type="checkbox" id="performanceModeToggle" />
-                      <span class="switch-track" aria-hidden="true"></span>
-                    </span>
-                  </label>
-                </div>
-                <div class="settings-group-card">
-                  <div class="settings-row settings-row-static">
-                    <span class="settings-row-label" data-i18n="cacheSize">Cache size</span>
-                    <span class="settings-control settings-control-value">
-                      <span id="cacheSizeDisplay">Calculating...</span>
-                    </span>
-                  </div>
-                </div>
-                <div class="settings-group-card">
-                  <button id="clearCacheButton" class="settings-destructive-btn" type="button" data-i18n="clearCacheNow">Clear cache</button>
-                </div>
-              </section>
-            </div>
-            <div class="button-group">
-              <button id="saveSettings" type="button" data-i18n="done">Done</button>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      // Создаем временный контейнер для парсинга HTML
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = html;
-      
-      // Извлекаем модальное окно настроек
-      this.settingsModal = tempDiv.querySelector('#settingsModal');
-      if (!this.settingsModal) {
-        throw new Error('Settings modal not found in HTML');
-      }
-      
-      // Добавляем в DOM
+      this.settingsModal = template.content.firstElementChild.cloneNode(true);
       document.body.appendChild(this.settingsModal);
-      
       // Применяем локализацию к модальному окну сразу после создания
       this.applyLocalizationToModal();
       this.settingsModal.addEventListener("keydown", this.handleModalKeydown);

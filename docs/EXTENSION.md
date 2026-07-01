@@ -144,11 +144,20 @@ Firefox builds remove `minimum_chrome_version` and add:
 ```json
 "browser_specific_settings": {
   "gecko": {
-    "id": "tabskin@tabskin.ru",
-    "strict_min_version": "109.0"
+    "id": "tabskinapp@gmail.com",
+    "strict_min_version": "140.0",
+    "data_collection_permissions": {
+      "required": ["none"],
+      "optional": ["technicalAndInteraction"]
+    }
+  },
+  "gecko_android": {
+    "strict_min_version": "142.0"
   }
 }
 ```
+
+Firefox builds declare optional `technicalAndInteraction` for Unsplash download-location tracking sent to `tabskin.ru/download` after user consent. On Firefox 140+, the built-in data collection toggle is respected in addition to the in-extension consent modal.
 
 ### Watch Mode
 

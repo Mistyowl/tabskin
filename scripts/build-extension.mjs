@@ -14,6 +14,13 @@ const rootDir = path.resolve(__dirname, "..")
 const distDir = path.join(rootDir, "dist")
 const artifactsDir = path.join(rootDir, "artifacts")
 
+const FIREFOX_EXTENSION_ID = "tabskinapp@gmail.com"
+const FIREFOX_MIN_VERSION = "140.0"
+const FIREFOX_ANDROID_MIN_VERSION = "142.0"
+const FIREFOX_DATA_COLLECTION_PERMISSIONS = {
+  required: ["none"],
+  optional: ["technicalAndInteraction"],
+}
 const SUPPORTED_TARGETS = new Set(["all", "chrome", "firefox"])
 const SUPPORTED_MODES = new Set(["development", "production"])
 
@@ -75,8 +82,12 @@ async function writeManifest(browser, targetDir) {
     delete manifest.minimum_chrome_version
     manifest.browser_specific_settings = {
       gecko: {
-        id: "tabskin@tabskin.ru",
-        strict_min_version: "109.0",
+        id: FIREFOX_EXTENSION_ID,
+        strict_min_version: FIREFOX_MIN_VERSION,
+        data_collection_permissions: FIREFOX_DATA_COLLECTION_PERMISSIONS,
+      },
+      gecko_android: {
+        strict_min_version: FIREFOX_ANDROID_MIN_VERSION,
       },
     }
   }

@@ -15,7 +15,38 @@
 
 Начиная с **Update 1.5.8**, store-версия в `manifest.json` сброшена на `1.1.0` для публикации. Последующие метки `Update 1.5.x` / `1.6.x` — это названия этапов, а не версии магазина.
 
-Чтобы найти коммит по метке: `git log --oneline --grep="Update 1.6.3"`.
+Чтобы найти коммит по метке: `git log --oneline --grep="Update 1.6.4"`.
+
+---
+
+## Update 1.6.4 — 2026-07-01
+
+**версия manifest:** `1.1.0` → `1.1.1`
+
+### Расширение
+
+- **Разметка модального окна настроек перенесена в `index.html`** — UI настроек в `<template id="settingsModalTemplate">`; `SettingsManager.loadSettingsHTML()` клонирует template вместо большой HTML-строки в `settings.js` (понятнее для AMO, единый источник разметки)
+- **Сборка consent modal через DOM API** — `createConsentModal()` создаёт диалог через `createElement` / `textContent` вместо `innerHTML`
+- **Соответствие Firefox data collection** — `hasDownloadTrackingConsent()` проверяет в Firefox 140+ `browser.permissions.getAll()` на optional `data_collection.technicalAndInteraction` в дополнение к флагу согласия в расширении; `trackDownloadLocation()` стал `async` и ждёт проверку перед `POST /download`
+- **Исправление UTM для Unsplash** — `addUnsplashUtm()` добавляет `&utm_…`, если в URL уже есть query-параметры; новый хелпер `enrichImageMetadata()`; `saveImageMetadata()` возвращает обогащённые ссылки; `applyMetadataToDom()` всегда применяет UTM при отображении (исправляет старые сохранённые ссылки)
+
+### Сборка / инфраструктура
+
+- **Bump store-версии** — `manifest.json` и `package.json` → `1.1.1`
+- **Обновления Firefox manifest** в `scripts/build-extension.mjs`:
+  - `gecko.id`: `tabskin@tabskin.ru` → `tabskinapp@gmail.com`
+  - `strict_min_version`: `109.0` → `140.0`
+  - Добавлен `gecko_android.strict_min_version: 142.0`
+  - Добавлен `data_collection_permissions`: required `none`, optional `technicalAndInteraction`
+- Добавлен **`scripts/build-firefox-source.mjs`** и npm-скрипт **`build:firefox-source`** — zip читаемых исходников + `SOURCE_CODE_README.md` для проверки исходного кода на AMO (`artifacts/tabskin-firefox-source-v{version}.zip`)
+- Добавлен **`scripts/minify-for-production.mjs`** — общие хелперы минификации HTML/CSS/template literal/JS
+- **`build-demo-embed.mjs`** переведён на общий minify-модуль; предминификация JS перед esbuild; минификация итогового embed HTML
+
+### Документация
+
+- **README.md** / **README.ru.md** — обновлён Firefox `gecko.id`, описан `build:firefox-source` и загрузка source-архива в AMO
+- **docs/EXTENSION.md** / **docs/EXTENSION.ru.md** — схема Firefox manifest и data collection permissions
+- Добавлен **SOURCE_CODE_README.md** — пошаговая инструкция для ревьюеров AMO по воспроизведению Firefox production zip
 
 ---
 

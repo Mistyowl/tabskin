@@ -1,6 +1,6 @@
 {
   "name": "tabskin-extension",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "description": "Build pipeline for the Tabskin browser extension.",
   "scripts": {
@@ -8,6 +8,7 @@
     "build": "node scripts/build-extension.mjs --target=all --mode=production",
     "build:chrome": "node scripts/build-extension.mjs --target=chrome --mode=production",
     "build:firefox": "node scripts/build-extension.mjs --target=firefox --mode=production",
+    "build:firefox-source": "node scripts/build-firefox-source.mjs",
     "dev:chrome": "node scripts/build-extension.mjs --target=chrome --mode=development --watch",
     "dev:firefox": "node scripts/build-extension.mjs --target=firefox --mode=development --watch",
     "validate:extension": "node scripts/validate-extension-assets.mjs",

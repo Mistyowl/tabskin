@@ -11,7 +11,7 @@
 [![Firefox Add-ons](https://img.shields.io/badge/Firefox-Add--ons-FF7139?style=for-the-badge&logo=firefox&logoColor=white)](https://addons.mozilla.org/addon/tabskin)
 [![GitHub](https://img.shields.io/badge/GitHub-Mistyowl%2Ftabskin-181717?style=for-the-badge&logo=github)](https://github.com/Mistyowl/tabskin)
 
-[![Версия](https://img.shields.io/badge/версия-1.1.0-5c6bc0?style=flat-square)](manifest.json)
+[![Версия](https://img.shields.io/badge/версия-1.1.1-5c6bc0?style=flat-square)](manifest.json)
 [![Manifest](https://img.shields.io/badge/Manifest-V3-34a853?style=flat-square)](manifest.json)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-339933?style=flat-square&logo=node.js&logoColor=white)](package.json)
 [![Звёзды GitHub](https://img.shields.io/github/stars/Mistyowl/tabskin?style=flat-square&logo=github)](https://github.com/Mistyowl/tabskin/stargazers)
@@ -146,18 +146,26 @@ npm run validate:extension
 npm run icons:generate
 ```
 
-После `npm run build` артефакты используют версию из `manifest.json` (сейчас `1.1.0`):
+После `npm run build` артефакты используют версию из `manifest.json` (сейчас `1.1.1`):
 
 ```text
 dist/chrome/
 dist/firefox/
-artifacts/tabskin-chrome-v1.1.0.zip
-artifacts/tabskin-firefox-v1.1.0.zip
+artifacts/tabskin-chrome-v1.1.1.zip
+artifacts/tabskin-firefox-v1.1.1.zip
 ```
 
 Production-сборка объединяет `script.js` и `assets/js/settings.js` в `app.js`, минифицирует через esbuild, удаляет `console.*` и `debugger`, генерирует отдельные manifest-файлы и исключает `site/`, `server.js` и build scripts из release zip.
 
-Сборки Firefox добавляют `browser_specific_settings.gecko.id: tabskin@tabskin.ru`.
+Сборки Firefox добавляют `browser_specific_settings.gecko.id: tabskinapp@gmail.com`.
+
+Для проверки исходного кода на AMO:
+
+```bash
+npm run build:firefox-source
+```
+
+Результат: `artifacts/tabskin-firefox-source-v{version}.zip` — загрузите в AMO вместе с `artifacts/tabskin-firefox-v{version}.zip`.
 
 Подробнее: [docs/EXTENSION.ru.md](docs/EXTENSION.ru.md)
 
@@ -216,8 +224,8 @@ Store-версия сброшена на `1.1.0` в **Update 1.5.8** для пу
 
 Для загрузки в магазины:
 
-- Chrome Web Store: `artifacts/tabskin-chrome-v1.1.0.zip`
-- Firefox Add-ons: `artifacts/tabskin-firefox-v1.1.0.zip`
+- Chrome Web Store: `artifacts/tabskin-chrome-v1.1.1.zip`
+- Firefox Add-ons: `artifacts/tabskin-firefox-v1.1.1.zip`
 
 Перед публикацией:
 

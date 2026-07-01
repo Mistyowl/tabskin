@@ -144,11 +144,20 @@ npm run icons:generate
 ```json
 "browser_specific_settings": {
   "gecko": {
-    "id": "tabskin@tabskin.ru",
-    "strict_min_version": "109.0"
+    "id": "tabskinapp@gmail.com",
+    "strict_min_version": "140.0",
+    "data_collection_permissions": {
+      "required": ["none"],
+      "optional": ["technicalAndInteraction"]
+    }
+  },
+  "gecko_android": {
+    "strict_min_version": "142.0"
   }
 }
 ```
+
+Сборки Firefox объявляют optional `technicalAndInteraction` для отправки download location Unsplash на `tabskin.ru/download` после согласия пользователя. В Firefox 140+ учитывается встроенный переключатель сбора данных в дополнение к модальному окну согласия в расширении.
 
 ### Watch Mode
 

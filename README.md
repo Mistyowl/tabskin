@@ -11,7 +11,7 @@
 [![Firefox Add-ons](https://img.shields.io/badge/Firefox-Add--ons-FF7139?style=for-the-badge&logo=firefox&logoColor=white)](https://addons.mozilla.org/addon/tabskin)
 [![GitHub](https://img.shields.io/badge/GitHub-Mistyowl%2Ftabskin-181717?style=for-the-badge&logo=github)](https://github.com/Mistyowl/tabskin)
 
-[![Version](https://img.shields.io/badge/version-1.1.0-5c6bc0?style=flat-square)](manifest.json)
+[![Version](https://img.shields.io/badge/version-1.1.1-5c6bc0?style=flat-square)](manifest.json)
 [![Manifest](https://img.shields.io/badge/Manifest-V3-34a853?style=flat-square)](manifest.json)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-339933?style=flat-square&logo=node.js&logoColor=white)](package.json)
 [![GitHub stars](https://img.shields.io/github/stars/Mistyowl/tabskin?style=flat-square&logo=github)](https://github.com/Mistyowl/tabskin/stargazers)
@@ -146,18 +146,26 @@ Regenerate PNG extension icons:
 npm run icons:generate
 ```
 
-After `npm run build`, production output uses the version from `manifest.json` (currently `1.1.0`):
+After `npm run build`, production output uses the version from `manifest.json` (currently `1.1.1`):
 
 ```text
 dist/chrome/
 dist/firefox/
-artifacts/tabskin-chrome-v1.1.0.zip
-artifacts/tabskin-firefox-v1.1.0.zip
+artifacts/tabskin-chrome-v1.1.1.zip
+artifacts/tabskin-firefox-v1.1.1.zip
 ```
 
 Production builds bundle `script.js` and `assets/js/settings.js` into `app.js`, minify with esbuild, strip `console.*` and `debugger`, generate browser-specific manifests, and exclude `site/`, `server.js`, and build scripts from release zips.
 
-Firefox builds add `browser_specific_settings.gecko.id: tabskin@tabskin.ru`.
+Firefox builds add `browser_specific_settings.gecko.id: tabskinapp@gmail.com`.
+
+For AMO source code review, create a source archive (readable files + build instructions):
+
+```bash
+npm run build:firefox-source
+```
+
+Output: `artifacts/tabskin-firefox-source-v{version}.zip` — upload this to AMO together with `artifacts/tabskin-firefox-v{version}.zip`.
 
 See [docs/EXTENSION.md](docs/EXTENSION.md) for architecture, storage keys, and contributor notes.
 
@@ -216,8 +224,8 @@ Full history: [Update.md](Update.md)
 
 Upload to browser stores:
 
-- Chrome Web Store: `artifacts/tabskin-chrome-v1.1.0.zip`
-- Firefox Add-ons: `artifacts/tabskin-firefox-v1.1.0.zip`
+- Chrome Web Store: `artifacts/tabskin-chrome-v1.1.1.zip`
+- Firefox Add-ons: `artifacts/tabskin-firefox-v1.1.1.zip`
 
 Before publishing:
 

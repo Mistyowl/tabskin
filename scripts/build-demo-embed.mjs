@@ -3,6 +3,7 @@ import fsSync from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import * as esbuild from "esbuild"
+import { minifyHtml, minifyJavaScriptSource } from "./minify-for-production.mjs"
 import { validateProject } from "./validate-extension-assets.mjs"
 
 const __filename = fileURLToPath(import.meta.url)
@@ -34,15 +35,6 @@ async function copyDir(sourceDir, targetDir, filter = () => true) {
   }
 }
 
-function minifyHtml(html) {
-  return html
-    .replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/\s+/g, " ")
-    .replace(/>\s+(?=<(?:html|head|body|meta|link|title|div|button|svg|use|p|script)\b|<\/(?:html|head|body|div|button|svg|p|script)>)/gi, ">")
-    .replace(/(<\/(?:html|head|body|div|button|svg|p|script)>|<(?:html|head|body|meta|link|title|div|button|svg|use|p|script)\b[^>]*>)\s+</gi, "$1<")
-    .trim()
-}
-
 async function writeHtml(targetDir) {
   const html = await fs.readFile(path.join(rootDir, "index.html"), "utf8")
   const outputHtml = html.replace(
@@ -55,8 +47,9 @@ async function writeHtml(targetDir) {
 async function writeJavaScript(targetDir) {
   const script = await fs.readFile(path.join(rootDir, "script.js"), "utf8")
   const settings = await fs.readFile(path.join(rootDir, "assets", "js", "settings.js"), "utf8")
+  const bundledSource = `${minifyJavaScriptSource(script)}\n\n${minifyJavaScriptSource(settings)}`
 
-  const result = await esbuild.transform(`${script}\n\n${settings}`, {
+  const result = await esbuild.transform(bundledSource, {
     loader: "js",
     target: "es2020",
     minify: true,
@@ -115,7 +108,7 @@ async function buildDemoEmbed() {
 
   const htmlPath = path.join(embedDir, "index.html")
   const html = await fs.readFile(htmlPath, "utf8")
-  await fs.writeFile(htmlPath, patchEmbedHtml(html))
+  await fs.writeFile(htmlPath, minifyHtml(patchEmbedHtml(html)))
 
   console.log(`Built demo embed at site/demo/embed/`)
 }
